@@ -1,5 +1,3 @@
-@file:OptIn(ObsoleteCoroutinesApi::class)
-
 package com.darren.stock.domain.actors
 
 import com.darren.stock.domain.StockMessages
@@ -23,17 +21,24 @@ class StockActor {
             }
         }
 
+    private suspend fun initializeStockPot(locationId: String, productId: String, initialQuantity: Double) {
+        stockPots[locationId to productId] =
+            CoroutineScope(currentCoroutineContext()).stockPotActor(locationId, productId, initialQuantity)
+    }
+
     suspend fun onReceive(message: StockMessages) {
         logger.debug { "message received: $message" }
         val stockPot = getStockPot(message.locationId, message.productId)
         when (message) {
+            is SetStockLevelEvent -> initializeStockPot(message.locationId, message.productId, message.quantity)
             is GetValue -> stockPot.send(StockPotMessages.GetValue(message.deferred))
-            is SaleEvent -> Unit
+            is SaleEvent -> stockPot.send(StockPotMessages.SaleEvent(message.eventTime, message.quantity))
             is DeliveryEvent -> stockPot.send(StockPotMessages.DeliveryEvent(message.eventTime, message.quantity))
         }
     }
 }
 
+@OptIn(ObsoleteCoroutinesApi::class)
 fun CoroutineScope.stockActor(): SendChannel<StockMessages> = actor {
     with(StockActor()) {
         for (msg in channel) onReceive(msg)

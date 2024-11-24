@@ -16,7 +16,7 @@ fun CoroutineScope.stockPotActor(locationId: String, productId: String, initialQ
             logger.debug { "message received: $message" }
             when (message) {
                 is StockPotMessages.GetValue -> message.deferred.complete(currentStock)
-                is StockPotMessages.SaleEvent -> Unit
+                is StockPotMessages.SaleEvent -> currentStock -= message.quantity
                 is StockPotMessages.DeliveryEvent -> currentStock += message.quantity
             }
         }

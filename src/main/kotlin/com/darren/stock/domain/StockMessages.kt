@@ -4,6 +4,8 @@ import kotlinx.coroutines.CompletableDeferred
 import java.time.LocalDateTime
 
 sealed class StockMessages(val locationId: String, val productId: String) {
+    class SetStockLevelEvent(locationId: String, productId: String, val eventTime: LocalDateTime, val quantity: Double) :
+        StockMessages(locationId, productId)
     class SaleEvent(locationId: String, productId: String, val eventTime: LocalDateTime, val quantity: Double) :
         StockMessages(locationId, productId)
 
