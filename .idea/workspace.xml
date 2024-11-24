@@ -7,12 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement the ability to hold separate stock pots for a product in different locations">
-      <change afterPath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Sale.feature" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement support for a Sale from a location">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMessages.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockPotActor.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -316,7 +313,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732451878413</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Implement support for a Sale from a location">
+      <option name="closed" value="true" />
+      <created>1732452905380</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1732452905380</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -324,7 +329,8 @@
     <MESSAGE value="Initial setup hooked up to cucumber" />
     <MESSAGE value="refactor to introduce the concept of Stock and remove the logic of finding the correct stock pot from the test." />
     <MESSAGE value="Implement the ability to hold separate stock pots for a product in different locations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement the ability to hold separate stock pots for a product in different locations" />
+    <MESSAGE value="Implement support for a Sale from a location" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement support for a Sale from a location" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

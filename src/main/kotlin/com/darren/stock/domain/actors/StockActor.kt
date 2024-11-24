@@ -13,6 +13,15 @@ import kotlinx.coroutines.currentCoroutineContext
 private val logger = KotlinLogging.logger {}
 
 class StockActor {
+    companion object {
+        @OptIn(ObsoleteCoroutinesApi::class)
+        fun CoroutineScope.stockActor(): SendChannel<StockMessages> = actor {
+            with(StockActor()) {
+                for (msg in channel) onReceive(msg)
+            }
+        }
+    }
+
     private val stockPots = mutableMapOf<Pair<String, String>, SendChannel<StockPotMessages>>()
     private suspend fun getStockPot(locationId: String, productId: String) =
         stockPots.getOrPut(locationId to productId) {
@@ -35,12 +44,5 @@ class StockActor {
             is SaleEvent -> stockPot.send(StockPotMessages.SaleEvent(message.eventTime, message.quantity))
             is DeliveryEvent -> stockPot.send(StockPotMessages.DeliveryEvent(message.eventTime, message.quantity))
         }
-    }
-}
-
-@OptIn(ObsoleteCoroutinesApi::class)
-fun CoroutineScope.stockActor(): SendChannel<StockMessages> = actor {
-    with(StockActor()) {
-        for (msg in channel) onReceive(msg)
     }
 }

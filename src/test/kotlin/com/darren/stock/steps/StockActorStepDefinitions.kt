@@ -1,7 +1,7 @@
 package com.darren.stock.steps
 
 import com.darren.stock.domain.StockMessages.*
-import com.darren.stock.domain.actors.stockActor
+import com.darren.stock.domain.actors.StockActor.Companion.stockActor
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
