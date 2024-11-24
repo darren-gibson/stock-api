@@ -9,14 +9,14 @@ private const val locationId = "1"
 private const val productId = "1"
 
 fun main() = runBlocking<Unit> {
-    val channel = stockPotActor()
+    val channel = stockPotActor(locationId, productId)
 
-    channel.send(StockMessages.DeliveryEvent(LocalDateTime.now(), locationId, productId, 100.0))
-    channel.send(StockMessages.SaleEvent(LocalDateTime.now(), locationId, productId, 1.0))
+    channel.send(StockPotMessages.DeliveryEvent(LocalDateTime.now(), 100.0))
+    channel.send(StockPotMessages.SaleEvent(LocalDateTime.now(), 1.0))
 
     val deferred = CompletableDeferred<Double>()
 
-    channel.send(StockMessages.GetValue(locationId, productId, deferred))
+    channel.send(StockPotMessages.GetValue(deferred))
 
     println(deferred.await()) // prints "99"
 
