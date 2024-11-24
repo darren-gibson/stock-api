@@ -7,15 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Initial setup hooked up to cucumber">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockPotMessages.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement the ability to hold separate stock pots for a product in different locations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMessages.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/stockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockPotActor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockPotActorStepDefs.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -284,13 +279,39 @@
       <option name="project" value="LOCAL" />
       <updated>1732443077613</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="refactor to introduce the concept of Stock and remove the logic of finding the correct stock pot from the test.">
+      <option name="closed" value="true" />
+      <created>1732446301280</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1732446301280</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Implement the ability to hold separate stock pots for a product in different locations">
+      <option name="closed" value="true" />
+      <created>1732451690241</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1732451690241</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Implement the ability to hold separate stock pots for a product in different locations">
+      <option name="closed" value="true" />
+      <created>1732451707692</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1732451707692</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Initial setup hooked up to cucumber" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial setup hooked up to cucumber" />
+    <MESSAGE value="refactor to introduce the concept of Stock and remove the logic of finding the correct stock pot from the test." />
+    <MESSAGE value="Implement the ability to hold separate stock pots for a product in different locations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement the ability to hold separate stock pots for a product in different locations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
