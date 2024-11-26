@@ -1,22 +1,21 @@
 package com.darren.stock.domain.actors
 
+import com.darren.stock.domain.LocationMessages
 import com.darren.stock.domain.StockMessages
 import com.darren.stock.domain.StockMessages.*
 import com.darren.stock.domain.StockPotMessages
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.currentCoroutineContext
 
-private val logger = KotlinLogging.logger {}
-
-class StockActor {
+class StockActor(private val locations: SendChannel<LocationMessages>) {
     companion object {
+        private val logger = KotlinLogging.logger {}
+
         @OptIn(ObsoleteCoroutinesApi::class)
-        fun CoroutineScope.stockActor(): SendChannel<StockMessages> = actor {
-            with(StockActor()) {
+        fun CoroutineScope.stockActor(locations: SendChannel<LocationMessages>): SendChannel<StockMessages> = actor {
+            with(StockActor(locations)) {
                 for (msg in channel) onReceive(msg)
             }
         }
@@ -39,10 +38,42 @@ class StockActor {
         logger.debug { "message received: $message" }
         val stockPot = getStockPot(message.locationId, message.productId)
         when (message) {
+            is GetValue -> calculateStock(message)
             is SetStockLevelEvent -> initializeStockPot(message.locationId, message.productId, message.quantity)
-            is GetValue -> stockPot.send(StockPotMessages.GetValue(message.deferred))
             is SaleEvent -> stockPot.send(StockPotMessages.SaleEvent(message.eventTime, message.quantity))
             is DeliveryEvent -> stockPot.send(StockPotMessages.DeliveryEvent(message.eventTime, message.quantity))
         }
+    }
+
+    private suspend fun calculateStock(message: GetValue) {
+        val stockPots = getAllStockPotAndAllChildrenForLocation(message.locationId, message.productId)
+
+        val result = stockPots.map { sp ->
+            val completable = CompletableDeferred<Double>()
+            sp.send(StockPotMessages.GetValue(completable))
+            completable
+        }.awaitAll().sum()
+
+        message.deferred.complete(result)
+    }
+
+    private suspend fun getAllStockPotAndAllChildrenForLocation(
+        locationId: String,
+        productId: String
+    ): Set<SendChannel<StockPotMessages>> {
+        val deferred = CompletableDeferred<Map<String, String>>()
+        locations.send(LocationMessages.GetAllChildrenForParentLocation(locationId, deferred))
+
+        val allLocations = deferred.await()
+        return allStockPotsForLocations(locationId, allLocations, productId)
+    }
+
+    private fun allStockPotsForLocations(
+        locationId: String,
+        allLocations: Map<String, String>,
+        productId: String
+    ): Set<SendChannel<StockPotMessages>> {
+        val uniqueLocations = allLocations.keys.union(allLocations.values).union(setOf(locationId)).toSet()
+        return uniqueLocations.mapNotNull { stockPots[it to productId] }.toSet()
     }
 }

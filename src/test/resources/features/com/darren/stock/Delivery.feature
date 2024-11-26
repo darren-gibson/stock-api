@@ -1,5 +1,8 @@
 Feature: Deliveries of Stock to a location
 
+  Background: A store has multiple locations that a product can be held
+    Given Cambridge is a store
+
   Scenario: Simple deliveries to a location increment the Stock on hand
     Given the stock level of Beans in Cambridge store is 0
     When there is a delivery of 20 Beans to Cambridge store
