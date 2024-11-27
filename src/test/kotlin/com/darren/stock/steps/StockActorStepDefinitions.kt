@@ -1,8 +1,9 @@
 package com.darren.stock.steps
 
 import com.darren.stock.domain.LocationMessages
+import com.darren.stock.domain.LocationType
 import com.darren.stock.domain.actors.LocationActor.Companion.locationActor
-import com.darren.stock.domain.actors.StockSystem
+import com.darren.stock.domain.StockSystem
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -10,6 +11,7 @@ import io.cucumber.java.en.When
 import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -41,12 +43,12 @@ class StockActorStepDefinitions {
 
     @Given("^(\\S+) is a store")
     fun is_a_store(locationId: String) = runBlocking {
-        locations.send(LocationMessages.DefineLocationEvent(locationId, LocalDateTime.now(), null))
+        locations.send(LocationMessages.DefineLocationEvent(locationId, LocationType.Tracked, LocalDateTime.now(), null))
     }
 
     @Given("^(\\S+) is a shelf in (\\S+) store")
     fun location_is_a_shelf_in_store(locationId: String, parentLocationId: String) = runBlocking {
-        locations.send(LocationMessages.DefineLocationEvent(locationId, LocalDateTime.now(), parentLocationId))
+        locations.send(LocationMessages.DefineLocationEvent(locationId, LocationType.Untracked, LocalDateTime.now(), parentLocationId))
     }
 
     private suspend fun getStockLevel(locationId: String, productId: String): Double {
@@ -56,14 +58,32 @@ class StockActorStepDefinitions {
     @Given("the following locations exit:")
     fun theFollowingLocationsExit(locationTable: List<Location>) = runBlocking {
         locationTable.forEach {
-            locations.send(LocationMessages.DefineLocationEvent(it.location, LocalDateTime.now(), it.parentLocationId))
+            locations.send(LocationMessages.DefineLocationEvent(
+                it.location,
+                it.locationType,
+                LocalDateTime.now(),
+                it.parentLocationId
+            ))
         }
     }
 
-    data class Location(val location: String, val parentLocationId: String?, val locationType: String)
+    data class Location(val location: String, val parentLocationId: String?, val locationType: LocationType)
 
     @DataTableType
     fun locationEntryTransformer(row: Map<String?, String>): Location {
-        return Location(row["location"]!!, row["parentLocation"], row["type"]!!)
+        return Location(row["location"]!!, row["parentLocation"], LocationType.valueOf(row["type"]!!))
+    }
+
+    @Then("the sale of {} in {} will result in {}")
+    fun theSaleOfProductInLocationWillResultIn(productId: String, locationId: String, result: String) = runBlocking {
+        if (result == "failure")
+            assertFails { stock.sale(locationId, productId, 1.0, LocalDateTime.now()) }
+        else
+            stock.sale(locationId, productId, 1.0, LocalDateTime.now())
+    }
+
+    @Given("{} is a {} location")
+    fun isALocation(locationId: String, type: LocationType) = runBlocking {
+        locations.send(LocationMessages.DefineLocationEvent(locationId, type, LocalDateTime.now(), null))
     }
 }

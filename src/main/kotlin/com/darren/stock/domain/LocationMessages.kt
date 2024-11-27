@@ -4,15 +4,25 @@ import kotlinx.coroutines.CompletableDeferred
 import java.time.LocalDateTime
 
 sealed class LocationMessages(val locationId: String) {
-    class DefineLocationEvent(locationId: String, val eventTime: LocalDateTime, val parentLocationId: String?) : LocationMessages(locationId) {
+    class DefineLocationEvent(
+        id: String, val type: LocationType, val eventTime: LocalDateTime, val parentId: String?
+    ) : LocationMessages(id) {
         override fun toString(): String {
-            return "DefineLocationEvent(locationId=$locationId, eventTime=$eventTime, parentLocationId=$parentLocationId)"
+            return "DefineLocationEvent(locationId=$locationId, locationType=$type, eventTime=$eventTime, parentLocationId=$parentId)"
         }
     }
 
-    class GetAllChildrenForParentLocation(locationId: String, val deferred: CompletableDeferred<Map<String, String>>) : LocationMessages(locationId) {
+    class GetAllChildrenForParentLocation(locationId: String, val result: CompletableDeferred<Map<String, String>>) :
+        LocationMessages(locationId) {
         override fun toString(): String {
-            return "GetAllChildrenForParentLocation(locationId=$locationId, deferred=$deferred)"
+            return "GetAllChildrenForParentLocation(locationId=$locationId, result=$result)"
         }
+    }
+
+    class GetLocationType(locationId: String, val result: CompletableDeferred<LocationType>) : LocationMessages(locationId) {
+        override fun toString(): String {
+            return "GetLocationType(locationId=$locationId, result=$result)"
+        }
+
     }
 }

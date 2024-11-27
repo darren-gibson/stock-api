@@ -1,6 +1,9 @@
 package com.darren.stock.domain.actors
 
+import com.darren.stock.domain.Location
 import com.darren.stock.domain.LocationMessages
+import com.darren.stock.domain.LocationMessages.*
+import com.darren.stock.domain.LocationType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -20,38 +23,33 @@ class LocationActor {
         }
     }
 
-    private val locationMap = mutableMapOf<String, String?>()
+    private val locationMap = mutableMapOf<String, Location>()
 
-    private fun onReceive(message: LocationMessages) {
-        logger.debug { "message received: $message" }
-        when (message) {
-            is LocationMessages.DefineLocationEvent -> defineLocation(message.locationId, message.parentLocationId)
-            is LocationMessages.GetAllChildrenForParentLocation -> getAllChildrenForParentLocation(
-                message.locationId,
-                message.deferred
-            )
+    private fun onReceive(msg: LocationMessages) {
+        logger.debug { "message received: $msg" }
+        when (msg) {
+            is DefineLocationEvent -> defineLocation(msg.locationId, msg.type, msg.parentId)
+            is GetAllChildrenForParentLocation -> getAllChildrenForParentLocation(msg.locationId, msg.result)
+            is GetLocationType -> msg.result.complete(locationMap[msg.locationId]!!.type)
         }
     }
 
-    private fun getAllChildrenForParentLocation(
-        parentLocation: String,
-        deferred: CompletableDeferred<Map<String, String>>
-    ) {
+    private fun getAllChildrenForParentLocation(parent: String, result: CompletableDeferred<Map<String, String>>) {
         val descendantsMap = mutableMapOf<String, String>()
 
         fun findDescendants(currentParent: String) {
-            val children = locationMap.filterValues { it == currentParent }.keys
+            val children = locationMap.filterValues { it.parent == currentParent }.keys
             for (child in children) {
                 descendantsMap[child] = currentParent
                 findDescendants(child)
             }
         }
 
-        findDescendants(parentLocation)
-        deferred.complete(descendantsMap)
+        findDescendants(parent)
+        result.complete(descendantsMap)
     }
 
-    private fun defineLocation(locationId: String, parentLocationId: String?) {
-        locationMap[locationId] = parentLocationId
+    private fun defineLocation(id: String, type: LocationType, parentId: String?) {
+        locationMap[id] = Location(id, type, parentId)
     }
 }

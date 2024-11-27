@@ -2,7 +2,7 @@ Feature: Locations are nested in a hierarchy
 
 #  # Stock Holding Locations: Tracked vs Untracked Locations
 #  In the context of a retail environment, such as a shop with shelves as part of an overall retail estate,
-#  stock holding locations can be categorised into `tracked` locations and `untracked` locations.
+#  stock holding locations can be categorised into `tracked` locations and `Untracked` locations.
 #
 #  ## 1. Tracked Locations
 #  These are physical or logical locations where every stock movement is meticulously recorded within the
@@ -46,42 +46,42 @@ Feature: Locations are nested in a hierarchy
 #    simplify operations by focusing on the flow and availability of stock rather than its precise tracking.
 #
 #  This dual approach ensures both efficiency and control, with tracked locations supporting centralised stock
-#  visibility and untracked locations facilitating flexible, customer-facing operations.
+#  visibility and Untracked locations facilitating flexible, customer-facing operations.
 #
-#  Estate (untracked)
-#  ├── Stores (untracked)
-#  │   ├── South East (untracked)
+#  Estate (Untracked)
+#  ├── Stores (Untracked)
+#  │   ├── South East (Untracked)
 #  │   │   ├── Cambridge (tracked)
-#  │   │   │   ├── Backstage 1 (untracked)
-#  │   │   │   ├── Shop Floor 2 (untracked)
-#  │   │   │   │   ├── Shelf-a (untracked)
-#  │   │   │   │   └── Shelf-b (untracked)
+#  │   │   │   ├── Backstage 1 (Untracked)
+#  │   │   │   ├── Shop Floor 2 (Untracked)
+#  │   │   │   │   ├── Shelf-a (Untracked)
+#  │   │   │   │   └── Shelf-b (Untracked)
 #  │   │   ├── Royston (tracked)
-#  │   │   │   ├── Backstage 2 (untracked)
-#  │   │   │   ├── Shop Floor 2 (untracked)
-#  │   │   │   │   ├── Shelf-c (untracked)
-#  │   │   │   │   └── Shelf-d (untracked)
-#  └── Distribution Centres (untracked)
+#  │   │   │   ├── Backstage 2 (Untracked)
+#  │   │   │   ├── Shop Floor 2 (Untracked)
+#  │   │   │   │   ├── Shelf-c (Untracked)
+#  │   │   │   │   └── Shelf-d (Untracked)
+#  └── Distribution Centres (Untracked)
 #      └── Castle Donington (tracked)
-#          └── Location-a (untracked)
+#          └── Location-a (Untracked)
 
   Background: A store has multiple locations that a product can be held
     Given the following locations exit:
       | location      | parentLocation | type      |
-      | Estate        |                | untracked |
-      | Stores        | Estate         | untracked |
-      | South East    | Stores         | untracked |
-      | Cambridge     | South East     | tracked   |
-      | Backstage 1   | Cambridge      | untracked |
-      | Shop floor 1  | Cambridge      | untracked |
-      | Shelf-a       | Shop floor 1   | untracked |
-      | Shelf-b       | Shop floor 1   | untracked |
-      | Royston       | South East     | tracked   |
-      | Backstage 2   | Royston        | untracked |
-      | Shop floor 2  | Royston        | untracked |
-      | Shelf-c       | Shop floor 2   | untracked |
-      | Shelf-d       | Shop floor 2   | untracked |
-      | Milton Keynes | Estate         | tracked   |
+      | Estate        |                | Untracked |
+      | Stores        | Estate         | Untracked |
+      | South East    | Stores         | Untracked |
+      | Cambridge     | South East     | Tracked   |
+      | Backstage 1   | Cambridge      | Untracked |
+      | Shop floor 1  | Cambridge      | Untracked |
+      | Shelf-a       | Shop floor 1   | Untracked |
+      | Shelf-b       | Shop floor 1   | Untracked |
+      | Royston       | South East     | Tracked   |
+      | Backstage 2   | Royston        | Untracked |
+      | Shop floor 2  | Royston        | Untracked |
+      | Shelf-c       | Shop floor 2   | Untracked |
+      | Shelf-d       | Shop floor 2   | Untracked |
+      | Milton Keynes | Estate         | Tracked   |
 
   Scenario: the stock in a region equals the Stock of all Stores
     Given the stock level of Beans in Cambridge is 10
