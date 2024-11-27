@@ -7,16 +7,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Create a basic location hierarchy, will need to rework and implement the construct of some locations are tracked and support some operations, while some do not.">
-      <change afterPath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/UntrackedLocations.feature" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Refactor, introduce concept of untracked locations, but not implemented yet.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMessages.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockPotMessages.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/LocationActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/LocationActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockSystem.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockPotActor.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/ChildStockLocations.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/ChildStockLocations.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Sale.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +118,7 @@
       <recent name="com.darren.stock.domain.actors" />
     </key>
   </component>
-  <component name="RunManager" selected="Cucumber Java.Feature: ChildStockLocations">
+  <component name="RunManager" selected="Cucumber Java.Feature: Sale">
     <configuration name="Feature: ChildStockLocations" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
       <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/ChildStockLocations.feature" />
@@ -177,29 +176,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RunCucumberTest (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.darren.stock.RunCucumberTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>true</ForceTestExec>
-      <method v="2" />
+    <configuration name="Scenario: Multiple deliveries to a location increment the Stock on hand" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" />
+      <option name="GLUE" value="com.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="simple-stock.test" />
+      <option name="NAME_FILTER" value="^Multiple deliveries to a location increment the Stock on hand$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Multiple deliveries to a location increment the Stock on hand$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Multiple deliveries to a location increment the Stock on hand" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="Tests in 'features.com.darren.stock'" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -229,16 +224,16 @@
       <item itemvalue="Cucumber Java.Feature: ChildStockLocations" />
       <item itemvalue="Cucumber Java.Feature: Delivery" />
       <item itemvalue="Cucumber Java.Feature: Sale" />
+      <item itemvalue="Cucumber Java.Scenario: Multiple deliveries to a location increment the Stock on hand" />
       <item itemvalue="Gradle.Tests in 'features.com.darren.stock'" />
-      <item itemvalue="Gradle.RunCucumberTest (1)" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cucumber Java.Feature: ChildStockLocations" />
         <item itemvalue="Cucumber Java.Feature: Sale" />
+        <item itemvalue="Cucumber Java.Scenario: Multiple deliveries to a location increment the Stock on hand" />
         <item itemvalue="Cucumber Java.Feature: Delivery" />
+        <item itemvalue="Cucumber Java.Feature: ChildStockLocations" />
         <item itemvalue="Gradle.Tests in 'features.com.darren.stock'" />
-        <item itemvalue="Gradle.RunCucumberTest (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -339,7 +334,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732647495917</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Refactor, introduce concept of untracked locations, but not implemented yet.">
+      <option name="closed" value="true" />
+      <created>1732696791869</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1732696791870</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -349,18 +352,19 @@
     <MESSAGE value="Implement the ability to hold separate stock pots for a product in different locations" />
     <MESSAGE value="Implement support for a Sale from a location" />
     <MESSAGE value="Create a basic location hierarchy, will need to rework and implement the construct of some locations are tracked and support some operations, while some do not." />
-    <option name="LAST_COMMIT_MESSAGE" value="Create a basic location hierarchy, will need to rework and implement the construct of some locations are tracked and support some operations, while some do not." />
+    <MESSAGE value="Refactor, introduce concept of untracked locations, but not implemented yet." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor, introduce concept of untracked locations, but not implemented yet." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt</url>
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockSystem.kt</url>
           <line>67</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockActor.kt</url>
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/StockSystem.kt</url>
           <line>56</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>

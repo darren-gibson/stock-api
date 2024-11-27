@@ -22,7 +22,7 @@ class LocationActor {
 
     private val locationMap = mutableMapOf<String, String?>()
 
-    fun onReceive(message: LocationMessages) {
+    private fun onReceive(message: LocationMessages) {
         logger.debug { "message received: $message" }
         when (message) {
             is LocationMessages.DefineLocationEvent -> defineLocation(message.locationId, message.parentLocationId)

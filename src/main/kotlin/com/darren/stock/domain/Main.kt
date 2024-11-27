@@ -1,6 +1,6 @@
 package com.darren.stock.domain
 
-import com.darren.stock.domain.actors.stockPotActor
+import com.darren.stock.domain.actors.StockPotActor.Companion.stockPotActor
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime

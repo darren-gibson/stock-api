@@ -1,9 +1,8 @@
 package com.darren.stock.steps
 
 import com.darren.stock.domain.LocationMessages
-import com.darren.stock.domain.StockMessages.*
 import com.darren.stock.domain.actors.LocationActor.Companion.locationActor
-import com.darren.stock.domain.actors.StockActor.Companion.stockActor
+import com.darren.stock.domain.actors.StockSystem
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -16,21 +15,21 @@ import kotlin.test.assertEquals
 @OptIn(DelicateCoroutinesApi::class)
 class StockActorStepDefinitions {
     private val locations = GlobalScope.locationActor()
-    private val stock = GlobalScope.stockActor(locations)
+    private val stock = StockSystem(locations)
 
     @Given("^the stock level of (\\S+) in ([\\S ]+) (?:store )?is (\\d+)")
     fun theStockLevelOfProductInStoreIs(productId: String, locationId: String, quantity: Double) = runBlocking {
-        stock.send(SetStockLevelEvent(locationId, productId, LocalDateTime.now(), quantity))
+        stock.setStockLevel(locationId, productId, quantity)
     }
 
     @When("^there is a delivery of (\\d+) (\\S+) to (\\S+) store$")
     fun thereIsADeliveryOfProductToStore(quantity: Double, productId: String, locationId: String) = runBlocking {
-        stock.send(DeliveryEvent(locationId, productId, LocalDateTime.now(), quantity))
+        stock.delivery(locationId, productId, quantity, LocalDateTime.now())
     }
 
     @When("^there is a sale of (\\d+) (\\S+) in the (\\S+) store$")
     fun thereIsASaleOfProductInStore(quantity: Double, productId: String, locationId: String) = runBlocking {
-        stock.send(SaleEvent(locationId, productId, LocalDateTime.now(), quantity))
+        stock.sale(locationId, productId, quantity, LocalDateTime.now())
     }
 
     @Then("^the current stock level of ([\\S ]+) in ([\\S ]+) will equal (\\d+)")
@@ -51,9 +50,7 @@ class StockActorStepDefinitions {
     }
 
     private suspend fun getStockLevel(locationId: String, productId: String): Double {
-        val deferred = CompletableDeferred<Double>()
-        stock.send(GetValue(locationId, productId, deferred))
-        return deferred.await()
+        return stock.getValue(locationId, productId)
     }
 
     @Given("the following locations exit:")
