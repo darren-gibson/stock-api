@@ -1,4 +1,4 @@
-package com.darren.stock.steps
+package com.darren.stock
 
 import com.darren.stock.domain.LocationMessages
 import com.darren.stock.domain.LocationType
@@ -12,7 +12,6 @@ import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
-
 
 @OptIn(DelicateCoroutinesApi::class)
 class StockActorStepDefinitions {

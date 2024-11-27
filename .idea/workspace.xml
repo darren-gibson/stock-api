@@ -8,15 +8,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement functionality for Tracked and Untracked locations">
+      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunSuiteTests.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/TrackedStockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotMessages.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/UntrackedStockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/UntrackedStockPotMessages.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotActor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/UntrackedStockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/UntrackedStockPotActor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunCucumberTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunCucumberTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/ChildStockLocations.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/ChildStockLocations.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunCucumberTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/StockActorStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/ChildStockLocations.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Delivery.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +40,63 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="simple-stock" type="f1a62948:ProjectNode" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build setup" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="distribution" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="documentation" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="help" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -55,8 +111,8 @@
         <option value="Class" />
         <option value="Kotlin File" />
         <option value="Kotlin Enum" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Data Class" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -102,17 +158,18 @@
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/com/darren" />
       <recent name="$PROJECT_DIR$/src/test/resources/features/com/darren/stock" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain" />
       <recent name="$PROJECT_DIR$/src/test/resources/Features" />
       <recent name="$PROJECT_DIR$/src/test/resources" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.darren.stock" />
       <recent name="com.darren.stock.domain.actors" />
       <recent name="com.darren.stock.domain" />
       <recent name="com.darren.stock.steps" />
       <recent name="features.com.darren.stock" />
-      <recent name="com.darren.stock" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="actors" />
@@ -121,26 +178,12 @@
       <recent name="com.darren.stock.domain.actors" />
     </key>
   </component>
-  <component name="RunManager" selected="Cucumber Java.Run all features">
-    <configuration name="Feature: Delivery" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" />
-      <option name="GLUE" value="com.darren.stock.steps" />
-      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
-      <module name="simple-stock.test" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: Delivery" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.cucumber.core.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="gradle test" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Gradle.RunSuiteTest">
     <configuration name="Feature: Sale" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
       <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Sale.feature" />
@@ -180,26 +223,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Multiple deliveries to a location increment the Stock on hand" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" />
-      <option name="GLUE" value="com.darren.stock.steps" />
-      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
-      <module name="simple-stock.test" />
-      <option name="NAME_FILTER" value="^Multiple deliveries to a location increment the Stock on hand$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Multiple deliveries to a location increment the Stock on hand$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Multiple deliveries to a location increment the Stock on hand" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.cucumber.core.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="RunCucumberTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -224,20 +247,66 @@
       <ForceTestExec>true</ForceTestExec>
       <method v="2" />
     </configuration>
+    <configuration name="RunSuiteTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.darren.stock.RunSuiteTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>true</ForceTestExec>
+      <method v="2" />
+    </configuration>
+    <configuration name="simple-stock [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>false</ForceTestExec>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Cucumber Java.Run all features" />
-      <item itemvalue="Cucumber Java.Feature: Delivery" />
       <item itemvalue="Cucumber Java.Feature: Sale" />
-      <item itemvalue="Cucumber Java.Scenario: Multiple deliveries to a location increment the Stock on hand" />
+      <item itemvalue="Gradle.RunSuiteTest" />
+      <item itemvalue="Gradle.simple-stock [test]" />
       <item itemvalue="Gradle.RunCucumberTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cucumber Java.Run all features" />
+        <item itemvalue="Gradle.RunSuiteTest" />
         <item itemvalue="Gradle.RunCucumberTest" />
+        <item itemvalue="Gradle.simple-stock [test]" />
+        <item itemvalue="Cucumber Java.Run all features" />
         <item itemvalue="Cucumber Java.Feature: Sale" />
-        <item itemvalue="Cucumber Java.Feature: Delivery" />
-        <item itemvalue="Cucumber Java.Scenario: Multiple deliveries to a location increment the Stock on hand" />
       </list>
     </recent_temporary>
   </component>
@@ -386,7 +455,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732717467811</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Implement functionality for Tracked and Untracked locations">
+      <option name="closed" value="true" />
+      <created>1732720738664</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1732720738664</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -411,7 +488,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <condition expression="&quot;Cucumber+&quot;!=null" />
-          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt</url>
+          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/StockActorStepDefinitions.kt</url>
           <line>82</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />

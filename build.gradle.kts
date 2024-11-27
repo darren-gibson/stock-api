@@ -20,10 +20,11 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.12")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
 
-    testImplementation("org.junit.platform:junit-platform-suite-api:1.11.3")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.20.1")
-}
+    testImplementation("org.junit.platform:junit-platform-suite:1.11.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
 
+}
 tasks.test {
     useJUnitPlatform()
 }
