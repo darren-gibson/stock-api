@@ -25,10 +25,10 @@ sealed class StockMessages(val locationId: String, val productId: String) {
         }
     }
 
-    class GetValue(locationId: String, productId: String, val deferred: CompletableDeferred<Double>) :
+    class GetValue(locationId: String, productId: String, val response: CompletableDeferred<Double>) :
         StockMessages(locationId, productId) {
         override fun toString(): String {
-            return "GetValue(locationId=$locationId, productId=$productId, deferred=$deferred)"
+            return "GetValue(locationId=$locationId, productId=$productId)"
         }
     }
 }

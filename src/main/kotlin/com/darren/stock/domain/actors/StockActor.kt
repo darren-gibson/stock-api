@@ -54,7 +54,7 @@ class StockActor(private val locations: SendChannel<LocationMessages>) {
             completable
         }.awaitAll().sum()
 
-        message.deferred.complete(result)
+        message.response.complete(result)
     }
 
     private suspend fun getAllStockPotAndAllChildrenForLocation(

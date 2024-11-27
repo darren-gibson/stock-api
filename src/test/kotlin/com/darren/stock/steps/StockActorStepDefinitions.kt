@@ -18,7 +18,7 @@ class StockActorStepDefinitions {
     private val locations = GlobalScope.locationActor()
     private val stock = GlobalScope.stockActor(locations)
 
-    @Given("^the stock level of (\\S+) in (\\S+) (?:store )?is (\\d+)")
+    @Given("^the stock level of (\\S+) in ([\\S ]+) (?:store )?is (\\d+)")
     fun theStockLevelOfProductInStoreIs(productId: String, locationId: String, quantity: Double) = runBlocking {
         stock.send(SetStockLevelEvent(locationId, productId, LocalDateTime.now(), quantity))
     }
@@ -33,7 +33,7 @@ class StockActorStepDefinitions {
         stock.send(SaleEvent(locationId, productId, LocalDateTime.now(), quantity))
     }
 
-    @Then("^the current stock level of (\\S+) in (\\S+) (?:store )?will equal (\\d+)$")
+    @Then("^the current stock level of ([\\S ]+) in ([\\S ]+) will equal (\\d+)")
     fun theCurrentStockLevelOfProductInStoreWillEqual(productId: String, locationId: String, expectedQuantity: Double) =
         runBlocking {
             val actualStock = getStockLevel(locationId, productId)

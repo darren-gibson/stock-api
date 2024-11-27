@@ -67,35 +67,36 @@ Feature: Locations are nested in a hierarchy
 
   Background: A store has multiple locations that a product can be held
     Given the following locations exit:
-      | location     | parentLocation | type      |
-      | Estate       |                | untracked |
-      | Stores       | Estate         | untracked |
-      | South East   | Stores         | untracked |
-      | Cambridge    | South East     | tracked   |
-      | Backstage 1  | Cambridge      | untracked |
-      | Shop floor 1 | Cambridge      | untracked |
-      | Shelf-a      | Shop floor 1   | untracked |
-      | Shelf-b      | Shop floor 1   | untracked |
-      | Royston      | South East     | tracked   |
-      | Backstage 2  | Royston        | untracked |
-      | Shop floor 2 | Royston        | untracked |
-      | Shelf-c      | Shop floor 2   | untracked |
-      | Shelf-d      | Shop floor 2   | untracked |
+      | location      | parentLocation | type      |
+      | Estate        |                | untracked |
+      | Stores        | Estate         | untracked |
+      | South East    | Stores         | untracked |
+      | Cambridge     | South East     | tracked   |
+      | Backstage 1   | Cambridge      | untracked |
+      | Shop floor 1  | Cambridge      | untracked |
+      | Shelf-a       | Shop floor 1   | untracked |
+      | Shelf-b       | Shop floor 1   | untracked |
+      | Royston       | South East     | tracked   |
+      | Backstage 2   | Royston        | untracked |
+      | Shop floor 2  | Royston        | untracked |
+      | Shelf-c       | Shop floor 2   | untracked |
+      | Shelf-d       | Shop floor 2   | untracked |
+      | Milton Keynes | Estate         | tracked   |
 
-  Scenario: the stock in store includes the stock on the shelves
-    Given the stock level of Beans in Shelf-a is 10
-    And the stock level of Beans in Shelf-b is 20
-    Then the current stock level of Beans in Cambridge store will equal 30
+  Scenario: the stock in a region equals the Stock of all Stores
+    Given the stock level of Beans in Cambridge is 10
+    And the stock level of Beans in Royston is 20
+    Then the current stock level of Beans in South East will equal 30
 
   Scenario: ensure the the stock levels in other stores don't affect this store
-    Given the stock level of Beans in Shelf-a is 5
-    And the stock level of Beans in Shelf-b is 7
-    And the stock level of Beans in Shelf-c is 99
-    Then the current stock level of Beans in Cambridge store will equal 12
-
-  Scenario: Sales occur at the Store Level and don't know which shelf the customer has picked up the product from.
-            Therefore the product may have been removed from either Shelf.  The current stock level of the Store is
-            decremented by one, but the stock level on the Shelf is no longer clear.
+    Given the stock level of Beans in Cambridge is 5
+    And the stock level of Beans in Royston is 7
+    And the stock level of Beans in Milton Keynes is 20
+    Then the current stock level of Beans in South East will equal 12
+#
+#  Scenario: Sales occur at the Store Level and don't know which shelf the customer has picked up the product from.
+#            Therefore the product may have been removed from either Shelf.  The current stock level of the Store is
+#            decremented by one, but the stock level on the Shelf is no longer clear.
 
 #    Given the stock level of Beans in location-1 is 10
 #    And the stock level of Beans in location-2 is 20

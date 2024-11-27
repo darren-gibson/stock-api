@@ -16,9 +16,9 @@ sealed class StockPotMessages {
         }
     }
 
-    class GetValue(val deferred: CompletableDeferred<Double>) : StockPotMessages() {
+    class GetValue(val response: CompletableDeferred<Double>) : StockPotMessages() {
         override fun toString(): String {
-            return "GetValue(deferred=$deferred)"
+            return "GetValue(response=$response)"
         }
     }
 }

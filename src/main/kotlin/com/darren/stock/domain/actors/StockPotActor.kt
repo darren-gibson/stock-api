@@ -15,7 +15,7 @@ fun CoroutineScope.stockPotActor(locationId: String, productId: String, initialQ
         for (message in channel) {
             logger.debug { "message received: $message" }
             when (message) {
-                is StockPotMessages.GetValue -> message.deferred.complete(currentStock)
+                is StockPotMessages.GetValue -> message.response.complete(currentStock)
                 is StockPotMessages.SaleEvent -> currentStock -= message.quantity
                 is StockPotMessages.DeliveryEvent -> currentStock += message.quantity
             }
