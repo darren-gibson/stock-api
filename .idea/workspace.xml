@@ -7,15 +7,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement functionality for Tracked and Untracked locations">
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunSuiteTests.kt" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="refactor to get the Test Runner to properly work using the correct runner">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/InsufficientStockException.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/MoveResult.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMovement.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMovementReason.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Movement.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunCucumberTest.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/StockActorStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/ChildStockLocations.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Delivery.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Delivery.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotMessages.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,9 +114,9 @@
         <option value="JUnit5 Test Class" />
         <option value="Class" />
         <option value="Kotlin File" />
+        <option value="Kotlin Class" />
         <option value="Kotlin Enum" />
         <option value="Kotlin Data Class" />
-        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -164,11 +168,14 @@
       <recent name="$PROJECT_DIR$/src/test/resources/Features" />
       <recent name="$PROJECT_DIR$/src/test/resources" />
     </key>
+    <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="com.darren.stock.domain" />
+    </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.darren.stock.steps" />
       <recent name="com.darren.stock" />
       <recent name="com.darren.stock.domain.actors" />
       <recent name="com.darren.stock.domain" />
-      <recent name="com.darren.stock.steps" />
       <recent name="features.com.darren.stock" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
@@ -184,14 +191,14 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTest">
-    <configuration name="Feature: Sale" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: Movement" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/Sale.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/com/darren/stock/Movement.feature" />
       <option name="GLUE" value="com.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="simple-stock.test" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: Sale" />
+      <option name="SUGGESTED_NAME" value="Feature: Movement" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -294,8 +301,8 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Cucumber Java.Feature: Movement" />
       <item itemvalue="Cucumber Java.Run all features" />
-      <item itemvalue="Cucumber Java.Feature: Sale" />
       <item itemvalue="Gradle.RunSuiteTest" />
       <item itemvalue="Gradle.simple-stock [test]" />
       <item itemvalue="Gradle.RunCucumberTest" />
@@ -303,10 +310,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTest" />
+        <item itemvalue="Cucumber Java.Feature: Movement" />
         <item itemvalue="Gradle.RunCucumberTest" />
         <item itemvalue="Gradle.simple-stock [test]" />
         <item itemvalue="Cucumber Java.Run all features" />
-        <item itemvalue="Cucumber Java.Feature: Sale" />
       </list>
     </recent_temporary>
   </component>
@@ -463,7 +470,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732720738664</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="refactor to get the Test Runner to properly work using the correct runner">
+      <option name="closed" value="true" />
+      <created>1732733621606</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1732733621606</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -476,19 +491,15 @@
     <MESSAGE value="Refactor, introduce concept of untracked locations, but not implemented yet." />
     <MESSAGE value="Fix issues, refactor the StockPotActor to be a Actor class and Change StockActor to be StockSystem moving away from an Actor" />
     <MESSAGE value="Implement functionality for Tracked and Untracked locations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement functionality for Tracked and Untracked locations" />
+    <MESSAGE value="refactor to get the Test Runner to properly work using the correct runner" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor to get the Test Runner to properly work using the correct runner" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt</url>
-          <line>67</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <condition expression="&quot;Cucumber+&quot;!=null" />
-          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/StockActorStepDefinitions.kt</url>
+        <line-breakpoint type="kotlin-line">
+          <condition expression="&quot;Cucumber+&quot;!=null" language="JAVA" />
+          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt</url>
           <line>82</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />

@@ -1,9 +1,7 @@
 package com.darren.stock.domain
 
 import com.darren.stock.domain.actors.TrackedStockPotActor.Companion.trackedStockPotActor
-import com.darren.stock.domain.actors.TrackedStockPotMessages
 import com.darren.stock.domain.actors.UntrackedStockPotActor.Companion.untrackedStockPotActor
-import com.darren.stock.domain.actors.UntrackedStockPotMessages
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -11,6 +9,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.SendChannel
 import java.time.LocalDateTime
+import com.darren.stock.domain.actors.TrackedStockPotMessages as TSPM
+import com.darren.stock.domain.actors.UntrackedStockPotMessages as USPM
 
 class StockSystem(private val locations: SendChannel<LocationMessages>) {
     companion object {
@@ -18,28 +18,14 @@ class StockSystem(private val locations: SendChannel<LocationMessages>) {
     }
 
     sealed class ChannelType {
-        class TrackedChannel(val channel: SendChannel<TrackedStockPotMessages>) : ChannelType()
-        class UntrackedChannel(val channel: SendChannel<UntrackedStockPotMessages>) : ChannelType()
+        class TrackedChannel(val channel: SendChannel<TSPM>) : ChannelType()
+        class UntrackedChannel(val channel: SendChannel<USPM>) : ChannelType()
     }
 
     private val stockPots = mutableMapOf<Pair<String, String>, ChannelType>()
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private suspend fun getStockPot(locationId: String, productId: String) =
-        stockPots.getOrPut(locationId to productId) {
-            with(GlobalScope) {
-                when (getLocationType(locationId)) {
-                    LocationType.Tracked -> ChannelType.TrackedChannel(trackedStockPotActor(locationId, productId, 0.0))
-                    LocationType.Untracked -> ChannelType.UntrackedChannel(
-                        untrackedStockPotActor(
-                            locationId,
-                            productId,
-                            0.0
-                        )
-                    )
-                }
-            }
-        }
+    private fun getStockPot(locationId: String, productId: String) = stockPots[locationId to productId]!!
+
 
     private suspend fun getLocationType(locationId: String): LocationType {
         val result = CompletableDeferred<LocationType>()
@@ -54,27 +40,29 @@ class StockSystem(private val locations: SendChannel<LocationMessages>) {
             val completable = CompletableDeferred<Double>()
 
             when (sp) {
-                is ChannelType.TrackedChannel -> sp.channel.send(TrackedStockPotMessages.GetValue(completable))
-                is ChannelType.UntrackedChannel -> sp.channel.send(UntrackedStockPotMessages.GetValue(completable))
+                is ChannelType.TrackedChannel -> sp.channel.send(TSPM.GetValue(completable))
+                is ChannelType.UntrackedChannel -> sp.channel.send(USPM.GetValue(completable))
             }
             completable
         }.awaitAll().sum()
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    suspend fun setStockLevel(locationId: String, productId: String, initialQuantity: Double) {
-        when (getStockPot(locationId, productId)) {
-            is ChannelType.TrackedChannel -> stockPots[locationId to productId] =
-                ChannelType.TrackedChannel(GlobalScope.trackedStockPotActor(locationId, productId, initialQuantity))
+    suspend fun setInitialStockLevel(locationId: String, productId: String, initialQuantity: Double) {
+        stockPots[locationId to productId] = when (getLocationType(locationId)) {
+            LocationType.Tracked -> ChannelType.TrackedChannel(
+                GlobalScope.trackedStockPotActor(locationId, productId, initialQuantity)
+            )
 
-            is ChannelType.UntrackedChannel -> stockPots[locationId to productId] =
-                ChannelType.UntrackedChannel(GlobalScope.untrackedStockPotActor(locationId, productId, initialQuantity))
+            LocationType.Untracked -> ChannelType.UntrackedChannel(
+                GlobalScope.untrackedStockPotActor(locationId, productId, initialQuantity)
+            )
         }
     }
 
     suspend fun sale(locationId: String, productId: String, quantity: Double, eventTime: LocalDateTime) {
         when (val type = getStockPot(locationId, productId)) {
-            is ChannelType.TrackedChannel -> type.channel.send(TrackedStockPotMessages.SaleEvent(eventTime, quantity))
+            is ChannelType.TrackedChannel -> type.channel.send(TSPM.SaleEvent(eventTime, quantity))
             else -> throw OperationNotSupportedException("Untracked location $locationId cannot perform sales.")
         }
     }
@@ -82,7 +70,7 @@ class StockSystem(private val locations: SendChannel<LocationMessages>) {
     suspend fun delivery(locationId: String, productId: String, quantity: Double, eventTime: LocalDateTime) {
         when (val type = getStockPot(locationId, productId)) {
             is ChannelType.TrackedChannel -> type.channel.send(
-                TrackedStockPotMessages.DeliveryEvent(eventTime, quantity)
+                TSPM.DeliveryEvent(eventTime, quantity)
             )
 
             else -> throw OperationNotSupportedException("Untracked location $locationId cannot accept deliveries.")
@@ -104,5 +92,28 @@ class StockSystem(private val locations: SendChannel<LocationMessages>) {
     ): Set<ChannelType> {
         val uniqueLocations = allLocations.keys.union(allLocations.values).union(setOf(locationId)).toSet()
         return uniqueLocations.mapNotNull { stockPots[it to productId] }.toSet()
+    }
+
+    suspend fun move(movement: StockMovement) {
+        val from = getStockPot(movement.from, movement.product)
+        val to = getStockPot(movement.to, movement.product)
+
+        if (from is ChannelType.TrackedChannel && to is ChannelType.TrackedChannel) {
+            move(movement, from, to)
+        } else {
+            throw OperationNotSupportedException("both ${movement.from} and ${movement.to} must be Tracked locations.")
+        }
+    }
+
+    private suspend fun move(move: StockMovement, from: ChannelType.TrackedChannel, to: ChannelType.TrackedChannel) {
+        val result = CompletableDeferred<MoveResult>()
+
+        with(move) {
+            from.channel.send(TSPM.MoveEvent(product, quantity, to.channel, reason, LocalDateTime.now(), result))
+            when (result.await()) {
+                MoveResult.Success -> return
+                MoveResult.InsufficientStock -> throw InsufficientStockException()
+            }
+        }
     }
 }

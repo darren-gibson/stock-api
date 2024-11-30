@@ -1,4 +1,4 @@
-package com.darren.stock
+package com.darren.stock.steps
 
 import com.darren.stock.domain.LocationMessages
 import com.darren.stock.domain.LocationType
@@ -20,7 +20,7 @@ class StockActorStepDefinitions {
 
     @Given("^the stock level of (\\S+) in ([\\S ]+) (?:store )?is (\\d+)")
     fun theStockLevelOfProductInStoreIs(productId: String, locationId: String, quantity: Double) = runBlocking {
-        stock.setStockLevel(locationId, productId, quantity)
+        stock.setInitialStockLevel(locationId, productId, quantity)
     }
 
     @When("^there is a delivery of (\\d+) (\\S+) to (\\S+) store$")

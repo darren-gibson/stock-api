@@ -93,15 +93,3 @@ Feature: Locations are nested in a hierarchy
     And the stock level of Beans in Royston is 7
     And the stock level of Beans in Milton Keynes is 20
     Then the current stock level of Beans in South East will equal 12
-#
-#  Scenario: Sales occur at the Store Level and don't know which shelf the customer has picked up the product from.
-#            Therefore the product may have been removed from either Shelf.  The current stock level of the Store is
-#            decremented by one, but the stock level on the Shelf is no longer clear.
-
-#    Given the stock level of Beans in location-1 is 10
-#    And the stock level of Beans in location-2 is 20
-#    When there is a sale of 5 Beans in the Cambridge store
-#    Then the current stock level of Beans in Cambridge store will equal 25
-#    And the current stock level of Beans in location-1 will be between 5 and 10
-
-
