@@ -7,19 +7,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="refactor to get the Test Runner to properly work using the correct runner">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/InsufficientStockException.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/MoveResult.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMovement.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMovementReason.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Movement.feature" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement stock move feature between Tracked locations">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/ApplicationKt.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/PersistenceStepDefinitions.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Persistance.feature" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Status.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotActor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotMessages.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/Main.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,6 +97,19 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="testRuntimeClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="testRuntimeClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+                <item name="ch.qos.logback:logback-classic:1.5.12" type="b3323d55:ExternalSystemViewDefaultContributor$DependencyExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simple-stock" type="f1a62948:ProjectNode" />
                 <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
@@ -114,9 +125,9 @@
         <option value="JUnit5 Test Class" />
         <option value="Class" />
         <option value="Kotlin File" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Enum" />
         <option value="Kotlin Data Class" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -130,6 +141,9 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
   <component name="ProjectId" id="2pF66bvXiMFUn4MFHNzIa2E20Kz" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -141,14 +155,22 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Cucumber Java.Feature: Movement.executor": "Run",
+    "Cucumber Java.Feature: Status.executor": "Run",
+    "Gradle.Build simple-stock.executor": "Run",
+    "Gradle.RunSuiteTest.executor": "Run",
+    "Kotlin.ApplicationKtKt.executor": "Run",
+    "Kotlin.MainKt.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/src/test/resources/features/com/darren/stock",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/src/test/resources",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "project.scopes"
+    "settings.editor.selected.configurable": "preferences.language.Kotlin.scripting"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -156,6 +178,7 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources" />
       <recent name="$PROJECT_DIR$/src/test/resources/features/com/darren/stock" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
@@ -210,15 +233,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Run all features" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true">
+    <configuration name="Feature: Status" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/features/com/darren/stock/" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/com/darren/stock/Status.feature" />
       <option name="GLUE" value="com.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="simple-stock.test" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <shortenClasspath name="NONE" />
-      <option name="SUGGESTED_NAME" value="Feature: ChildStockLocations" />
+      <option name="SUGGESTED_NAME" value="Feature: Status" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -229,30 +251,6 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration name="RunCucumberTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--debug" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.darren.stock.RunCucumberTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>true</ForceTestExec>
-      <method v="2" />
     </configuration>
     <configuration name="RunSuiteTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -275,45 +273,37 @@
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>true</ForceTestExec>
+      <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="simple-stock [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="test" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>false</ForceTestExec>
-      <method v="2" />
+    <configuration name="ApplicationKtKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.darren.stock.ktor.ApplicationKtKt" />
+      <module name="simple-stock.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.darren.stock.MainKt" />
+      <module name="simple-stock.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <list>
+      <item itemvalue="Cucumber Java.Feature: Status" />
       <item itemvalue="Cucumber Java.Feature: Movement" />
-      <item itemvalue="Cucumber Java.Run all features" />
       <item itemvalue="Gradle.RunSuiteTest" />
-      <item itemvalue="Gradle.simple-stock [test]" />
-      <item itemvalue="Gradle.RunCucumberTest" />
+      <item itemvalue="Kotlin.ApplicationKtKt" />
+      <item itemvalue="Kotlin.MainKt" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTest" />
+        <item itemvalue="Cucumber Java.Feature: Status" />
+        <item itemvalue="Kotlin.MainKt" />
+        <item itemvalue="Kotlin.ApplicationKtKt" />
         <item itemvalue="Cucumber Java.Feature: Movement" />
-        <item itemvalue="Gradle.RunCucumberTest" />
-        <item itemvalue="Gradle.simple-stock [test]" />
-        <item itemvalue="Cucumber Java.Run all features" />
       </list>
     </recent_temporary>
   </component>
@@ -478,7 +468,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732733621606</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Implement stock move feature between Tracked locations">
+      <option name="closed" value="true" />
+      <created>1732963237459</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1732963237459</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -492,7 +490,8 @@
     <MESSAGE value="Fix issues, refactor the StockPotActor to be a Actor class and Change StockActor to be StockSystem moving away from an Actor" />
     <MESSAGE value="Implement functionality for Tracked and Untracked locations" />
     <MESSAGE value="refactor to get the Test Runner to properly work using the correct runner" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor to get the Test Runner to properly work using the correct runner" />
+    <MESSAGE value="Implement stock move feature between Tracked locations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement stock move feature between Tracked locations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -506,6 +505,20 @@
           </properties>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/ApplicationKt.kt</url>
+          <line>20</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt</url>
+          <line>51</line>
+          <option name="timeStamp" value="39" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.net.ConnectException" package="java.net" />
+          <option name="timeStamp" value="37" />
+        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
