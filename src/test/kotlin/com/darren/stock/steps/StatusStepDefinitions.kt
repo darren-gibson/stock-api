@@ -3,6 +3,7 @@ package com.darren.stock.steps
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.server.testing.*
@@ -10,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.test.assertTrue
 
 class StatusStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
@@ -30,8 +32,8 @@ class StatusStepDefinitions : KoinComponent {
     }
 
     @And("the response body should indicate the service is healthy")
-    fun theResponseBodyShouldIndicateTheServiceIsHealthy() {
-//        val responseBody: String = response.body()
-//        assertTrue(responseBody.contains("healthy"), "Response body does not indicate the service is healthy")
+    fun theResponseBodyShouldIndicateTheServiceIsHealthy() = runBlocking {
+        val responseBody: String = response.body()
+        assertTrue(responseBody.contains("Healthy"), "Response body does not indicate the service is healthy, body=$responseBody")
     }
 }

@@ -4,23 +4,23 @@ ktor:
     port-test: 8081
     host: 0.0.0.0
     environment: test
-  application:
-    - modules:
-        - com.darren.stock.ktor.ApplicationKt.module
-  logging:
-    level: INFO
-    loggers:
-      ktor.application: DEBUG
-
-  features:
-    callLogging:
-      level: INFO
-    compression:
-      enabled: true
-      minimum-size: 1024
-    contentNegotiation:
-      json: {}
-
-  endpoints:
-    status:
-      path: /_status
+#  application:
+#    - modules:
+#        - com.darren.stock.ktor.ApplicationKt.module
+#  logging:
+#    level: DEBUG
+#    loggers:
+#      ktor.application: DEBUG
+#
+#  features:
+#    callLogging:
+#      level: INFO
+#    compression:
+#      enabled: true
+#      minimum-size: 1024
+#    contentNegotiation:
+#      json: {}
+#
+#  endpoints:
+#    status:
+#      path: /_status

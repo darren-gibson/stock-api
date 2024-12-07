@@ -7,17 +7,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add ktor to the project with the _status endpoint">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockEventRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/persistence/InMemoryStockEventRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/PersistenceStepDefinitions.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Persistance.feature" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add Koin to the app and start shift towards using and IOC DI">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Status.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/ApplicationKt.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/logback.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/logback.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,9 +167,9 @@
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/src/test/resources",
+    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/src/main/resources",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.language.Kotlin"
+    "settings.editor.selected.configurable": "preferences.language.Kotlin.scripting"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -179,6 +177,7 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
       <recent name="$PROJECT_DIR$/src/test/resources" />
       <recent name="$PROJECT_DIR$/src/test/resources/features/com/darren/stock" />
     </key>
@@ -193,6 +192,7 @@
       <recent name="$PROJECT_DIR$/src/test/resources" />
     </key>
     <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="com.darren.stock.ktor" />
       <recent name="com.darren.stock.domain" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
@@ -485,7 +485,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733258671264</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Add Koin to the app and start shift towards using and IOC DI">
+      <option name="closed" value="true" />
+      <created>1733564987552</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1733564987552</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -501,31 +509,16 @@
     <MESSAGE value="refactor to get the Test Runner to properly work using the correct runner" />
     <MESSAGE value="Implement stock move feature between Tracked locations" />
     <MESSAGE value="Add ktor to the project with the _status endpoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add ktor to the project with the _status endpoint" />
+    <MESSAGE value="Add Koin to the app and start shift towards using and IOC DI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Koin to the app and start shift towards using and IOC DI" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt</url>
-          <line>25</line>
-          <option name="timeStamp" value="40" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <condition expression="&quot;Cucumber+&quot;!=null" />
-          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt</url>
-          <line>19</line>
-          <option name="timeStamp" value="43" />
-        </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.net.ConnectException" package="java.net" />
           <option name="timeStamp" value="37" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
-          <url>file://$PROJECT_DIR$/src/test/resources/com/darren/stock/Status.feature</url>
-          <line>7</line>
-          <option name="timeStamp" value="44" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
