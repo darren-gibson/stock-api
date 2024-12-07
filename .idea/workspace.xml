@@ -7,17 +7,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement stock move feature between Tracked locations">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/ApplicationKt.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add ktor to the project with the _status endpoint">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockEventRepository.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/persistence/InMemoryStockEventRepository.kt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/PersistenceStepDefinitions.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Persistance.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Status.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/ApplicationKt.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,6 +127,7 @@
         <option value="Kotlin File" />
         <option value="Kotlin Enum" />
         <option value="Kotlin Data Class" />
+        <option value="Kotlin Interface" />
         <option value="Kotlin Class" />
       </list>
     </option>
@@ -170,7 +171,7 @@
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/src/test/resources",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.language.Kotlin.scripting"
+    "settings.editor.selected.configurable": "preferences.language.Kotlin"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -276,8 +277,8 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="ApplicationKtKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.darren.stock.ktor.ApplicationKtKt" />
+    <configuration name="ApplicationKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.darren.stock.ktor.ApplicationKt" />
       <module name="simple-stock.main" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -301,8 +302,8 @@
       <list>
         <item itemvalue="Gradle.RunSuiteTest" />
         <item itemvalue="Cucumber Java.Feature: Status" />
-        <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Kotlin.ApplicationKtKt" />
+        <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Cucumber Java.Feature: Movement" />
       </list>
     </recent_temporary>
@@ -476,7 +477,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732963237459</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Add ktor to the project with the _status endpoint">
+      <option name="closed" value="true" />
+      <created>1733258671264</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1733258671264</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -491,34 +500,32 @@
     <MESSAGE value="Implement functionality for Tracked and Untracked locations" />
     <MESSAGE value="refactor to get the Test Runner to properly work using the correct runner" />
     <MESSAGE value="Implement stock move feature between Tracked locations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement stock move feature between Tracked locations" />
+    <MESSAGE value="Add ktor to the project with the _status endpoint" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add ktor to the project with the _status endpoint" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint type="kotlin-line">
-          <condition expression="&quot;Cucumber+&quot;!=null" language="JAVA" />
-          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt</url>
-          <line>82</line>
-          <properties>
-            <option name="lambda-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="32" />
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt</url>
+          <line>25</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/ApplicationKt.kt</url>
-          <line>20</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
+          <condition expression="&quot;Cucumber+&quot;!=null" />
           <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt</url>
-          <line>51</line>
-          <option name="timeStamp" value="39" />
+          <line>19</line>
+          <option name="timeStamp" value="43" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.net.ConnectException" package="java.net" />
           <option name="timeStamp" value="37" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
+          <url>file://$PROJECT_DIR$/src/test/resources/com/darren/stock/Status.feature</url>
+          <line>7</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
