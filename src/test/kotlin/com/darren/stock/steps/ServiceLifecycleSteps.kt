@@ -1,9 +1,9 @@
 package com.darren.stock.steps
 
-import com.darren.stock.domain.actors.LocationMessages
 import com.darren.stock.domain.StockEventRepository
 import com.darren.stock.domain.StockSystem
 import com.darren.stock.domain.actors.LocationActor.Companion.locationActor
+import com.darren.stock.domain.handlers.*
 import com.darren.stock.ktor.module
 import com.darren.stock.persistence.InMemoryStockEventRepository
 import io.cucumber.java.After
@@ -12,7 +12,6 @@ import io.cucumber.java.en.Given
 import io.ktor.server.testing.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.SendChannel
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -29,8 +28,14 @@ class ServiceLifecycleSteps {
             modules(
                 module { single { testApp } },
                 module { single<StockEventRepository> { InMemoryStockEventRepository() } },
-                module { single<SendChannel<LocationMessages>> { GlobalScope.locationActor() } },
-                module { single<StockSystem> { StockSystem() } }
+                module { single { GlobalScope.locationActor() } },
+                module { single { HandlerHelper() } },
+                module { single { SaleHandler(get()) } },
+                module { single { CountHandler(get()) } },
+                module { single { DeliveryHandler(get()) } },
+                module { single { GetValueHandler(get()) } },
+                module { single { MoveHandler(get()) } },
+                module { single<StockSystem> { StockSystem(get()) } }
             )
         }
         testApp.start()
