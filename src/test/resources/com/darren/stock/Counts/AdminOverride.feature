@@ -58,7 +58,7 @@ Feature: Create a Stock Count for a Product
     When I send a POST request to "/locations/Invalid-Warehouse/products/SKU12345/counts" with the following payload:
       """
       {
-          "requestId": "123e4567-e89b-12d3-a456-426614174001",
+          "requestId": "123e4567-e89b-12d3-a456-426614174003",
           "reason": "AdminOverride",
           "quantity": 100
       }
@@ -70,22 +70,27 @@ Feature: Create a Stock Count for a Product
           "status": "LocationNotFound"
       }
       """
-#
-#  Scenario: Fail to create a stock count due to missing requestId
-#    Given a valid location "Warehouse-01" exists
-#    And a valid product code "SKU12345" exists
-#    When I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
-#      """
-#      {
-#          "reason": "AdminOverride",
-#          "quantity": 100
-#      }
-#      """
-#    Then the API should respond with status code 400
-#    And the response body should contain:
-#      """
-#      {
-#          "status": "error",
-#          "message": "Missing or invalid requestId"
-#      }
-#      """
+
+  Scenario: Fail to create a stock count due to missing requestId
+    Given "Warehouse-01" is a Distribution Centre
+    And a valid product code "SKU12345" exists
+    When I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
+      """
+      {
+          "reason": "AdminOverride",
+          "quantity": 100
+      }
+      """
+    Then the API should respond with status code 400
+
+  Scenario: Fail to create a stock count due to missing reason
+    Given "Warehouse-01" is a Distribution Centre
+    And a valid product code "SKU12345" exists
+    When I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
+      """
+      {
+          "requestId": "123e4567-e89b-12d3-a456-426614174002",
+          "quantity": 100
+      }
+      """
+    Then the API should respond with status code 400

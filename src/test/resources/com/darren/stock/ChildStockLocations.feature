@@ -84,12 +84,12 @@ Feature: Locations are nested in a hierarchy
       | Milton Keynes | Estate         | Tracked   |
 
   Scenario: the stock in a region equals the Stock of all Stores
-    Given the stock level of Beans in Cambridge is 10
-    And the stock level of Beans in Royston is 20
+    Given the stock level of "Beans" in "Cambridge" is 10
+    And the stock level of "Beans" in "Royston" is 20
     Then the current stock level of "Beans" in "South East" will equal 30
 
   Scenario: ensure the the stock levels in other stores don't affect this store
-    Given the stock level of Beans in Cambridge is 5
-    And the stock level of Beans in Royston is 7
-    And the stock level of Beans in Milton Keynes is 20
+    Given the stock level of "Beans" in "Cambridge" is 5
+    And the stock level of "Beans" in "Royston" is 7
+    And the stock level of "Beans" in "Milton Keynes" is 20
     Then the current stock level of "Beans" in "South East" will equal 12

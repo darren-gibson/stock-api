@@ -18,7 +18,8 @@ class StockActorStepDefinitions : KoinComponent {
     private val client = testApp.client
     private val stock by inject<StockSystem>()
 
-    @Given("^the stock level of (\\S+) in ([\\S ]+) (?:store )?is (\\d+)")
+//    @Given("^the stock level of (\\S+) in ([\\S ]+) (?:store )?is (\\d+)")
+    @Given("the stock level of {string} in {string} is {double}")
     fun theStockLevelOfProductInStoreIs(productId: String, locationId: String, quantity: Double) = runBlocking {
         stock.setInitialStockLevel(locationId, productId, quantity)
     }
@@ -43,7 +44,7 @@ class StockActorStepDefinitions : KoinComponent {
         return stock.getValue(locationId, productId)
     }
 
-    @Then("the sale of {} in {} will result in {}")
+    @Then("the sale of {string} in {string} will result in {string}")
     fun theSaleOfProductInLocationWillResultIn(productId: String, locationId: String, result: String) = runBlocking {
         if (result == "failure")
             assertThrows<OperationNotSupportedException> { stock.sale(locationId, productId, 1.0, now()) }

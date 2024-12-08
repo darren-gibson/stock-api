@@ -14,7 +14,7 @@ import java.time.LocalDateTime.now
 class LocationManagementSteps : KoinComponent {
     private val locations by inject<SendChannel<LocationMessages>>()
 
-    @Given("^(\\S+) is a store")
+    @Given("{string} is a store")
     @Given("{string} is a Distribution Centre")
     fun is_a_store(locationId: String) = runBlocking {
         locations.send(DefineLocationEvent(locationId, LocationType.Tracked, now(), null))

@@ -7,19 +7,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement the Count API with wiring up the tests using Koin">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/LocationNotFoundException.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/ErrorDTO.kt" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement Location Not Found when adding a count to an invalid location">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/LocationMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/LocationMessages.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/LocationActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/LocationActor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/StockCount.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/StockCount.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockCountReason.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockCountReason.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ServiceLifecycleSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Delivery.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Delivery.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,14 +242,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Feature: Status" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: Sale" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/com/darren/stock/Status.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" />
       <option name="GLUE" value="com.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="simple-stock.test" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: Status" />
+      <option name="SUGGESTED_NAME" value="Feature: Sale" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -318,7 +314,7 @@
     </configuration>
     <list>
       <item itemvalue="Cucumber Java.Feature: AdminOverride" />
-      <item itemvalue="Cucumber Java.Feature: Status" />
+      <item itemvalue="Cucumber Java.Feature: Sale" />
       <item itemvalue="Cucumber Java.Scenario: Fail to create a stock count due to invalid location" />
       <item itemvalue="Gradle.Tests in 'com.darren.stock'" />
       <item itemvalue="Kotlin.ApplicationKt" />
@@ -326,10 +322,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.Tests in 'com.darren.stock'" />
+        <item itemvalue="Cucumber Java.Feature: Sale" />
         <item itemvalue="Kotlin.ApplicationKt" />
         <item itemvalue="Cucumber Java.Scenario: Fail to create a stock count due to invalid location" />
         <item itemvalue="Cucumber Java.Feature: AdminOverride" />
-        <item itemvalue="Cucumber Java.Feature: Status" />
       </list>
     </recent_temporary>
   </component>
@@ -534,7 +530,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733666644710</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Implement Location Not Found when adding a count to an invalid location">
+      <option name="closed" value="true" />
+      <created>1733669918089</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1733669918089</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -564,7 +568,8 @@
     <MESSAGE value="Add Koin to the app and start shift towards using and IOC DI" />
     <MESSAGE value="Add support for JSON for the response" />
     <MESSAGE value="Implement the Count API with wiring up the tests using Koin" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement the Count API with wiring up the tests using Koin" />
+    <MESSAGE value="Implement Location Not Found when adding a count to an invalid location" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement Location Not Found when adding a count to an invalid location" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
