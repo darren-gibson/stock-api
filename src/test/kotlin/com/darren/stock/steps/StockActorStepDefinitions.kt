@@ -1,22 +1,22 @@
 package com.darren.stock.steps
 
-import com.darren.stock.domain.LocationMessages
-import com.darren.stock.domain.LocationType
-import com.darren.stock.domain.actors.LocationActor.Companion.locationActor
+import com.darren.stock.domain.OperationNotSupportedException
 import com.darren.stock.domain.StockSystem
-import io.cucumber.java.DataTableType
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
-import kotlinx.coroutines.*
-import java.time.LocalDateTime
-import kotlin.test.assertEquals
-import kotlin.test.assertFails
+import io.ktor.server.testing.*
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.assertThrows
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import java.time.LocalDateTime.now
 
-@OptIn(DelicateCoroutinesApi::class)
-class StockActorStepDefinitions {
-    private val locations = GlobalScope.locationActor()
-    private val stock = StockSystem(locations)
+class StockActorStepDefinitions : KoinComponent {
+    private val testApp: TestApplication by inject()
+    private val client = testApp.client
+    private val stock by inject<StockSystem>()
 
     @Given("^the stock level of (\\S+) in ([\\S ]+) (?:store )?is (\\d+)")
     fun theStockLevelOfProductInStoreIs(productId: String, locationId: String, quantity: Double) = runBlocking {
@@ -25,64 +25,29 @@ class StockActorStepDefinitions {
 
     @When("^there is a delivery of (\\d+) (\\S+) to (\\S+) store$")
     fun thereIsADeliveryOfProductToStore(quantity: Double, productId: String, locationId: String) = runBlocking {
-        stock.delivery(locationId, productId, quantity, LocalDateTime.now())
+        stock.delivery(locationId, productId, quantity, now())
     }
 
     @When("^there is a sale of (\\d+) (\\S+) in the (\\S+) store$")
     fun thereIsASaleOfProductInStore(quantity: Double, productId: String, locationId: String) = runBlocking {
-        stock.sale(locationId, productId, quantity, LocalDateTime.now())
+        stock.sale(locationId, productId, quantity, now())
     }
-
-    @Then("^the current stock level of ([\\S ]+) in ([\\S ]+) will equal (\\d+)")
+    @Then("the current stock level of {string} in {string} will equal {double}")
     fun theCurrentStockLevelOfProductInStoreWillEqual(productId: String, locationId: String, expectedQuantity: Double) =
         runBlocking {
             val actualStock = getStockLevel(locationId, productId)
             assertEquals(expectedQuantity, actualStock)
         }
 
-    @Given("^(\\S+) is a store")
-    fun is_a_store(locationId: String) = runBlocking {
-        locations.send(LocationMessages.DefineLocationEvent(locationId, LocationType.Tracked, LocalDateTime.now(), null))
-    }
-
-    @Given("^(\\S+) is a shelf in (\\S+) store")
-    fun location_is_a_shelf_in_store(locationId: String, parentLocationId: String) = runBlocking {
-        locations.send(LocationMessages.DefineLocationEvent(locationId, LocationType.Untracked, LocalDateTime.now(), parentLocationId))
-    }
-
     private suspend fun getStockLevel(locationId: String, productId: String): Double {
         return stock.getValue(locationId, productId)
-    }
-
-    @Given("the following locations exit:")
-    fun theFollowingLocationsExit(locationTable: List<Location>) = runBlocking {
-        locationTable.forEach {
-            locations.send(LocationMessages.DefineLocationEvent(
-                it.location,
-                it.locationType,
-                LocalDateTime.now(),
-                it.parentLocationId
-            ))
-        }
-    }
-
-    data class Location(val location: String, val parentLocationId: String?, val locationType: LocationType)
-
-    @DataTableType
-    fun locationEntryTransformer(row: Map<String?, String>): Location {
-        return Location(row["location"]!!, row["parentLocation"], LocationType.valueOf(row["type"]!!))
     }
 
     @Then("the sale of {} in {} will result in {}")
     fun theSaleOfProductInLocationWillResultIn(productId: String, locationId: String, result: String) = runBlocking {
         if (result == "failure")
-            assertFails { stock.sale(locationId, productId, 1.0, LocalDateTime.now()) }
+            assertThrows<OperationNotSupportedException> { stock.sale(locationId, productId, 1.0, now()) }
         else
-            stock.sale(locationId, productId, 1.0, LocalDateTime.now())
-    }
-
-    @Given("{} is a {} location")
-    fun isALocation(locationId: String, type: LocationType) = runBlocking {
-        locations.send(LocationMessages.DefineLocationEvent(locationId, type, LocalDateTime.now(), null))
+            stock.sale(locationId, productId, 1.0, now())
     }
 }

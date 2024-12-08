@@ -43,8 +43,11 @@ dependencies {
 //    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     testImplementation("org.junit.platform:junit-platform-suite:1.11.3")
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
-    testImplementation("io.insert-koin:koin-test")
-    testImplementation("io.insert-koin:koin-test-junit5")
+    // https://mvnrepository.com/artifact/org.skyscreamer/jsonassert
+    testImplementation("org.skyscreamer:jsonassert:1.5.3")
+
+//    testImplementation("io.insert-koin:koin-test")
+//    testImplementation("io.insert-koin:koin-test-junit5")
 }
 tasks.test {
     useJUnitPlatform()

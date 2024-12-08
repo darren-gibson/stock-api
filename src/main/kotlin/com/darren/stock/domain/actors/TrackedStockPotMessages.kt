@@ -1,6 +1,7 @@
 package com.darren.stock.domain.actors
 
 import com.darren.stock.domain.MoveResult
+import com.darren.stock.domain.StockCountReason
 import com.darren.stock.domain.StockMovementReason
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.SendChannel
@@ -48,5 +49,13 @@ sealed class TrackedStockPotMessages : UntrackedStockPotMessages() {
         override fun toString(): String {
             return "InternalMoveToEvent(productId='$productId', quantity=$quantity, from=$from, reason=$reason, eventTime=$eventTime)"
         }
+    }
+
+    class CountEvent(val eventTime: LocalDateTime, val quantity: Double, val reason: StockCountReason) :
+        TrackedStockPotMessages() {
+        override fun toString(): String {
+            return "CountEvent(eventTime=$eventTime, quantity=$quantity, reason=$reason)"
+        }
+
     }
 }

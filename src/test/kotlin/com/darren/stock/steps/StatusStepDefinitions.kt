@@ -9,9 +9,9 @@ import io.ktor.client.statement.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.test.assertTrue
 
 class StatusStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse

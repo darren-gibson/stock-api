@@ -1,26 +1,25 @@
 package com.darren.stock.steps
 
 import com.darren.stock.domain.*
-import com.darren.stock.domain.LocationMessages.*
-import com.darren.stock.domain.actors.LocationActor.Companion.locationActor
+import com.darren.stock.domain.LocationMessages.DefineLocationEvent
 import io.cucumber.java.DataTableType
-import io.cucumber.java.en.Given
 import io.cucumber.java.en.And
-import io.cucumber.java.en.When
+import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import io.cucumber.java.en.When
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertInstanceOf
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.LocalDateTime
-import kotlin.test.assertEquals
 
-class StockMovementStepDefinitions {
+class StockMovementStepDefinitions : KoinComponent {
     private var lastException: Exception? = null
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private val locations = GlobalScope.locationActor()
-    private val stock = StockSystem(locations)
+    private val locations by inject<SendChannel<LocationMessages>>()
+    private val stock by inject<StockSystem>()
 
     @Given("a Distribution Centre {string} with {double} units of {string}")
     fun aDistributionCentreWithUnitsOf(locationId: String, quantity: Double, productId: String) = runBlocking {

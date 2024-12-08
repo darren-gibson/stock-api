@@ -27,6 +27,7 @@ fun Application.module() {
     }
     routing {
         statusEndpoint()
+        stockCount()
     }
 }
 

@@ -3,7 +3,7 @@ Feature: Selling a Product form a location decrements the stock from that locati
     Given Cambridge is a store
     And the stock level of Beans in Cambridge is 20
     When there is a sale of 5 Beans in the Cambridge store
-    Then the current stock level of Beans in Cambridge will equal 15
+    Then the current stock level of "Beans" in "Cambridge" will equal 15
 
   Scenario Outline: Sales can only happen at a tracked location
     Given <location> is a <type> location

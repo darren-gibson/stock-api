@@ -37,6 +37,7 @@ class TrackedStockPotActor(private val locationId: String, private val productId
             is DeliveryEvent -> currentStock += message.quantity
             is MoveEvent -> message.result.complete(performMove(message))
             is InternalMoveToEvent -> currentStock += message.quantity
+            is CountEvent -> currentStock = message.quantity
         }
         logger.debug { this }
     }
