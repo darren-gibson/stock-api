@@ -26,6 +26,13 @@ sealed class TrackedStockPotMessages : UntrackedStockPotMessages() {
         }
     }
 
+    class CountEvent(val eventTime: LocalDateTime, val quantity: Double, val reason: StockCountReason) :
+        TrackedStockPotMessages() {
+        override fun toString(): String {
+            return "CountEvent(eventTime=$eventTime, quantity=$quantity, reason=$reason)"
+        }
+    }
+
     class MoveEvent(
         val productId: String,
         val quantity: Double,
@@ -49,13 +56,5 @@ sealed class TrackedStockPotMessages : UntrackedStockPotMessages() {
         override fun toString(): String {
             return "InternalMoveToEvent(productId='$productId', quantity=$quantity, from=$from, reason=$reason, eventTime=$eventTime)"
         }
-    }
-
-    class CountEvent(val eventTime: LocalDateTime, val quantity: Double, val reason: StockCountReason) :
-        TrackedStockPotMessages() {
-        override fun toString(): String {
-            return "CountEvent(eventTime=$eventTime, quantity=$quantity, reason=$reason)"
-        }
-
     }
 }

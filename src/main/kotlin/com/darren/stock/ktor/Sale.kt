@@ -1,7 +1,6 @@
 package com.darren.stock.ktor
 
 import com.darren.stock.domain.LocationNotFoundException
-import com.darren.stock.domain.StockCountReason
 import com.darren.stock.domain.StockSystem
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -14,18 +13,19 @@ import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 
-fun Routing.stockCount() {
-    post("/locations/{locationId}/products/{productId}/counts") {
+
+fun Routing.sale() {
+    post("/stores/{locationId}/products/{productId}/sales") {
         val stockSystem = inject<StockSystem>(StockSystem::class.java)
         val locationId = call.parameters["locationId"]!!
         val productId = call.parameters["productId"]!!
 
-        val request = call.receive<StockCountRequestDTO>()
+        val request = call.receive<SaleRequestDTO>()
 
         try {
             with(request) {
-                stockSystem.value.count(locationId, productId, quantity, reason, now())
-                call.respond(Created, StockCountResponseDTO(requestId, locationId, productId, quantity, reason, now()))
+                stockSystem.value.sale(locationId, productId, quantity, now())
+                call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, now()))
             }
         } catch (e: LocationNotFoundException) {
             call.respond(NotFound, ErrorDTO("LocationNotFound"))
@@ -34,15 +34,14 @@ fun Routing.stockCount() {
 }
 
 @Serializable
-data class StockCountRequestDTO(val requestId: String, val reason: StockCountReason, val quantity: Double)
+data class SaleRequestDTO(val requestId: String, val quantity: Double)
 
 @Serializable
-data class StockCountResponseDTO(
+data class SaleResponseDTO(
     val requestId: String,
     val location: String,
     val productId: String,
-    val quantity: Double,
-    val reason: StockCountReason,
+    val quantitySold: Double,
     @Serializable(with = DateSerializer::class)
-    val createdAt: LocalDateTime
+    val saleTimestamp: LocalDateTime
 )

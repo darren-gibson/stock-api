@@ -8,13 +8,11 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
+import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.skyscreamer.jsonassert.Customization
-import org.skyscreamer.jsonassert.JSONAssert
-import org.skyscreamer.jsonassert.JSONCompareMode
-import org.skyscreamer.jsonassert.comparator.CustomComparator
 
 class ApiCallStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
@@ -23,12 +21,16 @@ class ApiCallStepDefinitions : KoinComponent {
 
     @When("I send a POST request to {string} with the following payload:")
     fun iSendAPOSTRequestToWithTheFollowingPayload(url: String, payload: String) = runBlocking {
-        response = client.post(url) {
+        response = sendPostRequest(url, payload)
+    }
+
+    suspend fun sendPostRequest(url: String, payload: String): HttpResponse {
+        return client.post(url) {
             contentType(ContentType.Application.Json)
             setBody(payload)
-//            headers {
-//                append(HttpHeaders.Authorization, "Bearer YOUR_ACCESS_TOKEN")
-//            }
+            //            headers {
+            //                append(HttpHeaders.Authorization, "Bearer YOUR_ACCESS_TOKEN")
+            //            }
         }
     }
 
@@ -41,11 +43,7 @@ class ApiCallStepDefinitions : KoinComponent {
     fun theResponseBodyShouldContain(expectedResult: String) = runBlocking {
         val actualBody = response.bodyAsText()
 
-        JSONAssert.assertEquals(
-            expectedResult, actualBody, CustomComparator(
-                JSONCompareMode.LENIENT,
-                Customization("createdAt", { o1, o2 -> true })
-            )
-        )
+
+        assertThat(actualBody, jsonEquals(expectedResult))
     }
 }

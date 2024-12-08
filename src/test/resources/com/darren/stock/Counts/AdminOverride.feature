@@ -24,9 +24,9 @@ Feature: Create a Stock Count for a Product
           "requestId": "123e4567-e89b-12d3-a456-426614174000",
           "location": "Warehouse-01",
           "productId": "SKU12345",
-          "quantity": 100,
+          "quantity": 100.0,
           "reason": "AdminOverride",
-          "createdAt": "2024-12-07T10:00:00Z"
+          "createdAt": "${json-unit.ignore}"
         }
       """
     And the current stock level of "SKU12345" in "Warehouse-01" will equal 100

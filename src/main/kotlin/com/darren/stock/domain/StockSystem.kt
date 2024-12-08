@@ -82,7 +82,7 @@ class StockSystem : KoinComponent {
     ) {
         when (val type = getStockPot(location, product)) {
             is ChannelType.TrackedChannel -> type.channel.send(TSPM.CountEvent(eventTime, quantity, reason))
-            else -> throw OperationNotSupportedException("Untracked location $location cannot have counts.")
+            is ChannelType.UntrackedChannel -> type.channel.send(USPM.CountEvent(eventTime, quantity, reason))
         }
     }
 

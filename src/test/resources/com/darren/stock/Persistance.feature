@@ -22,7 +22,7 @@ Feature: Stock API persistence in case of failure
     When the server is restarted after a failure
     Then the stock levels should remain unchanged:
       | location | product   | quantity |
-      | Store1   | Product A | 200        |
+      | Store1   | Product A | 200      |
 #    And no stock discrepancies are introduced
 #
 #  Scenario: Unprocessed stock updates are requeued after a failure

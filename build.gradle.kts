@@ -29,25 +29,18 @@ dependencies {
     implementation("io.ktor:ktor-server-config-yaml:$ktor_version")
     implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
-
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-
     implementation(project.dependencies.platform("io.insert-koin:koin-bom:$koin_version"))
     implementation("io.insert-koin:koin-core")
 
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-test-host-jvm:$ktor_version")
-//    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.20.1")
-//    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     testImplementation("org.junit.platform:junit-platform-suite:1.11.3")
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
-    // https://mvnrepository.com/artifact/org.skyscreamer/jsonassert
-    testImplementation("org.skyscreamer:jsonassert:1.5.3")
+    testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
+    testImplementation("org.hamcrest:hamcrest:3.0")
 
-//    testImplementation("io.insert-koin:koin-test")
-//    testImplementation("io.insert-koin:koin-test-junit5")
 }
 tasks.test {
     useJUnitPlatform()

@@ -22,12 +22,12 @@ class PersistenceStepDefinitions {
 
     @And("stock data includes SKUs, quantities, and locations")
     fun stockDataIncludesSKUsQuantitiesAndLocations() {
-//        throw PendingException()
+        throw PendingException()
     }
 
     @When("the server is restarted after a failure")
     fun theServerIsRestartedAfterAFailure() {
-//        throw PendingException()
+        throw PendingException()
     }
 
     @And("no stock discrepancies are introduced")

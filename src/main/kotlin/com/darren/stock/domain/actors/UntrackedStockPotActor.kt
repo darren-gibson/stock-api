@@ -25,6 +25,7 @@ class UntrackedStockPotActor(private val locationId: String, private val product
         logger.debug { "message received: $message" }
         when (message) {
             is GetValue -> message.response.complete(currentStock)
+            is CountEvent -> currentStock = message.quantity
         }
         logger.debug { "$this" }
     }
