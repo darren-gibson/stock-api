@@ -1,7 +1,7 @@
 package com.darren.stock.steps
 
-import com.darren.stock.domain.LocationMessages
-import com.darren.stock.domain.LocationMessages.DefineLocationEvent
+import com.darren.stock.domain.actors.LocationMessages
+import com.darren.stock.domain.actors.LocationMessages.DefineLocationEvent
 import com.darren.stock.domain.LocationType
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.Given
@@ -42,5 +42,9 @@ class LocationManagementSteps : KoinComponent {
     @Given("{} is a {} location")
     fun isALocation(locationId: String, type: LocationType) = runBlocking {
         locations.send(DefineLocationEvent(locationId, type, now(), null))
+    }
+
+    @Given("an invalid location {string} is provided")
+    fun anInvalidLocationIsProvided(locationId: String) {
     }
 }

@@ -1,5 +1,6 @@
-package com.darren.stock.domain
+package com.darren.stock.domain.actors
 
+import com.darren.stock.domain.LocationType
 import kotlinx.coroutines.CompletableDeferred
 import java.time.LocalDateTime
 
@@ -19,7 +20,7 @@ sealed class LocationMessages(val locationId: String) {
         }
     }
 
-    class GetLocationType(locationId: String, val result: CompletableDeferred<LocationType>) : LocationMessages(locationId) {
+    class GetLocationType(locationId: String, val result: CompletableDeferred<Result<LocationType>>) : LocationMessages(locationId) {
         override fun toString(): String {
             return "GetLocationType(locationId=$locationId, result=$result)"
         }

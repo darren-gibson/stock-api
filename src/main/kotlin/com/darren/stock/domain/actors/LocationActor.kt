@@ -1,8 +1,8 @@
 package com.darren.stock.domain.actors
 
 import com.darren.stock.domain.Location
-import com.darren.stock.domain.LocationMessages
-import com.darren.stock.domain.LocationMessages.*
+import com.darren.stock.domain.actors.LocationMessages.*
+import com.darren.stock.domain.LocationNotFoundException
 import com.darren.stock.domain.LocationType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CompletableDeferred
@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
+import java.lang.NullPointerException
 
 class LocationActor {
     companion object {
@@ -30,7 +31,15 @@ class LocationActor {
         when (msg) {
             is DefineLocationEvent -> defineLocation(msg.locationId, msg.type, msg.parentId)
             is GetAllChildrenForParentLocation -> getAllChildrenForParentLocation(msg.locationId, msg.result)
-            is GetLocationType -> msg.result.complete(locationMap[msg.locationId]!!.type)
+            is GetLocationType -> {
+                msg.result.complete(
+                    try {
+                        Result.success(locationMap[msg.locationId]!!.type)
+                    } catch (e: NullPointerException) {
+                        Result.failure(LocationNotFoundException(msg.locationId))
+                    }
+                )
+            }
         }
     }
 

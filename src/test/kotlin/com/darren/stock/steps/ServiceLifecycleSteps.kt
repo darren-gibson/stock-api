@@ -1,6 +1,6 @@
 package com.darren.stock.steps
 
-import com.darren.stock.domain.LocationMessages
+import com.darren.stock.domain.actors.LocationMessages
 import com.darren.stock.domain.StockEventRepository
 import com.darren.stock.domain.StockSystem
 import com.darren.stock.domain.actors.LocationActor.Companion.locationActor
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
-import org.koin.mp.KoinPlatform.getKoin
 
 class ServiceLifecycleSteps {
     private lateinit var testApp: TestApplication

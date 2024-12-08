@@ -39,7 +39,7 @@ Feature: Create a Stock Count for a Product
 #      """
 #      {
 #          "requestId": "123e4567-e89b-12d3-a456-426614174000",
-#          "reason": "Admin Override",
+#          "reason": "AdminOverride",
 #          "quantity": 100
 #      }
 #      """
@@ -53,24 +53,23 @@ Feature: Create a Stock Count for a Product
 #      }
 #      """
 #
-#  Scenario: Fail to create a stock count due to invalid location
-#    Given an invalid location "Invalid-Warehouse" is provided
-#    When I send a POST request to "/locations/Invalid-Warehouse/products/SKU12345/counts" with the following payload:
-#      """
-#      {
-#          "requestId": "123e4567-e89b-12d3-a456-426614174001",
-#          "reason": "Admin Override",
-#          "quantity": 100
-#      }
-#      """
-#    Then the API should respond with status code 404
-#    And the response body should contain:
-#      """
-#      {
-#          "status": "error",
-#          "message": "Location not found"
-#      }
-#      """
+  Scenario: Fail to create a stock count due to invalid location
+    Given an invalid location "Invalid-Warehouse" is provided
+    When I send a POST request to "/locations/Invalid-Warehouse/products/SKU12345/counts" with the following payload:
+      """
+      {
+          "requestId": "123e4567-e89b-12d3-a456-426614174001",
+          "reason": "AdminOverride",
+          "quantity": 100
+      }
+      """
+    Then the API should respond with status code 404
+    And the response body should contain:
+      """
+      {
+          "status": "LocationNotFound"
+      }
+      """
 #
 #  Scenario: Fail to create a stock count due to missing requestId
 #    Given a valid location "Warehouse-01" exists
@@ -78,7 +77,7 @@ Feature: Create a Stock Count for a Product
 #    When I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
 #      """
 #      {
-#          "reason": "Admin Override",
+#          "reason": "AdminOverride",
 #          "quantity": 100
 #      }
 #      """

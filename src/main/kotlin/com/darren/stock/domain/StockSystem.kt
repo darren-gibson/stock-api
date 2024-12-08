@@ -1,5 +1,6 @@
 package com.darren.stock.domain
 
+import com.darren.stock.domain.actors.LocationMessages
 import com.darren.stock.domain.actors.TrackedStockPotActor.Companion.trackedStockPotActor
 import com.darren.stock.domain.actors.UntrackedStockPotActor.Companion.untrackedStockPotActor
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -34,9 +35,9 @@ class StockSystem : KoinComponent {
     }
 
     private suspend fun getLocationType(locationId: String): LocationType {
-        val result = CompletableDeferred<LocationType>()
+        val result = CompletableDeferred<Result<LocationType>>()
         locations.send(LocationMessages.GetLocationType(locationId, result))
-        return result.await()
+        return result.await().getOrThrow()
     }
 
     suspend fun getValue(locationId: String, productId: String): Double {

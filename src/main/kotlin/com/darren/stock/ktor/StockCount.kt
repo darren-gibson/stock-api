@@ -1,8 +1,10 @@
 package com.darren.stock.ktor
 
+import com.darren.stock.domain.LocationNotFoundException
 import com.darren.stock.domain.StockCountReason
 import com.darren.stock.domain.StockSystem
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -16,8 +18,8 @@ fun Routing.stockCount() {
 
     post("/locations/{locationId}/products/{productId}/counts") {
         val stockSystem = inject<StockSystem>(StockSystem::class.java)
-        val locationId = call.parameters["locationId"]
-        val productId = call.parameters["productId"]
+        val locationId = call.parameters["locationId"]!!
+        val productId = call.parameters["productId"]!!
 
 //        assert(stockSystem.isInitialized())
 
@@ -29,8 +31,13 @@ fun Routing.stockCount() {
 
         val request = call.receive<StockCountRequestDTO>()
 
-        with(request) {
-            stockSystem.value.count(locationId!!, productId!!, quantity, reason, now())
+        try {
+            with(request) {
+                stockSystem.value.count(locationId, productId, quantity, reason, now())
+                call.respond(Created, StockCountResponseDTO(requestId, locationId, productId, quantity, reason, now()))
+            }
+        } catch (e: LocationNotFoundException) {
+            call.respond(NotFound, ErrorDTO("LocationNotFound"))
         }
         // Parse the request payload
 //            val request = try {
@@ -81,12 +88,6 @@ fun Routing.stockCount() {
 //            }
 //        }
 //    }
-        with(request) {
-            call.respond(
-                HttpStatusCode.Created,
-                StockCountResponseDTO(requestId, locationId!!, productId!!, quantity, reason, now())
-            )
-        }
     }
 }
 

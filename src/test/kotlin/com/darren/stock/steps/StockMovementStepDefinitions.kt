@@ -1,7 +1,8 @@
 package com.darren.stock.steps
 
 import com.darren.stock.domain.*
-import com.darren.stock.domain.LocationMessages.DefineLocationEvent
+import com.darren.stock.domain.actors.LocationMessages
+import com.darren.stock.domain.actors.LocationMessages.DefineLocationEvent
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
