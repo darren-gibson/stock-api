@@ -7,17 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add Sale API endpoint">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/handlers/ChannelType.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/handlers/CountHandler.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/handlers/DeliveryHandler.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/handlers/GetValueHandler.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/handlers/HandlerHelper.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/handlers/MoveHandler.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/handlers/SaleHandler.kt" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Refactor again to move the StockSystem facade to use extension methods.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockSystem.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ServiceLifecycleSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -208,11 +199,11 @@
       <recent name="com.darren.stock.ktor" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.darren.stock.domain.stockSystem" />
       <recent name="com.darren.stock.domain.actors" />
       <recent name="com.darren.stock.steps" />
       <recent name="com.darren.stock" />
       <recent name="com.darren.stock.domain" />
-      <recent name="features.com.darren.stock" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="actors" />
@@ -574,7 +565,23 @@
       <option name="project" value="LOCAL" />
       <updated>1733679080463</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Refactor to clean up the StockSystem">
+      <option name="closed" value="true" />
+      <created>1733686592241</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1733686592241</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Refactor again to move the StockSystem facade to use extension methods.">
+      <option name="closed" value="true" />
+      <created>1733751179696</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1733751179696</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -607,7 +614,9 @@
     <MESSAGE value="Implement Location Not Found when adding a count to an invalid location" />
     <MESSAGE value="update step definitions" />
     <MESSAGE value="Add Sale API endpoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Sale API endpoint" />
+    <MESSAGE value="Refactor to clean up the StockSystem" />
+    <MESSAGE value="Refactor again to move the StockSystem facade to use extension methods." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor again to move the StockSystem facade to use extension methods." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -618,12 +627,12 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt</url>
-          <line>35</line>
+          <line>28</line>
           <option name="timeStamp" value="59" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/StockCount.kt</url>
-          <line>22</line>
+          <line>23</line>
           <option name="timeStamp" value="69" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">

@@ -3,6 +3,9 @@ package com.darren.stock.steps
 import com.darren.stock.domain.*
 import com.darren.stock.domain.actors.LocationMessages
 import com.darren.stock.domain.actors.LocationMessages.DefineLocationEvent
+import com.darren.stock.domain.stockSystem.GetValue.getValue
+import com.darren.stock.domain.stockSystem.Move.move
+import com.darren.stock.domain.stockSystem.StockSystem
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given

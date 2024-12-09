@@ -1,9 +1,8 @@
 package com.darren.stock.steps
 
 import com.darren.stock.domain.StockEventRepository
-import com.darren.stock.domain.StockSystem
 import com.darren.stock.domain.actors.LocationActor.Companion.locationActor
-import com.darren.stock.domain.handlers.*
+import com.darren.stock.domain.stockSystem.StockSystem
 import com.darren.stock.ktor.module
 import com.darren.stock.persistence.InMemoryStockEventRepository
 import io.cucumber.java.After
@@ -29,13 +28,7 @@ class ServiceLifecycleSteps {
                 module { single { testApp } },
                 module { single<StockEventRepository> { InMemoryStockEventRepository() } },
                 module { single { GlobalScope.locationActor() } },
-                module { single { HandlerHelper() } },
-                module { single { SaleHandler(get()) } },
-                module { single { CountHandler(get()) } },
-                module { single { DeliveryHandler(get()) } },
-                module { single { GetValueHandler(get()) } },
-                module { single { MoveHandler(get()) } },
-                module { single<StockSystem> { StockSystem(get()) } }
+                module { single<StockSystem> { StockSystem() } }
             )
         }
         testApp.start()

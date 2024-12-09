@@ -1,4 +1,4 @@
-package com.darren.stock.domain.handlers
+package com.darren.stock.domain.stockSystem
 
 import com.darren.stock.domain.actors.LocationMessages
 import com.darren.stock.domain.actors.TrackedStockPotMessages
@@ -6,9 +6,10 @@ import com.darren.stock.domain.actors.UntrackedStockPotMessages
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitAll
 
-class GetValueHandler (private val helper: HandlerHelper) {
-    suspend fun getValue(locationId: String, productId: String): Double {
-        val stockPots = getAllStockPotAndAllChildrenForLocation(locationId, productId)
+
+object GetValue {
+    suspend fun StockSystem.getValue(locationId: String, productId: String): Double {
+        val stockPots = getAllStockPotAndAllChildrenForLocation(this, locationId, productId)
 
         return stockPots.map { sp ->
             val completable = CompletableDeferred<Double>()
@@ -22,20 +23,23 @@ class GetValueHandler (private val helper: HandlerHelper) {
     }
 
     private suspend fun getAllStockPotAndAllChildrenForLocation(
+        system: StockSystem,
         locationId: String,
         productId: String
     ): Set<ChannelType> {
         val deferred = CompletableDeferred<Map<String, String>>()
-        helper.locations.send(LocationMessages.GetAllChildrenForParentLocation(locationId, deferred))
+        system.locations.send(LocationMessages.GetAllChildrenForParentLocation(locationId, deferred))
 
         val allLocations = deferred.await()
-        return allStockPotsForLocations(locationId, allLocations, productId)
+        return allStockPotsForLocations(system, locationId, allLocations, productId)
     }
 
     private fun allStockPotsForLocations(
-        locationId: String, allLocations: Map<String, String>, productId: String
+        system: StockSystem, locationId: String, allLocations: Map<String, String>, productId: String
     ): Set<ChannelType> {
         val uniqueLocations = allLocations.keys.union(allLocations.values).union(setOf(locationId)).toSet()
-        return uniqueLocations.mapNotNull { helper.stockPots[it to productId] }.toSet()
+        return uniqueLocations.mapNotNull { system.stockPots[it to productId] }.toSet()
     }
 }
+
+

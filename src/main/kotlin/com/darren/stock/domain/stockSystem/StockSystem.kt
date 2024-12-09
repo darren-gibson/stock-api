@@ -1,4 +1,4 @@
-package com.darren.stock.domain.handlers
+package com.darren.stock.domain.stockSystem
 
 import com.darren.stock.domain.LocationType
 import com.darren.stock.domain.actors.LocationMessages
@@ -11,7 +11,11 @@ import kotlinx.coroutines.channels.SendChannel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class HandlerHelper : KoinComponent {
+class StockSystem : KoinComponent {
+//    companion object {
+//        private val logger = KotlinLogging.logger {}
+//    }
+
     val locations by inject<SendChannel<LocationMessages>>()
     val stockPots = mutableMapOf<Pair<String, String>, ChannelType>()
 
@@ -19,6 +23,10 @@ class HandlerHelper : KoinComponent {
         return stockPots.getOrPut(locationId to productId) {
             createInitialChannelType(locationId, productId, 0.0)
         }
+    }
+
+    suspend fun setInitialStockLevel(locationId: String, productId: String, initialQuantity: Double) {
+        stockPots[locationId to productId] = createInitialChannelType(locationId, productId, initialQuantity)
     }
 
     @OptIn(DelicateCoroutinesApi::class)

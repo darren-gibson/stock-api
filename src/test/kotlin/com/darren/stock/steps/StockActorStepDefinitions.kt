@@ -1,7 +1,10 @@
 package com.darren.stock.steps
 
 import com.darren.stock.domain.OperationNotSupportedException
-import com.darren.stock.domain.StockSystem
+import com.darren.stock.domain.stockSystem.GetValue.getValue
+import com.darren.stock.domain.stockSystem.StockSystem
+import com.darren.stock.domain.stockSystem.delivery
+import com.darren.stock.domain.stockSystem.sale
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When

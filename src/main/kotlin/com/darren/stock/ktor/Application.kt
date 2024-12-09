@@ -1,10 +1,9 @@
 package com.darren.stock.ktor
 
 import com.darren.stock.domain.StockEventRepository
-import com.darren.stock.domain.StockSystem
 import com.darren.stock.domain.actors.LocationActor.Companion.locationActor
 import com.darren.stock.domain.actors.LocationMessages
-import com.darren.stock.domain.handlers.*
+import com.darren.stock.domain.stockSystem.StockSystem
 import com.darren.stock.persistence.InMemoryStockEventRepository
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -23,13 +22,7 @@ fun main(args: Array<String>) {
     startKoin {
         modules(
             module { single<SendChannel<LocationMessages>> { GlobalScope.locationActor() } },
-            module { single { HandlerHelper() } },
-            module { single { SaleHandler(get()) } },
-            module { single { CountHandler(get()) } },
-            module { single { DeliveryHandler(get()) } },
-            module { single { GetValueHandler(get()) } },
-            module { single { MoveHandler(get()) } },
-            module { single<StockSystem> { StockSystem(get()) } },
+            module { single<StockSystem> { StockSystem() } },
             module { single<StockEventRepository> { InMemoryStockEventRepository() } }
         )
     }
@@ -37,7 +30,6 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-//    val repo by inject<StockEventRepository>(StockEventRepository::class.java)
     install(ContentNegotiation) {
         json()
     }
