@@ -1,0 +1,1038 @@
+:toc: left
+:backend: html5
+:doctitle: Simple Stock API
+:doctype: book
+:icons: font
+:sectanchors:
+:sectlink:
+:docinfo:
+:source-highlighter: highlightjs
+:toclevels: 3
+:hardbreaks:
+:chapter-label: Chapter
+:version-label: Version
+
+= *Simple Stock API*
+
+== *Summary*
+[cols="12*^m", options="header,footer"]
+|===
+3+|Scenarios 7+|Steps 2+|Features: 10
+
+|[green]#*Passed*#
+|[red]#*Failed*#
+|Total
+|[green]#*Passed*#
+|[red]#*Failed*#
+|[purple]#*Skipped*#
+|[maroon]#*Pending*#
+|[yellow]#*Undefined*#
+|[blue]#*Missing*#
+|Total
+|Duration
+|Status
+
+12+^|*<<Sale-Endpoint>>*
+|1
+|0
+|1
+|0
+|0
+|0
+|0
+|0
+|0
+|0
+|000ms
+|[green]#*passed*#
+
+12+^|*<<Sale-Endpoint:-Contract-Test>>*
+|2
+|0
+|2
+|10
+|0
+|0
+|0
+|0
+|0
+|10
+|014ms
+|[green]#*passed*#
+
+12+^|*<<Selling-a-Product-form-a-location-decrements-the-stock-from-that-location>>*
+|4
+|0
+|4
+|13
+|0
+|0
+|0
+|0
+|0
+|13
+|013ms
+|[green]#*passed*#
+
+12+^|*<<Override-stock-count-record-for-Product-in-a-Location>>*
+|5
+|0
+|5
+|18
+|0
+|0
+|0
+|0
+|0
+|18
+|016ms
+|[green]#*passed*#
+
+12+^|*<<Deliveries-of-Stock-to-a-location>>*
+|4
+|0
+|4
+|28
+|0
+|0
+|0
+|0
+|0
+|28
+|018ms
+|[green]#*passed*#
+
+12+^|*<<Feature:-Stock-Movement-Transaction>>*
+|2
+|0
+|2
+|9
+|0
+|0
+|0
+|0
+|0
+|9
+|003ms
+|[green]#*passed*#
+
+12+^|*<<Locations-are-nested-in-a-hierarchy>>*
+|2
+|0
+|2
+|9
+|0
+|0
+|0
+|0
+|0
+|9
+|248ms
+|[green]#*passed*#
+
+12+^|*<<Record-Product-Delivery-from-a-Distribution-to-a-Store>>*
+|0
+|1
+|1
+|7
+|1
+|1
+|0
+|0
+|0
+|9
+|136ms
+|[red]#*failed*#
+
+12+^|*<<Service-Health-Check>>*
+|1
+|0
+|1
+|4
+|0
+|0
+|0
+|0
+|0
+|4
+|003ms
+|[green]#*passed*#
+
+12+^|*<<Stock-API-persistence-in-case-of-failure>>*
+|0
+|1
+|1
+|1
+|0
+|3
+|1
+|0
+|0
+|5
+|001ms
+|[red]#*failed*#
+12+^|*Totals*
+|21|2|23|99|1|4|1|0|0|105 2+|455ms
+|===
+
+[[Sale-Endpoint, Sale Endpoint]]
+== *Sale Endpoint*
+
+ifndef::backend-pdf[]
+minmax::Sale-Endpoint[]
+endif::[]
+*Purpose*
+The Sale endpoint is designed to record the sale of a product in a store. By recording each sale, the endpoint ensures that stock levels are accurately updated in real-time, reflecting the reduction in inventory due to the sale. This is critical for maintaining up-to-date stock levels, enabling effective inventory management, and supporting other business functions such as replenishment, reporting, and analytics.
+
+*Primary Use Cases:*
+
+1. [.underline]#Real-Time Stock Adjustment#: Updates stock levels to reflect products sold at a location. Ensures consistency between physical stock and system records.
+3. [.underline]#Sales Tracking#: Although this could be used as a source of Sales analytics it is not the authoritative source of Sales, it is however useful to determine the just-in-time inventory management levels.
+Supports financial reconciliation and audit processes by maintaining a detailed history of transactions.
+3. [.underline]#Replenishment Planning#: Triggers alerts or actions for low-stock thresholds based on the updated stock levels.  Helps distribution centres prepare restock orders to maintain availability.
+
+[[Sale-Endpoint:-Contract-Test, Sale Endpoint: Contract Test]]
+=== *Sale Endpoint: Contract Test*
+
+ifndef::backend-pdf[]
+minmax::Sale-Endpoint:-Contract-Test[]
+endif::[]
+*Purpose*
+The Sale Endpoint must behave according to the contract described in the specification.  These tests exercise the API and are transparent about the inputs/outputs of the API to ensure that it behalves according to the specification.  If any of these tests fail, then the contract must have changed either the request/response structure or the underlying behaviour i.e. a breaking change.
+
+*Request*
+
+[cols="1,1,1,1,4,2", options="header"]
+|===
+| Field       | Type     | Location   | Required   | Description                                                   | Example
+
+| locationId  | string   | Path       | Yes        | The unique identifier of the location where the sale occurred.| Store-001
+| productId   | string   | Path       | Yes        | The unique identifier of the product being sold.              | Product-123
+| requestId   | string   | Body       | Yes        | A unique identifier for the sale request to ensure idempotency.| sale-001-12345
+| quantity    | number   | Body       | Yes        | The number of units of the product being sold.                | 5.0
+|===
+
+*Response*
+
+[cols="1,1,1,4,2", options="header"]
+|===
+| Variable       | Type     | Location   | Description                                                    | Example
+
+| requestId      | string   | Body       | The unique identifier for the sale request.                   | sale-001-12345
+| locationId     | string   | Body       | The unique identifier of the location where the sale occurred.| Store-001
+| productId      | string   | Body       | The unique identifier of the product sold.                    | Product-123
+| quantitySold   | integer  | Body       | The number of units of the product sold.                      | 5.0
+| saleTimestamp  | string   | Body       | The timestamp when the sale was recorded, in ISO 8601 format. | 2024-12-07T12:00:00Z
+|===
+
+*Specification*
+
+[source, yml]
+-----
+openapi: 3.0.3
+info:
+  title: Stock API
+  description: API to manage stock levels, including the recording of product sales.
+  version: 1.0.0
+paths:
+  /locations/{locationId}/products/{productId}/sales:
+    post:
+      summary: Record a sale of a product at a specific location
+      description: Records the sale of a product at a given location and updates the stock level accordingly.
+      operationId: recordSale
+      parameters:
+        - name: locationId
+          in: path
+          required: true
+          description: The unique identifier of the location where the sale occurred.
+          schema:
+            type: string
+            example: Store-001
+        - name: productId
+          in: path
+          required: true
+          description: The unique identifier of the product being sold.
+          schema:
+            type: string
+            example: Product-123
+      requestBody:
+        required: true
+        description: Details of the sale to be recorded.
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - requestId
+                - quantity
+              properties:
+                requestId:
+                  type: string
+                  description: A unique identifier for the sale request to ensure idempotency.
+                  example: sale-001-12345
+                quantity:
+                  type: number
+                  description: The quantity of the product being sold.
+                  minimum: 0.0001
+                  example: 5.00
+      responses:
+        '201':
+          description: Sale recorded successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId:
+                    type: string
+                    example: sale-001-12345
+                  locationId:
+                    type: string
+                    example: Store-001
+                  productId:
+                    type: string
+                    example: Product-123
+                  quantitySold:
+                    type: number
+                    example: 5.0
+                  saleTimestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-12-07T12:00:00Z"
+        '400':
+          description: Invalid request or insufficient stock.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [InvalidRequest, InsufficientStock]
+                    example: InsufficientStock
+        '404':
+          description: Product or location not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [LocationNotFound, ProductNotFound]
+                    example: LocationNotFound
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+-----
+
+==== Successfully record a product sale and reduce stock level
+This is a "happy path" test to ensure that the Sale endpoint accepts a valid JSON request and reduces the stock as a result.
+
+==========
+Given ::
+"Store-001" is a store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+a product "SKU12345" exists in "Store-001" with a stock level of 50 icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+When ::
+I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload: icon:thumbs-up[role="green",title="Passed"] [small right]#(005ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+    "requestId": "abc123-e89b-12d3-a456-426614174000",
+    "quantity": 5
+}
+-----
+
+
+******
+Then ::
+the API should respond with status code 201 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the response body should contain: icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+  "requestId": "abc123-e89b-12d3-a456-426614174000",
+  "location": "Store-001",
+  "productId": "SKU12345",
+  "quantitySold": 5.0,
+  "saleTimestamp": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+$" (1)
+}
+-----
+[discrete]
+<1> timestamp in the ISO8601 format, e.g: 2024-12-11T09:16:29.577617
+
+
+******
+And ::
+the stock level of product "SKU12345" in "Store-001" should be updated to 45 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+==== Fail to record a product sale due to an invalid location
+This test ensures that the Sale endpoint returns a proper error response when the specified location does not exist.
+
+==========
+Given ::
+"Invalid-Store" does not exist as a store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+I send a POST request to "/stores/Invalid-Store/products/SKU12345/sales" with the following payload: icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+    "requestId": "abc123-e89b-12d3-a456-426614174001",
+    "quantity": 5
+}
+-----
+
+
+******
+Then ::
+the API should respond with status code 404 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the response body should contain: icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+  "status": "LocationNotFound"
+}
+-----
+
+
+******
+==========
+
+[[Selling-a-Product-form-a-location-decrements-the-stock-from-that-location, Selling a Product form a location decrements the stock from that location]]
+=== *Selling a Product form a location decrements the stock from that location*
+
+ifndef::backend-pdf[]
+minmax::Selling-a-Product-form-a-location-decrements-the-stock-from-that-location[]
+endif::[]
+==== Simple sale from a location decrements the Stock on hand
+
+==========
+Given ::
+"Cambridge" is a store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the stock level of "Beans" in "Cambridge" is 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+When ::
+there is a sale of 5 "Beans" in the "Cambridge" store icon:thumbs-up[role="green",title="Passed"] [small right]#(001ms)#
+Then ::
+the current stock level of "Beans" in "Cambridge" will equal 15 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+==== Sales can only happen at a tracked location
+
+==========
+Given ::
+store 1 is a Untracked location icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the stock level of "Beans" in "store 1" is 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+Then ::
+the sale of "Beans" in "store 1" will result in "failure" icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+==== Sales can only happen at a tracked location
+
+==========
+Given ::
+shelf is a Untracked location icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the stock level of "Beans" in "shelf" is 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+Then ::
+the sale of "Beans" in "shelf" will result in "failure" icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+==== Sales can only happen at a tracked location
+
+==========
+Given ::
+store 2 is a Tracked location icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the stock level of "Beans" in "store 2" is 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+Then ::
+the sale of "Beans" in "store 2" will result in "success" icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+[[Override-stock-count-record-for-Product-in-a-Location, Override stock count record for Product in a Location]]
+== *Override stock count record for Product in a Location*
+
+ifndef::backend-pdf[]
+minmax::Override-stock-count-record-for-Product-in-a-Location[]
+endif::[]
+=== "Override" as a stock count reason will set the stock level at that location
+Count recorded as an override will be used in all future readings of stock levels for the product at the location as the base.
+
+==========
+Given ::
+"Warehouse-01" is a Distribution Centre icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+a valid product code "SKU12345" exists icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload: icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+    "requestId": "123e4567-e89b-12d3-a456-426614174000",
+    "reason": "AdminOverride",
+    "quantity": 100
+}
+-----
+
+
+******
+Then ::
+the API should respond with status code 201 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the response body should contain: icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+  "requestId": "123e4567-e89b-12d3-a456-426614174000",
+  "location": "Warehouse-01",
+  "productId": "SKU12345",
+  "quantity": 100.0,
+  "reason": "AdminOverride",
+  "createdAt": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+$" (1)
+}
+-----
+[discrete]
+<1> timestamp in the ISO8601 format, e.g: 2024-12-11T09:16:29.577617
+
+
+******
+And ::
+the current stock level of "SKU12345" in "Warehouse-01" will equal 100 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+=== Fail to create a stock count due to invalid location
+locations must exist and be know to the system before counts can be recorded against them.  Attempting to set the stock level for a product in a location that does not exist will result in an error.
+
+==========
+Given ::
+an invalid location "Invalid-Warehouse" is provided icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+I send a POST request to "/locations/Invalid-Warehouse/products/SKU12345/counts" with the following payload: icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+    "requestId": "123e4567-e89b-12d3-a456-426614174003",
+    "reason": "AdminOverride",
+    "quantity": 100
+}
+-----
+
+
+******
+Then ::
+the API should respond with status code 404 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the response body should contain: icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+    "status": "LocationNotFound"
+}
+-----
+
+
+******
+==========
+
+=== Fail to create a stock count due to missing requestId
+
+==========
+Given ::
+"Warehouse-01" is a Distribution Centre icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+a valid product code "SKU12345" exists icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload: icon:thumbs-up[role="green",title="Passed"] [small right]#(006ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+    "reason": "AdminOverride",
+    "quantity": 100
+}
+-----
+
+
+******
+Then ::
+the API should respond with status code 400 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+=== Fail to create a stock count due to missing reason
+
+==========
+Given ::
+"Warehouse-01" is a Distribution Centre icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+a valid product code "SKU12345" exists icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload: icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+******
+
+[discrete]
+[source, json]
+-----
+{
+    "requestId": "123e4567-e89b-12d3-a456-426614174002",
+    "quantity": 100
+}
+-----
+
+
+******
+Then ::
+the API should respond with status code 400 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+[[Features, Features]]
+== *Features*
+
+ifndef::backend-pdf[]
+minmax::Features[]
+endif::[]
+[[Deliveries-of-Stock-to-a-location, Deliveries of Stock to a location]]
+=== *Deliveries of Stock to a location*
+
+ifndef::backend-pdf[]
+minmax::Deliveries-of-Stock-to-a-location[]
+endif::[]
+==== Background
+==== A store has multiple locations that a product can be held
+
+==========
+Given ::
+"Cambridge" is a store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+Given ::
+"Waterside" is a store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+==== Simple deliveries to a location increment the Stock on hand
+
+==========
+Given ::
+the stock level of "Beans" in "Cambridge" is 0 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+When ::
+there is a delivery of 20 Beans to Cambridge store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+Then ::
+the current stock level of "Beans" in "Cambridge" will equal 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+==== Multiple deliveries to a location increment the Stock on hand
+
+==========
+Given ::
+the stock level of "Beans" in "Cambridge" is 0 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+When ::
+there is a delivery of 20 Beans to Cambridge store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+there is a delivery of 50 Beans to Cambridge store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+Then ::
+the current stock level of "Beans" in "Cambridge" will equal 70 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+==== maintain stock pots for the same product in different locations
+
+==========
+Given ::
+the stock level of "Beans" in "Cambridge" is 0 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+And ::
+the stock level of "Beans" in "Waterside" is 0 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+When ::
+there is a delivery of 20 Beans to Cambridge store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+there is a delivery of 50 Beans to Waterside store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+there is a delivery of 10 Beans to Cambridge store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+Then ::
+the current stock level of "Beans" in "Cambridge" will equal 30 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the current stock level of "Beans" in "Waterside" will equal 50 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+==== maintain stock pots for different products in the same location
+
+==========
+Given ::
+the stock level of "Beans" in "Cambridge" is 0 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+And ::
+the stock level of "Eggs" in "Cambridge" is 0 icon:thumbs-up[role="green",title="Passed"] [small right]#(001ms)#
+When ::
+there is a delivery of 20 Beans to Cambridge store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+there is a delivery of 10 Eggs to Cambridge store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+Then ::
+the current stock level of "Beans" in "Cambridge" will equal 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the current stock level of "Eggs" in "Cambridge" will equal 10 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+[[Feature:-Stock-Movement-Transaction, Feature: Stock Movement Transaction]]
+=== *Feature: Stock Movement Transaction*
+
+ifndef::backend-pdf[]
+minmax::Feature:-Stock-Movement-Transaction[]
+endif::[]
+Stock Movement refers to the transfer of inventory from one location to another,
+typically recorded in an inventory management system. When movement occurs between tracked
+locations, it is fully documented, ensuring that stock levels and locations are updated accurately in real time.
+
+Definition:
+The transfer of stock from one physical or logical location to another, where both locations are tracked
+within the system. Every movement is logged with details such as:
+- Quantity moved
+- Source and destination
+- Date and time
+- Reason for the transfer (e.g., replenishment, redistribution, return)
+
+Purpose:
+- To maintain visibility and control over inventory.
+- To ensure accurate stock levels in both source and destination locations.
+= To support planning and operational efficiency.
+
+As a system user
+I want the System to correctly perform stock movement transactions between tracked locations
+So that inventory levels are accurately updated in both source and destination
+
+==== Successful stock movement from a Distribution Centre (DC) to a Store
+
+==========
+Given ::
+a Distribution Centre "DC1" with 1000 units of "Product A" icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+a Store "Store1" with 200 units of "Product A" icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+I initiate a stock movement transaction with the following details: icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+
+[cols="5*", options="header"]
+|===
+|source
+|destination
+|product
+|quantity
+|reason
+|DC1
+|Store1
+|Product A
+|100
+|Replenishment
+|===
+
+Then ::
+the stock levels should be updated as follows: icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+
+[cols="3*", options="header"]
+|===
+|location
+|product
+|quantity
+|DC1
+|Product A
+|900
+|Store1
+|Product A
+|300
+|===
+
+==========
+
+==== Stock movement fails due to insufficient stock at the source
+
+==========
+Given ::
+a Distribution Centre "DC1" with 50 units of "Product B" icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+a Store "Store2" with 10 units of "Product B" icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+I initiate a stock movement transaction with the following details: icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+
+[cols="5*", options="header"]
+|===
+|source
+|destination
+|product
+|quantity
+|reason
+|DC1
+|Store2
+|Product B
+|100
+|Replenishment
+|===
+
+Then ::
+the move request should fail with an InsufficientStock exception icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the stock levels should remain unchanged: icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+
+[cols="3*", options="header"]
+|===
+|location
+|product
+|quantity
+|DC1
+|Product B
+|50
+|Store2
+|Product B
+|10
+|===
+
+==========
+
+[[Locations-are-nested-in-a-hierarchy, Locations are nested in a hierarchy]]
+=== *Locations are nested in a hierarchy*
+
+ifndef::backend-pdf[]
+minmax::Locations-are-nested-in-a-hierarchy[]
+endif::[]
+==== Background
+==== A store has multiple locations that a product can be held
+
+==========
+Given ::
+the following locations exit: icon:thumbs-up[role="green",title="Passed"] [small right]#(010ms)#
+
+[cols="3*", options="header"]
+|===
+|location
+|parentLocation
+|type
+|Estate
+|
+|Untracked
+|Stores
+|Estate
+|Untracked
+|South East
+|Stores
+|Untracked
+|Cambridge
+|South East
+|Tracked
+|Backstage 1
+|Cambridge
+|Untracked
+|Shop floor 1
+|Cambridge
+|Untracked
+|Shelf-a
+|Shop floor 1
+|Untracked
+|Shelf-b
+|Shop floor 1
+|Untracked
+|Royston
+|South East
+|Tracked
+|Backstage 2
+|Royston
+|Untracked
+|Shop floor 2
+|Royston
+|Untracked
+|Shelf-c
+|Shop floor 2
+|Untracked
+|Shelf-d
+|Shop floor 2
+|Untracked
+|Milton Keynes
+|Estate
+|Tracked
+|===
+
+==========
+
+==== the stock in a region equals the Stock of all Stores
+
+==========
+Given ::
+the stock level of "Beans" in "Cambridge" is 10 icon:thumbs-up[role="green",title="Passed"] [small right]#(218ms)#
+And ::
+the stock level of "Beans" in "Royston" is 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+Then ::
+the current stock level of "Beans" in "South East" will equal 30 icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+==========
+
+==== ensure the the stock levels in other stores don't affect this store
+
+==========
+Given ::
+the stock level of "Beans" in "Cambridge" is 5 icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+And ::
+the stock level of "Beans" in "Royston" is 7 icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+And ::
+the stock level of "Beans" in "Milton Keynes" is 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+Then ::
+the current stock level of "Beans" in "South East" will equal 12 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+[[Record-Product-Delivery-from-a-Distribution-to-a-Store, Record Product Delivery from a Distribution to a Store]]
+=== *Record Product Delivery from a Distribution to a Store*
+
+ifndef::backend-pdf[]
+minmax::Record-Product-Delivery-from-a-Distribution-to-a-Store[]
+endif::[]
+As a system user
+I want to record the delivery of a product from a distribution location to a store
+So that the system updates the stock levels at both locations accurately
+
+==== Successfully record a delivery and update stock levels icon:thumbs-down[role="red",title="Failed"]
+
+==========
+Given ::
+"Dist-001" is a Distribution Centre icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+"Store-001" is a store icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+a product "Product-123" exists in "Dist-001" with a stock level of 100 icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+And ::
+a product "Product-123" exists in "Store-001" with a stock level of 20 icon:thumbs-up[role="green",title="Passed"] [small right]#(003ms)#
+When ::
+I send a POST request to "/locations/Dist-001/deliveries" with the following payload: icon:thumbs-up[role="green",title="Passed"] [small right]#(004ms)#
+----
+
+{
+    "requestId": "delivery-001",
+    "productId": "Product-123",
+    "destinationLocationId": "Store-001",
+    "quantity": 10
+}
+
+----
+Then ::
+the API should respond with status code 201 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the response body should contain: icon:thumbs-up[role="green",title="Passed"] [small right]#(120ms)#
+----
+
+{
+  "requestId": "delivery-001",
+  "sourceLocationId": "Dist-001",
+  "destinationLocationId": "Store-001",
+  "productId": "Product-123",
+  "quantityDelivered": 10.0,
+  "deliveryTimestamp": "${json-unit.ignore}"
+}
+
+----
+And ::
+the stock level of product "Product-123" in "Store-001" should be updated to 30 icon:thumbs-down[role="red",title="Failed"] [small right]#(003ms)#
+
+IMPORTANT: org.opentest4j.AssertionFailedError: expected: <30.0> but was: <20.0>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:70)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:65)
+	at org.junit.jupit...
+
+And ::
+the stock level of product "Product-123" in "Dist-001" should be updated to 90 icon:thumbs-down[role="purple",title="Skipped"] [small right]#(000ms)#
+==========
+
+[[Service-Health-Check, Service Health Check]]
+=== *Service Health Check*
+
+ifndef::backend-pdf[]
+minmax::Service-Health-Check[]
+endif::[]
+As a user of the service
+I want to verify the health status of the service
+So that I know the service is running and operational
+
+==== Verify the _status API endpoint returns 200 OK
+
+==========
+Given ::
+the service is running icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+When ::
+I send a GET request to the "_status" endpoint icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+Then ::
+the response status code should be 200 icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+the response body should indicate the service is healthy icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+==========
+
+[[Stock-API-persistence-in-case-of-failure, Stock API persistence in case of failure]]
+=== *Stock API persistence in case of failure*
+
+ifndef::backend-pdf[]
+minmax::Stock-API-persistence-in-case-of-failure[]
+endif::[]
+As a system administrator,
+I want the Stock API to be persistent in the event of a failure
+So that stock data integrity and operations are maintained without loss.
+
+==== Background icon:thumbs-down[role="red",title="Failed"]
+
+==========
+Given ::
+the Stock API is connected to a persistent database icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+And ::
+stock data includes SKUs, quantities, and locations icon:thumbs-down[role="maroon",title="Pending"] [small right]#(000ms)#
+
+IMPORTANT: io.cucumber.java.PendingException: TODO: implement me
+	at com.darren.stock.steps.PersistenceStepDefinitions.stockDataIncludesSKUsQuantitiesAndLocations(PersistenceStepDefinitions.kt:25)
+	at ✽.stock data includes SKUs, quantities, and locations(classpath:com/darren/stock/Persistance.feature:9)
+
+==========
+
+==== Stock retrieval remains consistent after a system failure icon:thumbs-down[role="red",title="Failed"]
+
+==========
+Given ::
+a Store "Store1" with 200 units of "Product A" icon:thumbs-down[role="purple",title="Skipped"] [small right]#(000ms)#
+When ::
+the server is restarted after a failure icon:thumbs-down[role="purple",title="Skipped"] [small right]#(000ms)#
+Then ::
+the stock levels should remain unchanged: icon:thumbs-down[role="purple",title="Skipped"] [small right]#(000ms)#
+
+[cols="3*", options="header"]
+|===
+|location
+|product
+|quantity
+|Store1
+|Product A
+|200
+|===
+
+==========
+

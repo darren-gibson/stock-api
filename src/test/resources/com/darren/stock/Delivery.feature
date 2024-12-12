@@ -1,3 +1,5 @@
+@order-2
+
 Feature: Deliveries of Stock to a location
 
   Background: A store has multiple locations that a product can be held

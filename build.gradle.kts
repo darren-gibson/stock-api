@@ -41,10 +41,21 @@ dependencies {
     testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
 
+    implementation("com.github.cukedoctor:cukedoctor-maven-plugin:3.9.0")
+    implementation("com.github.cukedoctor:cukedoctor-section-layout:3.9.0")
 }
 tasks.test {
     useJUnitPlatform()
 }
+
+/** Copies files from "build/distributions" to "demo" directory */
+tasks.register<Exec>("cukedoctor") {
+    commandLine("java", "-cp", "src/test/resources/cukedoctor-section-layout-3.9.0.jar:src/test/resources/cukedoctor-main-3.9.0.jar:.",
+        "com.github.cukedoctor.CukedoctorMain", "-hideScenarioKeyword", "-t", "Simple Stock API", "-toc", "left")
+   project
+}
+
+tasks.named("test") { finalizedBy("cukedoctor") }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"

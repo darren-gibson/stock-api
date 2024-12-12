@@ -21,7 +21,7 @@ class ApiCallStepDefinitions : KoinComponent {
 
     @When("I send a POST request to {string} with the following payload:")
     fun iSendAPOSTRequestToWithTheFollowingPayload(url: String, payload: String) = runBlocking {
-        response = sendPostRequest(url, payload)
+        response = sendPostRequest(url, payload.removeAsciiDocs())
     }
 
     suspend fun sendPostRequest(url: String, payload: String): HttpResponse {
@@ -43,7 +43,6 @@ class ApiCallStepDefinitions : KoinComponent {
     fun theResponseBodyShouldContain(expectedResult: String) = runBlocking {
         val actualBody = response.bodyAsText()
 
-
-        assertThat(actualBody, jsonEquals(expectedResult))
+        assertThat(actualBody, jsonEquals(expectedResult.removeAsciiDocs()))
     }
 }

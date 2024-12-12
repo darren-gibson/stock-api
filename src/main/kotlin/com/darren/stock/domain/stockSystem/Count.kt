@@ -1,8 +1,9 @@
 package com.darren.stock.domain.stockSystem
 
 import com.darren.stock.domain.StockCountReason
-import com.darren.stock.domain.actors.TrackedStockPotMessages
-import com.darren.stock.domain.actors.UntrackedStockPotMessages
+import com.darren.stock.domain.stockSystem.ChannelType.*
+import com.darren.stock.domain.actors.TrackedStockPotMessages as TSPM
+import com.darren.stock.domain.actors.UntrackedStockPotMessages as USPM
 import java.time.LocalDateTime
 
 suspend fun StockSystem.count(
@@ -13,20 +14,7 @@ suspend fun StockSystem.count(
     eventTime: LocalDateTime
 ) {
     when (val type = getStockPot(location, product)) {
-        is ChannelType.TrackedChannel -> type.channel.send(
-            TrackedStockPotMessages.CountEvent(
-                eventTime,
-                quantity,
-                reason
-            )
-        )
-
-        is ChannelType.UntrackedChannel -> type.channel.send(
-            UntrackedStockPotMessages.CountEvent(
-                eventTime,
-                quantity,
-                reason
-            )
-        )
+        is TrackedChannel -> type.channel.send(TSPM.CountEvent(eventTime, quantity, reason))
+        is UntrackedChannel -> type.channel.send(USPM.CountEvent(eventTime, quantity, reason))
     }
 }

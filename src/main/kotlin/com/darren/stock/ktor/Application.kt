@@ -37,6 +37,7 @@ fun Application.module() {
         statusEndpoint()
         stockCount()
         sale()
+        delivery()
     }
 }
 

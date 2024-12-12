@@ -1,3 +1,4 @@
+@section-Sales
 Feature: Selling a Product form a location decrements the stock from that location
   Scenario: Simple sale from a location decrements the Stock on hand
     Given "Cambridge" is a store

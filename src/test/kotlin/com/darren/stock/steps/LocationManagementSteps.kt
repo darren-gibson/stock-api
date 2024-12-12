@@ -44,6 +44,7 @@ class LocationManagementSteps : KoinComponent {
         locations.send(DefineLocationEvent(locationId, type, now(), null))
     }
 
+    @Given("{string} does not exist as a store")
     @Given("an invalid location {string} is provided")
     fun anInvalidLocationIsProvided(locationId: String) {
     }
