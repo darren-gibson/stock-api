@@ -1,8 +1,11 @@
 package com.darren.stock.ktor
 
 import com.darren.stock.domain.LocationNotFoundException
+import com.darren.stock.domain.OperationNotSupportedException
 import com.darren.stock.domain.stockSystem.StockSystem
 import com.darren.stock.domain.stockSystem.sale
+import io.ktor.http.*
+import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.*
@@ -30,6 +33,8 @@ fun Routing.sale() {
             }
         } catch (e: LocationNotFoundException) {
             call.respond(NotFound, ErrorDTO("LocationNotFound"))
+        } catch (e: OperationNotSupportedException) {
+            call.respond(Conflict, ErrorDTO("LocationNotSupported"))
         }
     }
 }

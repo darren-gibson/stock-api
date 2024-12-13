@@ -51,7 +51,8 @@ tasks.test {
 /** Copies files from "build/distributions" to "demo" directory */
 tasks.register<Exec>("cukedoctor") {
     commandLine("java", "-cp", "src/test/resources/cukedoctor-section-layout-3.9.0.jar:src/test/resources/cukedoctor-main-3.9.0.jar:.",
-        "com.github.cukedoctor.CukedoctorMain", "-hideScenarioKeyword", "-t", "Simple Stock API", "-toc", "left")
+        "com.github.cukedoctor.CukedoctorMain", "-hideScenarioKeyword", "-t", "Simple Stock API", "-toc", "left",
+        "-o", "build/docs/stock-api")
    project
 }
 

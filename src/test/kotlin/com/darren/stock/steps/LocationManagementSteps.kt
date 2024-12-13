@@ -40,6 +40,7 @@ class LocationManagementSteps : KoinComponent {
     }
 
     @Given("{} is a {} location")
+    @Given("{string} is an {} store")
     fun isALocation(locationId: String, type: LocationType) = runBlocking {
         locations.send(DefineLocationEvent(locationId, type, now(), null))
     }

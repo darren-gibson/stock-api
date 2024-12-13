@@ -86,5 +86,4 @@ class StockMovementStepDefinitions : KoinComponent {
     @DataTableType
     fun expectedStockTransformer(row: Map<String?, String>) =
         ExpectedStock(row["location"]!!, row["product"]!!, row["quantity"]!!.toDouble())
-
 }

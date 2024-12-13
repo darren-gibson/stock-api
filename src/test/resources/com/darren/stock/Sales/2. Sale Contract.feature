@@ -1,6 +1,5 @@
-@section-Sales
-@asciidoc @order-1
-Feature: Sale Endpoint: Contract Test
+@section-Sales @asciidoc @order-1
+Feature: Sale Endpoint: Contract
 
   *Purpose*
   The Sale Endpoint must behave according to the contract described in the specification.  These tests exercise the API and are transparent about the inputs/outputs of the API to ensure that it behalves according to the specification.  If any of these tests fail, then the contract must have changed either the request/response structure or the underlying behaviour i.e. a breaking change.
@@ -126,6 +125,17 @@ Feature: Sale Endpoint: Contract Test
                       type: string
                       enum: [LocationNotFound, ProductNotFound]
                       example: LocationNotFound
+          '409':
+            description: Sale at this Location is not supported.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      enum: [LocationNotSupported]
+                      example: LocationNotSupported
         security:
           - bearerAuth: []
   components:
@@ -195,6 +205,30 @@ Feature: Sale Endpoint: Contract Test
       -----
       """
 
+
+  Scenario: Fail to record a product sale due to an untracked location
+  This test ensures that the Sale endpoint returns a proper error response when the specified location is untracked.
+    Given "Store-001" is an Untracked store
+    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "abc123-e89b-12d3-a456-426614174009",
+          "quantity": 5
+      }
+      -----
+      """
+    Then the API should respond with status code 409
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+        "status": "LocationNotSupported"
+      }
+      -----
+      """
 #  Scenario: Handle duplicate sale request using the same requestId
 #    Given "Store-001" is a store
 #    And a product "SKU12345" exists in "Store-001" with a stock level of 45

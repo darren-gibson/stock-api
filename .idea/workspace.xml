@@ -7,35 +7,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Refactor again to move the StockSystem facade to use extension methods.">
-      <change afterPath="$PROJECT_DIR$/Simple-Stock-API.adoc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Simple-Stock-API.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Delivery.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/asciiDoctorHelper.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Delivery.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Intros/Sales.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/cukedoctor-main-3.9.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/cukedoctor-section-layout-3.9.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/asciidoctor.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/colony.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/foundation.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/github.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/iconic.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/maker.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/readthedocs.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/rocket-panda.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themes/rubygems.css" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features.">
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-15a26ea747fb19a67bc79e15652eb34a.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-19fe8ea6c5ae66f26268e7250940ea73.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-712827ba6e36150df1fcba38bf237d5d.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-89abd5bd88e0d2a6d36598010ca9a0be.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-928e0d0f6cee9941dd47e53a0fd0d4a9.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-bf851574bcdc6dda9fda6e8b702bc667.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-ebedd45a145d97fbfb59b5f797adfec5.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-f51c4cf0f41be97c9bb1db2702de262f.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-fda1e76706531012fa5417529a88e6d0.svg.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/a2s" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ditaa0_9.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/Intro.feature" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Intros/Introduction.feature" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/3. Sale.feature" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/4. Sale Error Flows.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Simple-Stock-API.adoc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Simple-Stock-API.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/Count.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/Count.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunSuiteTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunSuiteTests.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ApiCallStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ApiCallStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Sale.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Sale.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/2. Sale Contract.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Delivery.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Delivery.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Intros/Sales.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/1. Sale Intro.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,9 +213,9 @@
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/src/main/kotlin/com/darren/stock/ktor",
+    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/src/test/resources/com/darren/stock/Sales",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.language.Kotlin.scripting"
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -224,6 +223,7 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor" />
       <recent name="$PROJECT_DIR$/src/main/resources" />
       <recent name="$PROJECT_DIR$/src/test/resources" />
@@ -233,11 +233,11 @@
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales" />
+      <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/test/resources" />
       <recent name="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps" />
-      <recent name="$PROJECT_DIR$/src/test/resources/com/darren" />
-      <recent name="$PROJECT_DIR$/src/test/resources/features/com/darren/stock" />
-      <recent name="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain" />
     </key>
     <key name="CreateKotlinClassDialog.RecentsKey">
       <recent name="com.darren.stock.domain" />
@@ -264,6 +264,25 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTest">
+    <configuration name="Feature: AdminOverride" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature" />
+      <option name="GLUE" value="com.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="simple-stock.test" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
+      <option name="SUGGESTED_NAME" value="Feature: AdminOverride" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Feature: Sale" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
       <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Sale.feature" />
@@ -331,28 +350,6 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="simple-stock [testClasses]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="testClasses" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration name="simple-stock [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -376,19 +373,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Cucumber Java.Feature: AdminOverride" />
       <item itemvalue="Cucumber Java.Feature: Sale" />
       <item itemvalue="Gradle.AsciiDoctorHelperKtTest" />
-      <item itemvalue="Gradle.simple-stock [testClasses]" />
       <item itemvalue="Gradle.simple-stock [test]" />
       <item itemvalue="Gradle.RunSuiteTest" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTest" />
+        <item itemvalue="Cucumber Java.Feature: AdminOverride" />
         <item itemvalue="Cucumber Java.Feature: Sale" />
         <item itemvalue="Gradle.AsciiDoctorHelperKtTest" />
         <item itemvalue="Gradle.simple-stock [test]" />
-        <item itemvalue="Gradle.simple-stock [testClasses]" />
       </list>
     </recent_temporary>
   </component>
@@ -657,7 +654,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733751207741</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features.">
+      <option name="closed" value="true" />
+      <created>1734023459329</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1734023459329</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -692,7 +697,8 @@
     <MESSAGE value="Add Sale API endpoint" />
     <MESSAGE value="Refactor to clean up the StockSystem" />
     <MESSAGE value="Refactor again to move the StockSystem facade to use extension methods." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor again to move the StockSystem facade to use extension methods." />
+    <MESSAGE value="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -706,37 +712,11 @@
           <line>28</line>
           <option name="timeStamp" value="59" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <condition expression="&quot;Cucumber+&quot;!=null" />
-          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ApiCallStepDefinitions.kt</url>
-          <line>45</line>
-          <option name="timeStamp" value="74" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-field">
           <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt</url>
           <line>14</line>
           <properties myFieldName="locations" myClassName="com.darren.stock.steps.LocationManagementSteps" />
           <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
-          <url>file://$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Delivery.feature</url>
-          <line>23</line>
-          <option name="timeStamp" value="75" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
-          <url>file://$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature</url>
-          <line>40</line>
-          <option name="timeStamp" value="76" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
-          <url>file://$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature</url>
-          <line>94</line>
-          <option name="timeStamp" value="77" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
-          <url>file://$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Sale.feature</url>
-          <line>157</line>
-          <option name="timeStamp" value="78" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

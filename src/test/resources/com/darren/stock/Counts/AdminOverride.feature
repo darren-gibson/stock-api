@@ -1,7 +1,6 @@
-@section-StockCount
+@section-Counts
 @asciidoc
 Feature: Override stock count record for Product in a Location
-  Scenario: Root
 
   *Why Override a Stock Figure for a Location?*
   In inventory management systems, overriding a stock figure for a location is an administrative action that adjusts the recorded inventory level of a product at a specific location to reflect the correct quantity. This action is necessary in a few situations where discrepancies arise between the system-recorded stock level and the actual stock level. This action is acts as an override and should be taken as a last resort.
