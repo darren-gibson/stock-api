@@ -6,7 +6,7 @@ ktor:
     environment: test
 #  application:
 #    - modules:
-#        - com.darren.stock.ktor.ApplicationKt.module
+#        - org.darren.stock.ktor.ApplicationKt.module
 #  logging:
 #    level: DEBUG
 #    loggers:

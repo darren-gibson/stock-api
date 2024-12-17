@@ -1,0 +1,107 @@
+==== Purpose
+In the Stock API, locations are central to the management and tracking of inventory. Locations represent any physical or logical place where stock is stored, processed, or moved, ranging from high-level distribution centres to more granular sub-locations such as picking locations within warehouses. The hierarchical structure of locations allows for precise tracking of stock and supports diverse operational needs.
+
+==== Hierarchical Structure of Locations
+1. Primary Locations:
+    * Represent high-level entities such as distribution centres, retail stores, or warehouses.
+    * Serve as the main containers for stock-related operations and transactions.
+2. Nested Locations:
+    * Locations can contain *sub-locations* or *nested locations* to represent more specific areas within the primary location.
+    * Examples include:
+        ** Picking Locations: Zones within a warehouse where stock is picked for orders.
+        ** Storage Racks: Physical shelving units in a warehouse.
+        ** Store Sections: Departments or shelves within a retail store (e.g., "Aisle 3, Shelf 2").
+        ** Temporary Locations: Zones for stock awaiting processing, such as a quarantine area for damaged goods.
+
+==== Stock and Nested Locations
+*Stock Organisation*
+
+Nested locations provide finer granularity for stock management. For example a warehouse (primary location) may have multiple picking locations, each holding specific stock for faster order fulfilment.
+This structure allows businesses to track where specific units of stock are stored within a larger location.
+
+*Stock Consolidation*
+
+The total stock for a product at a primary location includes the sum of all nested locations.  Businesses can manage stock at both the high level (e.g., total stock in a warehouse) and the granular level (e.g., stock in each picking zone).
+
+Use Cases for Nested Locations:
+
+* Order Fulfilment: Quickly locate stock within picking zones.
+Inventory Optimisation: Track and balance stock across sub-locations.
+* Quality Control: Isolate defective or damaged stock in specific quarantine zones.
+* Hierarchical Location Relationships
+
+The following diagram illustrates how nested locations fit within a primary location:
+
+[Source, plaintext]
+-----
+Primary Location: Warehouse (WH-001)
++--------------------------------------------------+
+| Picking Zone 1 (PK-001)                          |
+|   - Product A: 50 units                          |
+|   - Product B: 30 units                          |
+|                                                  |
+| Picking Zone 2 (PK-002)                          |
+|   - Product A: 20 units                          |
+|   - Product C: 40 units                          |
+|                                                  |
+| Quarantine Area (QA-001)                         |
+|   - Product A (damaged): 5 units                 |
++--------------------------------------------------+
+
+Primary Location Stock Summary:
+- Product A: 75 units (PK-001: 50, PK-002: 20, QA-001: 5)
+- Product B: 30 units (PK-001: 30)
+- Product C: 40 units (PK-002: 40)
+-----
+
+In this structure:
+
+Each nested location tracks its own stock independently. The primary location aggregates stock across all nested locations for reporting and management.
+
+==== Operational Benefits
+1. Enhanced Visibility:
+    * Nested locations provide a more detailed view of stock, enabling precise inventory tracking.
+    * Businesses can identify where specific items are stored within a larger facility.
+2. Optimised Operations:
+    * Picking locations streamline order fulfilment by organising stock in easily accessible zones.
+    * Sub-locations for damaged goods or returns ensure operational efficiency without contaminating usable stock.
+3. Scalability:
+    * Hierarchical locations support businesses as they expand, allowing the system to handle increasing complexity in inventory management.
+4. Audit and Reconciliation:
+    * Nested locations improve the accuracy of audits by narrowing discrepancies to specific sub-locations.
+    * Reconciliation efforts are simplified as stock movements can be traced at a granular level.
+
+==== Location Types
+
+[cols="1,4,2,1", options="header"]
+|===
+| Type              | Description                                                                                | Relevance                          | Example
+
+| Warehouse         | A primary storage facility for bulk inventory, often used for long-term stock holding.     | Distribution Centre                | Welham Green
+| Store             | A retail location where products are sold directly to customers.                           | Store                              | Cambridge
+| SalesFloor        | A public-facing area of a store where stock is displayed and sold to customers.            | Store                              | Food hall
+| Aisle             | A subdivision of the sales floor, representing a specific row or section.                  | Store                              | Aisle-31
+| Shelf             | A smaller subdivision within an aisle, representing a specific shelf where items are placed. | Store                            | 31L10A
+| PickingZone       | A sub-location within a warehouse or store for picking stock for orders or restocking.     | Distribution Centre, Store         | PickingZone-001
+| QuarantineArea    | A location for isolating defective, damaged, or expired stock pending further action.      | Distribution Centre, Store         | Quarantine-001
+| Backroom          | A location in a store for holding additional stock that is not on the sales floor.         | Store                              | Backroom-001
+| TransitLocation   | A temporary location for stock in transit between two other locations.                     | Distribution Centre, Store         | Transit-001
+| StorageRack       | A specific rack or shelving unit within a location for organised storage of stock.         | Distribution Centre, Store         | Rack-001
+| ReceivingArea     | A sub-location where goods are received and checked before being added to stock.           | Distribution Centre, Store         | Receiving-001
+| DispatchArea      | A sub-location where goods are staged and prepared for dispatch to another location.       | Distribution Centre                | Dispatch-001
+| ReturnsArea       | A location for processing and holding returned items from customers or other locations.    | Distribution Centre, Store         | Returns-001
+| ColdStorage       | A location for storing temperature-sensitive items (e.g., refrigerated or frozen goods).   | Distribution Centre, Store         | ColdStorage-001
+| PackingZone       | A sub-location for packing picked items into boxes or containers for shipping.             | Distribution Centre                | PackingZone-001
+| ReplenishmentZone | A staging area where stock is prepared to be moved to the sales floor or picking locations.| Store, Distribution Centre         | Replenishment-001
+| OversizeStorage   | A location for storing large or bulky items that do not fit in standard racks or zones.    | Distribution Centre, Store         | Oversize-001
+
+|===
+
+
+
+==== Key Takeaways
+* Locations in the Stock API are hierarchical, allowing for both high-level and granular management of inventory.
+* Nested locations represent specific areas within a primary location, such as picking zones, storage racks, or quarantine areas.
+* This structure supports precise tracking, operational efficiency, and better decision-making.
+
+By defining both primary and nested locations, inventory can be managed with greater control and flexibility.

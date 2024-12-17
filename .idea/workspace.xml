@@ -7,34 +7,73 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features.">
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-15a26ea747fb19a67bc79e15652eb34a.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-19fe8ea6c5ae66f26268e7250940ea73.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-712827ba6e36150df1fcba38bf237d5d.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-89abd5bd88e0d2a6d36598010ca9a0be.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-928e0d0f6cee9941dd47e53a0fd0d4a9.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-bf851574bcdc6dda9fda6e8b702bc667.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-ebedd45a145d97fbfb59b5f797adfec5.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-f51c4cf0f41be97c9bb1db2702de262f.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.asciidoctor/diagram/diag-fda1e76706531012fa5417529a88e6d0.svg.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/a2s" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ditaa0_9.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/Intro.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Intros/Introduction.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/3. Sale.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/4. Sale Error Flows.feature" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Continue refactor and improve docs">
+      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Locations/1. Location Intro.feature" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Locations/2. Location Contract.feature" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Locations/ChildStockLocations.feature" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Locations/locations.adoc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Simple-Stock-API.adoc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Simple-Stock-API.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Sale.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/2. Sale Contract.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Intros/Sales.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/1. Sale Intro.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sale.feature" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/InsufficientStockException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/InsufficientStockException.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/Location.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/Location.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/LocationNotFoundException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationNotFoundException.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/LocationType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationType.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/MoveResult.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/MoveResult.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/OperationNotSupportedException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/OperationNotSupportedException.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockCountReason.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockCountReason.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockEventRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockEventRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMovement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockMovement.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/StockMovementReason.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockMovementReason.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/LocationActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/LocationActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/LocationMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/LocationMessages.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/TrackedStockPotActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/TrackedStockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/TrackedStockPotMessages.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/UntrackedStockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/UntrackedStockPotActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/actors/UntrackedStockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/UntrackedStockPotMessages.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/ChannelType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/ChannelType.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/Count.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Count.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Delivery.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/GetValue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Sale.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/domain/stockSystem/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/DateSerializer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/DateSerializer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/ErrorDTO.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/ErrorDTO.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Status.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Status.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/StockCount.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/persistence/InMemoryStockEventRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/persistence/InMemoryStockEventRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/RunSuiteTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/RunSuiteTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ApiCallStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ApiCallStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationManagementSteps.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/PersistenceStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/PersistenceStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ProductStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ProductStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/ServiceLifecycleSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StatusStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StatusStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/StockMovementStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockMovementStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/asciiDoctorHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/asciiDoctorHelper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/ChildStockLocations.feature" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Contract/Delivery.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/AdminOverride.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Counts/AdminOverride.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts/Intro.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Counts/Intro.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Delivery.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/Delivery.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Intros/Introduction.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros/Introduction.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Movement.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Movement.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Persistance.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Persistance.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/1. Sale Intro.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/1. Sale Intro.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/2. Sale Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/3. Sale.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/3. Sale.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales/4. Sale Error Flows.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/4. Sale Error Flows.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/com/darren/stock/Status.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Status.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,9 +211,9 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2pF66bvXiMFUn4MFHNzIa2E20Kz" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -198,6 +237,7 @@
     "Cucumber Java.Scenario: Successfully create a stock count.executor": "Run",
     "Gradle.AsciiDoctorHelperKtTest.executor": "Run",
     "Gradle.Build simple-stock.executor": "Run",
+    "Gradle.RunSuiteTest (1).executor": "Run",
     "Gradle.RunSuiteTest.executor": "Run",
     "Gradle.Tests in 'com.darren.stock'.executor": "Run",
     "Gradle.simple-stock [buildFromAvro].executor": "Run",
@@ -213,9 +253,9 @@
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/src/test/resources/com/darren/stock/Sales",
+    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/gradle",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.keymap"
+    "settings.editor.selected.configurable": "preferences.editor"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -223,21 +263,21 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/gradle" />
+      <recent name="$PROJECT_DIR$/.gradle" />
       <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor" />
       <recent name="$PROJECT_DIR$/src/main/resources" />
-      <recent name="$PROJECT_DIR$/src/test/resources" />
-      <recent name="$PROJECT_DIR$/src/test/resources/features/com/darren/stock" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Deliveries" />
+      <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Locations" />
       <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales" />
       <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Counts" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/src/test/resources" />
-      <recent name="$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps" />
     </key>
     <key name="CreateKotlinClassDialog.RecentsKey">
       <recent name="com.darren.stock.domain" />
@@ -339,7 +379,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.darren.stock.RunSuiteTest&quot;" />
+            <option value="&quot;org.darren.stock.RunSuiteTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -350,33 +390,10 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="simple-stock [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="test" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Cucumber Java.Feature: AdminOverride" />
       <item itemvalue="Cucumber Java.Feature: Sale" />
       <item itemvalue="Gradle.AsciiDoctorHelperKtTest" />
-      <item itemvalue="Gradle.simple-stock [test]" />
       <item itemvalue="Gradle.RunSuiteTest" />
     </list>
     <recent_temporary>
@@ -385,7 +402,6 @@
         <item itemvalue="Cucumber Java.Feature: AdminOverride" />
         <item itemvalue="Cucumber Java.Feature: Sale" />
         <item itemvalue="Gradle.AsciiDoctorHelperKtTest" />
-        <item itemvalue="Gradle.simple-stock [test]" />
       </list>
     </recent_temporary>
   </component>
@@ -662,7 +678,15 @@
       <option name="project" value="LOCAL" />
       <updated>1734023459329</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Continue refactor and improve docs">
+      <option name="closed" value="true" />
+      <created>1734076139114</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1734076139114</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -698,7 +722,8 @@
     <MESSAGE value="Refactor to clean up the StockSystem" />
     <MESSAGE value="Refactor again to move the StockSystem facade to use extension methods." />
     <MESSAGE value="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features." />
+    <MESSAGE value="Continue refactor and improve docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Continue refactor and improve docs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -708,14 +733,14 @@
           <option name="timeStamp" value="37" />
         </breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor/Application.kt</url>
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt</url>
           <line>28</line>
           <option name="timeStamp" value="59" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-field">
-          <url>file://$PROJECT_DIR$/src/test/kotlin/com/darren/stock/steps/LocationManagementSteps.kt</url>
+          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationManagementSteps.kt</url>
           <line>14</line>
-          <properties myFieldName="locations" myClassName="com.darren.stock.steps.LocationManagementSteps" />
+          <properties myFieldName="locations" myClassName="org.darren.stock.steps.LocationManagementSteps" />
           <option name="timeStamp" value="54" />
         </line-breakpoint>
       </breakpoints>

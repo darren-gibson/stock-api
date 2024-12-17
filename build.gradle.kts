@@ -1,12 +1,10 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.8.21"
-    kotlin("plugin.serialization") version "1.8.21"
+    kotlin("jvm") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.0"
     application
 }
 
-group = "com.darren.stock"
+group = "org.darren"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -14,10 +12,10 @@ repositories {
 }
 
 dependencies {
-    val ktor_version = "2.3.13"
+    val ktor_version = "3.0.2"
 //    val kotlinVersion = "2.1.0"
-//    val koin_version = "4.0.0"
-    val koin_version = "3.5.6"
+    val koin_version = "4.0.0"
+//    val koin_version = "3.5.6"
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation("io.cucumber:cucumber-java:7.20.1")
@@ -44,24 +42,39 @@ dependencies {
     implementation("com.github.cukedoctor:cukedoctor-maven-plugin:3.9.0")
     implementation("com.github.cukedoctor:cukedoctor-section-layout:3.9.0")
 }
+
+
 tasks.test {
     useJUnitPlatform()
 }
 
 /** Copies files from "build/distributions" to "demo" directory */
 tasks.register<Exec>("cukedoctor") {
-    commandLine("java", "-cp", "src/test/resources/cukedoctor-section-layout-3.9.0.jar:src/test/resources/cukedoctor-main-3.9.0.jar:.",
-        "com.github.cukedoctor.CukedoctorMain", "-hideScenarioKeyword", "-t", "Simple Stock API", "-toc", "left",
-        "-o", "build/docs/stock-api")
-   project
+    commandLine(
+        "java",
+        "-cp",
+        "src/test/resources/cukedoctor-section-layout-3.9.0.jar:src/test/resources/cukedoctor-main-3.9.0.jar:.",
+        "com.github.cukedoctor.CukedoctorMain",
+        "-hideScenarioKeyword",
+        "-t",
+        "Location API",
+        "-toc",
+        "left",
+        "-o",
+        "build/docs/location-api"
+    )
+    project
 }
 
 tasks.named("test") { finalizedBy("cukedoctor") }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+application {
+    mainClass = "org.darren.location.ApplicationKt"
 }
 
-application {
-    mainClass.set("MainKt")
+tasks.test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(17)
 }
