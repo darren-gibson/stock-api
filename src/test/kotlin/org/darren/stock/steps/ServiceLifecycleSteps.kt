@@ -1,17 +1,17 @@
 package org.darren.stock.steps
 
-import org.darren.stock.domain.StockEventRepository
-import org.darren.stock.domain.actors.LocationActor.Companion.locationActor
-import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.ktor.module
-import org.darren.stock.persistence.InMemoryStockEventRepository
 import io.cucumber.java.After
 import io.cucumber.java.Before
 import io.cucumber.java.en.Given
+import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktor.server.routing.*
 import io.ktor.server.testing.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
+import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.StockEventRepository
+import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.module
+import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -19,20 +19,48 @@ import org.koin.dsl.module
 
 class ServiceLifecycleSteps {
     private lateinit var testApp: TestApplication
+    private val locationHost = "http://location.api.darren.org"
 
-    @OptIn(DelicateCoroutinesApi::class)
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     @Before
     fun beforeAllScenarios() = runBlocking {
-        testApp = TestApplication { application { module() } }
+        testApp = buildKtorTestApp()
         startKoin {
             modules(
                 module { single { testApp } },
                 module { single<StockEventRepository> { InMemoryStockEventRepository() } },
-                module { single { GlobalScope.locationActor() } },
-                module { single<StockSystem> { StockSystem() } }
+                module { single { LocationApiClient(locationHost) } },
+                module { single<StockSystem> { StockSystem() } },
+                module { single { testApp.client.engine } },
+                module { single<ServiceLifecycleSteps>{ this@ServiceLifecycleSteps } }
             )
         }
         testApp.start()
+    }
+
+    private fun buildKtorTestApp(): TestApplication {
+        return TestApplication {
+            application { module() }
+            externalServices {
+                hosts(locationHost) {
+                    routing {
+                        get("/locations/{id}") {
+                            locationResponder(call)
+                        }
+                        get("/locations/{id}/children") {
+                            locationResponder(call)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    var locationResponder: suspend (call: RoutingCall) -> Unit = {
+        logger.warn { "locationResponder not set" }
     }
 
     @Given("the service is running")

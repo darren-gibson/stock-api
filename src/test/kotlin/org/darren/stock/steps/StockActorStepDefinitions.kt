@@ -1,10 +1,5 @@
 package org.darren.stock.steps
 
-import org.darren.stock.domain.OperationNotSupportedException
-import org.darren.stock.domain.stockSystem.GetValue.getValue
-import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.domain.stockSystem.delivery
-import org.darren.stock.domain.stockSystem.sale
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
@@ -12,9 +7,11 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
+import org.darren.stock.domain.stockSystem.GetValue.getValue
+import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.domain.stockSystem.delivery
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertThrows
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime.now

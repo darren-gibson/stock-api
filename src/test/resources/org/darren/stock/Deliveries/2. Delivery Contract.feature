@@ -3,12 +3,13 @@ Feature: Record Product Delivery from a Distribution to a Store
   I want to record the delivery of a product from a distribution location to a store
   So that the system updates the stock levels at both locations accurately
 
-#  Background:
-#    Given the API is authenticated with a valid bearer token
+  Background:
+    Given the following locations are defined in the Location API:
+      | id        | type                |
+      | Dist-001  | Distribution Centre |
+      | Store-001 | Store               |
 
   Scenario: Successfully record a delivery and update stock levels
-    Given "Dist-001" is a Distribution Centre
-    And "Store-001" is a store
     And a product "Product-123" exists in "Dist-001" with a stock level of 100
     And a product "Product-123" exists in "Store-001" with a stock level of 20
     When I send a POST request to "/locations/Dist-001/deliveries" with the following payload:
@@ -29,7 +30,7 @@ Feature: Record Product Delivery from a Distribution to a Store
         "destinationLocationId": "Store-001",
         "productId": "Product-123",
         "quantityDelivered": 10.0,
-        "deliveryTimestamp": "${json-unit.ignore}"
+        "deliveryTimestamp": "<timestamp>"
       }
       """
     And the stock level of product "Product-123" in "Store-001" should be updated to 30

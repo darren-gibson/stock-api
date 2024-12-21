@@ -1,13 +1,10 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.LocationType
-import org.darren.stock.domain.actors.LocationMessages
-import org.darren.stock.domain.actors.TrackedStockPotActor.Companion.trackedStockPotActor
-import org.darren.stock.domain.actors.UntrackedStockPotActor.Companion.untrackedStockPotActor
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.SendChannel
+import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.actors.TrackedStockPotActor.Companion.trackedStockPotActor
+import org.darren.stock.domain.actors.UntrackedStockPotActor.Companion.untrackedStockPotActor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -16,7 +13,7 @@ class StockSystem : KoinComponent {
 //        private val logger = KotlinLogging.logger {}
 //    }
 
-    val locations by inject<SendChannel<LocationMessages>>()
+    val locations by inject<LocationApiClient>()
     val stockPots = mutableMapOf<Pair<String, String>, ChannelType>()
 
     suspend fun getStockPot(locationId: String, productId: String): ChannelType {
@@ -34,19 +31,10 @@ class StockSystem : KoinComponent {
         locationId: String,
         productId: String,
         initialQuantity: Double
-    ) = when (getLocationType(locationId)) {
-        LocationType.Tracked -> ChannelType.TrackedChannel(
-            GlobalScope.trackedStockPotActor(locationId, productId, initialQuantity)
-        )
+    ) =
+        if (getLocationType(locationId))
+            ChannelType.TrackedChannel(GlobalScope.trackedStockPotActor(locationId, productId, initialQuantity))
+        else ChannelType.UntrackedChannel(GlobalScope.untrackedStockPotActor(locationId, productId, initialQuantity))
 
-        LocationType.Untracked -> ChannelType.UntrackedChannel(
-            GlobalScope.untrackedStockPotActor(locationId, productId, initialQuantity)
-        )
-    }
-
-    private suspend fun getLocationType(locationId: String): LocationType {
-        val result = CompletableDeferred<Result<LocationType>>()
-        locations.send(LocationMessages.GetLocationType(locationId, result))
-        return result.await().getOrThrow()
-    }
+    private suspend fun getLocationType(locationId: String) = locations.isTracked(locationId)
 }

@@ -20,6 +20,11 @@ Feature: Feature: Stock Movement Transaction
   I want the System to correctly perform stock movement transactions between tracked locations
   So that inventory levels are accurately updated in both source and destination
 
+  Background: A store has multiple locations that a product can be held
+    Given "Store1" is a store
+    Given "Store2" is a store
+    Given "DC1" is a Distribution Centre
+
   Scenario: Successful stock movement from a Distribution Centre (DC) to a Store
     Given a Distribution Centre "DC1" with 1000 units of "Product A"
     And a Store "Store1" with 200 units of "Product A"

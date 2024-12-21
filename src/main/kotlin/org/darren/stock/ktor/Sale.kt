@@ -20,7 +20,7 @@ import java.time.LocalDateTime.now
 
 fun Routing.sale() {
     post("/stores/{locationId}/products/{productId}/sales") {
-        val stockSystem = inject<StockSystem>(StockSystem::class.java)
+        val stockSystem = inject<StockSystem>(StockSystem::class.java).value
         val locationId = call.parameters["locationId"]!!
         val productId = call.parameters["productId"]!!
 
@@ -28,7 +28,7 @@ fun Routing.sale() {
 
         try {
             with(request) {
-                stockSystem.value.sale(locationId, productId, quantity, now())
+                stockSystem.sale(locationId, productId, quantity, now())
                 call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, now()))
             }
         } catch (e: LocationNotFoundException) {

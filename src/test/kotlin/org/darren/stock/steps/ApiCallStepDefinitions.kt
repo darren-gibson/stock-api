@@ -13,11 +13,17 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.context.GlobalContext.loadKoinModules
+import org.koin.dsl.module
 
 class ApiCallStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
     private val testApp: TestApplication by inject()
     private val client = testApp.client
+
+    init {
+        loadKoinModules(module { single { this@ApiCallStepDefinitions } })
+    }
 
     @When("I send a POST request to {string} with the following payload:")
     fun iSendAPOSTRequestToWithTheFollowingPayload(url: String, payload: String) = runBlocking {

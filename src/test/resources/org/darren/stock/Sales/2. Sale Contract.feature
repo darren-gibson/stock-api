@@ -206,9 +206,9 @@ Feature: Sale Endpoint: Contract
       """
 
 
-  Scenario: Fail to record a product sale due to an untracked location
-  This test ensures that the Sale endpoint returns a proper error response when the specified location is untracked.
-    Given "Store-001" is an Untracked store
+  Scenario: Fail to record a product sale against a location that's not a shop
+  This test ensures that the Sale endpoint returns a proper error response when the specified location is not a shop.
+    Given "Store-001" is a "Warehouse" location
     When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
       """asciidoc
       [source, json]

@@ -1,5 +1,7 @@
+@file:Suppress("LocalVariableName")
+
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.0"
     application
 }
@@ -13,9 +15,7 @@ repositories {
 
 dependencies {
     val ktor_version = "3.0.2"
-//    val kotlinVersion = "2.1.0"
     val koin_version = "4.0.0"
-//    val koin_version = "3.5.6"
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation("io.cucumber:cucumber-java:7.20.1")
@@ -28,6 +28,9 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation("io.ktor:ktor-client:$ktor_version")
+    implementation("io.ktor:ktor-client-java:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation(project.dependencies.platform("io.insert-koin:koin-bom:$koin_version"))
     implementation("io.insert-koin:koin-core")
 
@@ -38,9 +41,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
     testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
-
-    implementation("com.github.cukedoctor:cukedoctor-maven-plugin:3.9.0")
-    implementation("com.github.cukedoctor:cukedoctor-section-layout:3.9.0")
 }
 
 
@@ -57,11 +57,11 @@ tasks.register<Exec>("cukedoctor") {
         "com.github.cukedoctor.CukedoctorMain",
         "-hideScenarioKeyword",
         "-t",
-        "Location API",
+        "Stock API",
         "-toc",
         "left",
         "-o",
-        "build/docs/location-api"
+        "build/docs/stock-api"
     )
     project
 }
@@ -69,12 +69,12 @@ tasks.register<Exec>("cukedoctor") {
 tasks.named("test") { finalizedBy("cukedoctor") }
 
 application {
-    mainClass = "org.darren.location.ApplicationKt"
+    mainClass = "org.darren.stock.ktor.ApplicationKt"
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(23)
 }

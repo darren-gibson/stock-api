@@ -1,27 +1,27 @@
 package org.darren.stock.ktor
 
-import org.darren.stock.domain.StockEventRepository
-import org.darren.stock.domain.actors.LocationActor.Companion.locationActor
-import org.darren.stock.domain.actors.LocationMessages
-import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.persistence.InMemoryStockEventRepository
+import io.ktor.client.engine.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.SendChannel
+import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.StockEventRepository
+import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import org.koin.fileProperties
+import io.ktor.client.engine.java.*
 
-@OptIn(DelicateCoroutinesApi::class)
 fun main(args: Array<String>) {
     startKoin {
+        fileProperties()
         modules(
-            module { single<SendChannel<LocationMessages>> { GlobalScope.locationActor() } },
+            module { single<HttpClientEngine> { Java.create() } },
+            module { single { params -> LocationApiClient(getProperty("LOCATION_API")) } },
             module { single<StockSystem> { StockSystem() } },
             module { single<StockEventRepository> { InMemoryStockEventRepository() } }
         )
