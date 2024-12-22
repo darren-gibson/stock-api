@@ -39,12 +39,12 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
     }
 
     @Serializable
-    data class LocationDTO(val id: String, val type: String, val classifications: Set<String>, val children: List<LocationDTO> = emptyList()) {
+    data class LocationDTO(val id: String, val roles: Set<String>, val children: List<LocationDTO> = emptyList()) {
         val isTracked // TODO: Implement this correctly
             get() = isShop
 
         private val isShop
-            get() = classifications.contains(LocationClassifications.Shop.name)
+            get() = roles.contains(LocationRoles.Shop.name)
 
 
         fun toHierarchyMap(): Map<String, String> {

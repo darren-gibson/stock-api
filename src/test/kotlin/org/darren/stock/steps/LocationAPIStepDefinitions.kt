@@ -30,10 +30,10 @@ class LocationAPIStepDefinitions : KoinComponent {
         createLocationForTest(locationId)
     }
 
-    private fun createLocationForTest(locationId: String, classification: String? = null) {
+    private fun createLocationForTest(locationId: String, role: String? = null) {
         locations[locationId] =
-            if (classification == null) SimpleLocation(locationId, "Store")
-            else SimpleLocation(locationId, "Store", classification)
+            if (role == null) SimpleLocation(locationId, "Store")
+            else SimpleLocation(locationId, "Store", role)
         serviceHelper.locationResponder = this@LocationAPIStepDefinitions::mockLocationApi
     }
 
@@ -57,7 +57,7 @@ class LocationAPIStepDefinitions : KoinComponent {
             "id": "${loc.id}",
             "type": "${loc.type}",
             "name": "${loc.id}",
-            "classifications": ["${loc.classification}"],
+            "roles": ["${loc.role}"],
             "createdAt": "2024-12-15T12:34:56Z"
         }"""
 
@@ -67,11 +67,10 @@ class LocationAPIStepDefinitions : KoinComponent {
         return SimpleLocation(row["id"]!!, row["type"]!!)
     }
 
-    data class SimpleLocation(val id: String, val type: String, val classification: String = "Shop")
+    data class SimpleLocation(val id: String, val type: String, val role: String = "Shop")
 
     @Given("{string} is a {string} location")
-//    @Given("{} is a {} location")
-    fun isALocation(locationId: String, classification: String) {
-        createLocationForTest(locationId, classification)
+    fun isALocation(locationId: String, role: String) {
+        createLocationForTest(locationId, role)
     }
 }

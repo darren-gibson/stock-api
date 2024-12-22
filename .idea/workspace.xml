@@ -7,36 +7,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Upgrade dependencies and shift to Kotlin &quot;2.0.21&quot;">
-      <change afterPath="$PROJECT_DIR$/.kotlin/errors/errors-1734513392225.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationClassifications.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/koin.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/JsonSerializerTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="refactored to more &quot;type&quot; to roles.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/LocationActor.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/LocationMessages.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/Location.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ApiCallStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ApiCallStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationManagementSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationManagementSteps.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationManagementSteps.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockMovementStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockMovementStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Locations/1. Location Intro.feature" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Locations/2. Location Contract.feature" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Locations/ChildStockLocations.feature" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Locations/locations.adoc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Movement.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Movement.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/4. Sale Error Flows.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/4. Sale Error Flows.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -335,8 +311,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Kotlin.ApplicationKt" />
-        <item itemvalue="Gradle.simple-stock [run]" />
         <item itemvalue="Gradle.Tests in 'org.darren.stock'" />
+        <item itemvalue="Gradle.simple-stock [run]" />
         <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop" />
         <item itemvalue="Cucumber Java.Feature: 4. Sale Error Flows" />
       </list>
@@ -631,7 +607,23 @@
       <option name="project" value="LOCAL" />
       <updated>1734460733630</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Upgrade dependencies and shift to Kotlin &quot;2.1&quot;.  Get tests working with Location API dependencies.">
+      <option name="closed" value="true" />
+      <created>1734776868874</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1734776868874</updated>
+    </task>
+    <task id="LOCAL-00037" summary="refactored to more &quot;type&quot; to roles.">
+      <option name="closed" value="true" />
+      <created>1734888396797</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1734888396797</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -669,7 +661,9 @@
     <MESSAGE value="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features." />
     <MESSAGE value="Continue refactor and improve docs" />
     <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.0.21&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Upgrade dependencies and shift to Kotlin &quot;2.0.21&quot;" />
+    <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.1&quot;.  Get tests working with Location API dependencies." />
+    <MESSAGE value="refactored to more &quot;type&quot; to roles." />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored to more &quot;type&quot; to roles." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

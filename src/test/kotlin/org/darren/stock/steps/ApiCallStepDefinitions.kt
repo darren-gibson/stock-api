@@ -49,6 +49,10 @@ class ApiCallStepDefinitions : KoinComponent {
     fun theResponseBodyShouldContain(expectedResult: String) = runBlocking {
         val actualBody = response.bodyAsText()
 
-        assertThat(actualBody, jsonEquals(expectedResult.removeAsciiDocs()))
+        assertThat(actualBody, jsonEquals(expectedResult.removeAsciiDocs().ignoreTimestamps()))
+    }
+
+    private fun String.ignoreTimestamps(): String {
+        return this.replace("<timestamp>", "\${json-unit.ignore}")
     }
 }

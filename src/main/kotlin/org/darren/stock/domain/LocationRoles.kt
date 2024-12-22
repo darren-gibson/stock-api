@@ -1,5 +1,5 @@
 package org.darren.stock.domain
 
-enum class LocationClassifications {
+enum class LocationRoles {
     Shop
 }
