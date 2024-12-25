@@ -29,8 +29,9 @@ Feature: Sale Endpoint: Contract
   | saleTimestamp  | string   | Body       | The timestamp when the sale was recorded, in ISO 8601 format. | 2024-12-07T12:00:00Z
   |===
 
-  *Specification*
-
+.*OpenAPI Specification*, Click here.
+[%collapsible]
+  ====
   [source, yml]
   -----
   openapi: 3.0.3
@@ -145,7 +146,7 @@ Feature: Sale Endpoint: Contract
         scheme: bearer
         bearerFormat: JWT
   -----
-
+====
 
 #  Background:
 #    Given the API is authenticated with a valid bearer token

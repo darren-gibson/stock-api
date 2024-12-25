@@ -1,4 +1,4 @@
-package org.darren.stock
+package org.darren.stock.infrastructureTests
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -8,7 +8,7 @@ import kotlin.test.assertNull
 
 class JsonSerializerTest {
     @Serializable
-    data class test(val l: LocationRoles? = null)
+    data class TestClass(val l: LocationRoles? = null)
 
     @Test
     fun `test Unknown Enum Can Be Deserialized`() {
@@ -16,7 +16,7 @@ class JsonSerializerTest {
             coerceInputValues = true
         }
 
-        val test = coercingJson.decodeFromString<test>("""{"l": "unknown"}""")
+        val test = coercingJson.decodeFromString<TestClass>("""{"l": "unknown"}""")
         assertNull(test.l)
     }
 }

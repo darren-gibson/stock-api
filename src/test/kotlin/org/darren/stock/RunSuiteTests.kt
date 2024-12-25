@@ -14,4 +14,4 @@ import org.junit.platform.suite.api.Suite
 @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @Ignore")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "json:build/test-results/results.json")
 
-class RunSuiteTest
+class RunSuiteTestClass
