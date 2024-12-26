@@ -180,7 +180,7 @@ Feature: Sale Endpoint: Contract
       -----
       <1> timestamp in the ISO8601 format, e.g: 2024-12-11T09:16:29.577617
       """
-    And the stock level of product "SKU12345" in "Store-001" should be updated to 45
+    And the stock level of "SKU12345" in "Store-001" should be updated to 45
 
   Scenario: Fail to record a product sale due to an invalid location
   This test ensures that the Sale endpoint returns a proper error response when the specified location does not exist.

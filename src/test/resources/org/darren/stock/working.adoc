@@ -1,0 +1,93 @@
+==== Create Stock Movement Transaction Endpoint Specification
+
+The Create Stock Movement Transaction endpoint enables users to log the transfer of stock between locations. This endpoint is essential for maintaining real-time accuracy in inventory tracking and ensuring seamless operational workflows. The endpoint supports detailed documentation of each transaction, capturing critical data points for transparency and traceability.
+
+[cols="1,3", options="header"]
+|===
+| Attribute        | Description
+
+| `endpoint`       | `/locations/{sourceLocationId}/{productId}/movements`
+| `method`         | `POST`
+| `description`    | Creates a new stock movement transaction in the system.
+| `authentication` | Requires a valid API token with appropriate permissions.
+| `response format`| JSON
+|===
+
+==== Input Parameters
+
+The Create Stock Movement Transaction endpoint accepts the following mandatory and optional input parameters:
+
+[cols="1,4,1,2", options="header"]
+|===
+| Parameter              | Description                                                        | Required | Example
+
+| `sourceLocationId`     | The identifier for the source location.                            | Yes      | `"warehouse1"`
+| `destinationLocationId`| The identifier for the destination location.                      | Yes      | `"store3"`
+| `quantity`             | The number of items being moved (as a double).                    | Yes      | `50.5`
+| `productId`            | The unique identifier for the product being moved.                | Yes      | `"product123"`
+| `Authentication Token` | The API token used for authentication.                            | Yes      | `Bearer abc123xyz`
+| `reason`               | The reason for the stock movement.                                | Optional | `"replenishment"`
+|===
+
+== REST Endpoint Definition
+
+**Endpoint:**
+`POST /locations/{sourceLocationId}/{productId}/movements`
+
+**Request Body:**
+The request body must include the parameters in JSON format.
+
+[source, http]
+.Request to create a stock movement transaction
+-----
+POST /locations/warehouse1/product123/movements HTTP/1.1
+Host: api.example.com
+Authorization: Bearer abc123xyz
+Content-Type: application/json
+
+{
+    "destinationLocationId": "store3",
+    "quantity": 50.5,
+    "reason": "replenishment"
+}
+-----
+
+==== Example Response
+
+[source, http]
+.Successful response
+-----
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "sourceLocationId": "warehouse1",
+    "destinationLocationId": "store3",
+    "quantity": 50.5,
+    "productId": "product123",
+    "reason": "replenishment",
+    "createdAt": "2024-12-26T15:35:00Z"
+}
+-----
+
+==== Response Codes
+
+[cols="1,3", options="header"]
+|===
+| Code              | Description
+
+| `201 Created`     | The stock movement transaction was successfully created.
+| `400 Bad Request` | Invalid request data or missing required fields.
+| `401 Unauthorized`| Authentication token is missing or invalid.
+| `403 Forbidden`   | User does not have permission to create stock movements.
+| `409 Conflict`    | A transaction with the same parameters already exists.
+| `500 Internal Server Error` | An unexpected error occurred on the server.
+|===
+
+==== Notes
+
+- **Authentication Requirement:** A valid API token with sufficient permissions is mandatory to use this endpoint.
+- **Reason Field:** The `reason` parameter is optional but provides context for the stock movement and supports reporting.
+- **Precision in Quantity:** The `quantity` parameter is a double to support fractional stock movements where applicable.
+
+The Create Stock Movement Transaction endpoint offers a reliable and detailed way to log inventory transfers, enabling enhanced traceability and operational efficiency.

@@ -38,6 +38,7 @@ class LocationAPIStepDefinitions : KoinComponent {
     }
 
     @Given("{string} does not exist as a store")
+    @Given("{string} does not exist as a Distribution Centre")
     @Given("an invalid location {string} is provided")
     fun anInvalidLocationIsProvided(locationId: String) {
         locations.remove(locationId)

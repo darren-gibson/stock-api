@@ -6,10 +6,13 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.Delivery.delivery
+import org.darren.stock.ktor.Move.move
 import org.darren.stock.ktor.Sale.sale
 import org.darren.stock.ktor.Status.statusEndpoint
 import org.darren.stock.ktor.StockCount.stockCount
@@ -31,14 +34,18 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 fun Application.module() {
     install(ContentNegotiation) {
-        json()
+        json(Json {
+            decodeEnumsCaseInsensitive = true
+        })
     }
     routing {
         statusEndpoint()
         stockCount()
         sale()
         delivery()
+        move()
     }
 }

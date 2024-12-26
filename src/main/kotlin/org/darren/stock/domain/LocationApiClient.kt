@@ -26,6 +26,8 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
 
     suspend fun ensureValidLocation(locationId: String) = getLocation(locationId)
 
+    suspend fun ensureValidLocations(vararg locations: String) = locations.forEach { ensureValidLocation(it) }
+
     suspend fun getLocationsHierarchy(locationId: String): Map<String, String> {
         val response = client.get("${baseUrl}/locations/$locationId/children")
         if(response.status.isSuccess())

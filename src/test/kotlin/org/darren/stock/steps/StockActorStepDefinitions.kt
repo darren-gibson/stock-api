@@ -48,7 +48,7 @@ class StockActorStepDefinitions : KoinComponent {
         }
 
     @Then("the current stock level of {string} in {string} will equal {double}")
-    @Then("the stock level of product {string} in {string} should be updated to {double}")
+    @Then("the stock level of {string} in {string} should be updated to {double}")
     fun theCurrentStockLevelOfProductInStoreWillEqual(productId: String, locationId: String, expectedQuantity: Double) =
         runBlocking {
             val actualStock = getStockLevel(locationId, productId)

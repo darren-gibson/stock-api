@@ -14,7 +14,6 @@ object Move {
         val to = getStockPot(movement.to, movement.product)
 
         move(movement, from, to)
-//            throw OperationNotSupportedException("both ${movement.from} and ${movement.to} must be Tracked locations.")
     }
 
     private suspend fun move(
