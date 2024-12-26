@@ -1,7 +1,7 @@
 package org.darren.stock.persistence
 
 import org.darren.stock.domain.StockEventRepository
-import org.darren.stock.domain.actors.StockPotMessages
+import org.darren.stock.domain.actors.events.StockPotMessages
 
 class InMemoryStockEventRepository: StockEventRepository {
     override fun getEventsForProductLocation(location: String, product: String): Iterable<StockPotMessages> {

@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
 import org.darren.stock.domain.stockSystem.GetValue.getValue
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.domain.stockSystem.delivery
+import org.darren.stock.domain.stockSystem.Delivery.delivery
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.component.KoinComponent

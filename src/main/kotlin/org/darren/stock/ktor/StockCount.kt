@@ -15,38 +15,43 @@ import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 
-fun Routing.stockCount() {
-    val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+object StockCount {
+    fun Routing.stockCount() {
+        val locations by inject<LocationApiClient>(LocationApiClient::class.java)
 
-    post("/locations/{locationId}/products/{productId}/counts") {
-        val stockSystem = inject<StockSystem>(StockSystem::class.java)
-        val locationId = call.parameters["locationId"]!!
-        val productId = call.parameters["productId"]!!
+        post("/locations/{locationId}/products/{productId}/counts") {
+            val stockSystem = inject<StockSystem>(StockSystem::class.java)
+            val locationId = call.parameters["locationId"]!!
+            val productId = call.parameters["productId"]!!
 
-        val request = call.receive<StockCountRequestDTO>()
+            val request = call.receive<StockCountRequestDTO>()
 
-        try {
-            locations.ensureValidLocation(locationId)
-            with(request) {
-                stockSystem.value.count(locationId, productId, quantity, reason, now())
-                call.respond(Created, StockCountResponseDTO(requestId, locationId, productId, quantity, reason, now()))
+            try {
+                locations.ensureValidLocation(locationId)
+                with(request) {
+                    stockSystem.value.count(locationId, productId, quantity, reason, now())
+                    call.respond(
+                        Created,
+                        StockCountResponseDTO(requestId, locationId, productId, quantity, reason, now())
+                    )
+                }
+            } catch (e: LocationNotFoundException) {
+                call.respond(NotFound, ErrorDTO("LocationNotFound"))
             }
-        } catch (e: LocationNotFoundException) {
-            call.respond(NotFound, ErrorDTO("LocationNotFound"))
         }
     }
+
+    @Serializable
+    private data class StockCountRequestDTO(val requestId: String, val reason: StockCountReason, val quantity: Double)
+
+    @Serializable
+    private data class StockCountResponseDTO(
+        val requestId: String,
+        val location: String,
+        val productId: String,
+        val quantity: Double,
+        val reason: StockCountReason,
+        @Serializable(with = DateSerializer::class)
+        val createdAt: LocalDateTime
+    )
 }
-
-@Serializable
-data class StockCountRequestDTO(val requestId: String, val reason: StockCountReason, val quantity: Double)
-
-@Serializable
-data class StockCountResponseDTO(
-    val requestId: String,
-    val location: String,
-    val productId: String,
-    val quantity: Double,
-    val reason: StockCountReason,
-    @Serializable(with = DateSerializer::class)
-    val createdAt: LocalDateTime
-)

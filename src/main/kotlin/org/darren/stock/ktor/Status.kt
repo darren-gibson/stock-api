@@ -1,13 +1,24 @@
 package org.darren.stock.ktor
 
+import io.ktor.http.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 
-@Serializable
-internal data class Status(val status: StatusCode) {
-    enum class StatusCode {
-        Healthy
+object Status {
+    fun Routing.statusEndpoint() {
+        get("/_status") {
+            call.respond(HttpStatusCode.OK, StatusDTO.healthy())
+        }
     }
-    companion object {
-        fun healthy() = Status(StatusCode.Healthy)
+
+    @Serializable
+    private data class StatusDTO(val status: StatusCode) {
+        enum class StatusCode {
+            Healthy
+        }
+        companion object {
+            fun healthy() = StatusDTO(StatusCode.Healthy)
+        }
     }
 }

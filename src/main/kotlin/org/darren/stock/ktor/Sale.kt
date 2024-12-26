@@ -11,46 +11,47 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.LocationNotFoundException
 import org.darren.stock.domain.OperationNotSupportedException
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.domain.stockSystem.sale
+import org.darren.stock.domain.stockSystem.Sale.sale
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 
+object Sale {
+    fun Routing.sale() {
+        val locations by inject<LocationApiClient>(LocationApiClient::class.java)
 
-fun Routing.sale() {
-    val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+        post("/stores/{locationId}/products/{productId}/sales") {
+            val stockSystem = inject<StockSystem>(StockSystem::class.java).value
+            val locationId = call.parameters["locationId"]!!
+            val productId = call.parameters["productId"]!!
 
-    post("/stores/{locationId}/products/{productId}/sales") {
-        val stockSystem = inject<StockSystem>(StockSystem::class.java).value
-        val locationId = call.parameters["locationId"]!!
-        val productId = call.parameters["productId"]!!
+            val request = call.receive<SaleRequestDTO>()
 
-        val request = call.receive<SaleRequestDTO>()
+            try {
+                locations.ensureValidLocation(locationId)
 
-        try {
-            locations.ensureValidLocation(locationId)
-
-            with(request) {
-                stockSystem.sale(locationId, productId, quantity, now())
-                call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, now()))
+                with(request) {
+                    stockSystem.sale(locationId, productId, quantity, now())
+                    call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, now()))
+                }
+            } catch (e: LocationNotFoundException) {
+                call.respond(NotFound, ErrorDTO("LocationNotFound"))
+            } catch (e: OperationNotSupportedException) {
+                call.respond(Conflict, ErrorDTO("LocationNotSupported"))
             }
-        } catch (e: LocationNotFoundException) {
-            call.respond(NotFound, ErrorDTO("LocationNotFound"))
-        } catch (e: OperationNotSupportedException) {
-            call.respond(Conflict, ErrorDTO("LocationNotSupported"))
         }
     }
+
+    @Serializable
+    private data class SaleRequestDTO(val requestId: String, val quantity: Double)
+
+    @Serializable
+    private data class SaleResponseDTO(
+        val requestId: String,
+        val location: String,
+        val productId: String,
+        val quantitySold: Double,
+        @Serializable(with = DateSerializer::class)
+        val saleTimestamp: LocalDateTime
+    )
 }
-
-@Serializable
-data class SaleRequestDTO(val requestId: String, val quantity: Double)
-
-@Serializable
-data class SaleResponseDTO(
-    val requestId: String,
-    val location: String,
-    val productId: String,
-    val quantitySold: Double,
-    @Serializable(with = DateSerializer::class)
-    val saleTimestamp: LocalDateTime
-)

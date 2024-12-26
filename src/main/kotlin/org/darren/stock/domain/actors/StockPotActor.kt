@@ -6,8 +6,10 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import org.darren.stock.domain.Location
+import org.darren.stock.domain.actors.events.StockPotMessages
 import org.koin.core.component.KoinComponent
 
+typealias Reply = Result<Double>
 
 class StockPotActor(locationId: String, private val productId: String, initialQuantity: Double) :
     KoinComponent {
@@ -15,6 +17,7 @@ class StockPotActor(locationId: String, private val productId: String, initialQu
     private val location = Location(locationId)
 
     companion object {
+
         private val logger = KotlinLogging.logger {}
 
         @OptIn(ObsoleteCoroutinesApi::class)

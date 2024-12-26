@@ -1,8 +1,11 @@
-package org.darren.stock.domain.actors
+package org.darren.stock.domain.actors.events
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.SendChannel
-import org.darren.stock.domain.*
+import org.darren.stock.domain.InsufficientStockException
+import org.darren.stock.domain.Location
+import org.darren.stock.domain.StockMovementReason
+import org.darren.stock.domain.actors.Reply
 import java.time.LocalDateTime
 
 class MoveEvent(

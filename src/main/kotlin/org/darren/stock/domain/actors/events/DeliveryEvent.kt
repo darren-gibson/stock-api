@@ -1,7 +1,8 @@
-package org.darren.stock.domain.actors
+package org.darren.stock.domain.actors.events
 
 import kotlinx.coroutines.CompletableDeferred
 import org.darren.stock.domain.Location
+import org.darren.stock.domain.actors.Reply
 import java.time.LocalDateTime
 
 class DeliveryEvent(val eventTime: LocalDateTime, val quantity: Double, result: CompletableDeferred<Reply>) :

@@ -5,7 +5,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.actors.StockPotActor.Companion.stockPotActor
-import org.darren.stock.domain.actors.StockPotMessages
+import org.darren.stock.domain.actors.events.StockPotMessages
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

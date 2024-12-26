@@ -3,9 +3,9 @@ package org.darren.stock.domain.stockSystem
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.StockMovement
-import org.darren.stock.domain.actors.MoveEvent
+import org.darren.stock.domain.actors.events.MoveEvent
 import org.darren.stock.domain.actors.Reply
-import org.darren.stock.domain.actors.StockPotMessages
+import org.darren.stock.domain.actors.events.StockPotMessages
 import java.time.LocalDateTime
 
 object Move {

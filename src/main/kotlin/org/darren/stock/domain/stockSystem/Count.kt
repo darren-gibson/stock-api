@@ -2,7 +2,7 @@ package org.darren.stock.domain.stockSystem
 
 import kotlinx.coroutines.CompletableDeferred
 import org.darren.stock.domain.StockCountReason
-import org.darren.stock.domain.actors.CountEvent
+import org.darren.stock.domain.actors.events.CountEvent
 import org.darren.stock.domain.actors.Reply
 import java.time.LocalDateTime
 

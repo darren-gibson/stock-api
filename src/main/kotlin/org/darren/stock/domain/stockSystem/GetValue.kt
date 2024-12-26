@@ -1,11 +1,11 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.actors.StockPotMessages
+import org.darren.stock.domain.actors.events.StockPotMessages
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.LocationApiClient
-import org.darren.stock.domain.actors.GetValue
+import org.darren.stock.domain.actors.events.GetValue
 import org.darren.stock.domain.actors.Reply
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
