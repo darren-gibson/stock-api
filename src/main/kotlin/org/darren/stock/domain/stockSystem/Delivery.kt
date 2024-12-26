@@ -1,15 +1,11 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.OperationNotSupportedException
-import org.darren.stock.domain.actors.TrackedStockPotMessages
+import org.darren.stock.domain.actors.StockPotMessages
 import java.time.LocalDateTime
 
 suspend fun StockSystem.delivery(locationId: String, productId: String, quantity: Double, eventTime: LocalDateTime) {
-    when (val type = getStockPot(locationId, productId)) {
-        is ChannelType.TrackedChannel -> type.channel.send(
-            TrackedStockPotMessages.DeliveryEvent(eventTime, quantity)
-        )
+    val stockPot = getStockPot(locationId, productId)
+    stockPot.send(StockPotMessages.DeliveryEvent(eventTime, quantity))
 
-        else -> throw OperationNotSupportedException("Untracked location $locationId cannot accept deliveries.")
-    }
+    // else -> throw OperationNotSupportedException("Untracked location $locationId cannot accept deliveries.")
 }

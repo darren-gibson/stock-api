@@ -7,12 +7,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="refactored to more &quot;type&quot; to roles.">
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Before removal of Tracked/Untracked StockPot actors">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/Location.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/Main.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/JsonSerializerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/infrastructureTests/JsonSerializerTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/RunSuiteTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/RunSuiteTests.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockEventRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockEventRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/TrackedStockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/TrackedStockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotMessages.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/UntrackedStockPotActor.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/UntrackedStockPotMessages.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/ChannelType.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Count.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Count.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Delivery.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Sale.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/persistence/InMemoryStockEventRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/persistence/InMemoryStockEventRepository.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,7 +145,9 @@
     "Cucumber Java.Feature: Status.executor": "Run",
     "Cucumber Java.Scenario: Fail to create a stock count due to invalid location.executor": "Run",
     "Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop.executor": "Debug",
+    "Cucumber Java.Scenario: Fail to record a product sale due to an invalid location.executor": "Run",
     "Cucumber Java.Scenario: Successfully create a stock count.executor": "Run",
+    "Cucumber Java.Scenario: Successfully record a delivery and update stock levels.executor": "Run",
     "Gradle.AsciiDoctorHelperKtTest.executor": "Run",
     "Gradle.Build simple-stock.executor": "Run",
     "Gradle.Download Sources.executor": "Run",
@@ -210,15 +225,73 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTestClass">
-    <configuration name="Scenario: Fail to record a product sale against a location that's not a shop" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: 2. Delivery Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
+      <option name="SUGGESTED_NAME" value="Feature: 2. Delivery Contract" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Feature: 2. Sale Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
       <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Fail to record a product sale against a location that\'s not a shop$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Fail to record a product sale against a location that\'s not a shop$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Fail to record a product sale against a location that's not a shop" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
+      <option name="SUGGESTED_NAME" value="Feature: 2. Sale Contract" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scenario: Fail to record a product sale due to an invalid location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^Fail to record a product sale due to an invalid location$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Fail to record a product sale due to an invalid location$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Fail to record a product sale due to an invalid location" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scenario: Successfully record a delivery and update stock levels" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^Successfully record a delivery and update stock levels$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully record a delivery and update stock levels$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Successfully record a delivery and update stock levels" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -254,73 +327,20 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="Tests in 'org.darren.stock'" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;org.darren.stock.*&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="simple-stock [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="run" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="ApplicationKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.darren.stock.ktor.ApplicationKt" />
-      <module name="stock-api.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <list>
-      <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop" />
+      <item itemvalue="Cucumber Java.Feature: 2. Sale Contract" />
+      <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale due to an invalid location" />
+      <item itemvalue="Cucumber Java.Scenario: Successfully record a delivery and update stock levels" />
+      <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
-      <item itemvalue="Gradle.Tests in 'org.darren.stock'" />
-      <item itemvalue="Gradle.simple-stock [run]" />
-      <item itemvalue="Kotlin.ApplicationKt" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
-        <item itemvalue="Kotlin.ApplicationKt" />
-        <item itemvalue="Gradle.Tests in 'org.darren.stock'" />
-        <item itemvalue="Gradle.simple-stock [run]" />
-        <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop" />
+        <item itemvalue="Cucumber Java.Scenario: Successfully record a delivery and update stock levels" />
+        <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
+        <item itemvalue="Cucumber Java.Feature: 2. Sale Contract" />
+        <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale due to an invalid location" />
       </list>
     </recent_temporary>
   </component>
@@ -637,12 +657,58 @@
       <option name="project" value="LOCAL" />
       <updated>1734888971588</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Before removal of Tracked/Untracked StockPot actors">
+      <option name="closed" value="true" />
+      <created>1735128455957</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1735128455957</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Before removal of Tracked/Untracked StockPot actors">
+      <option name="closed" value="true" />
+      <created>1735128514631</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1735128514631</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="134bb500-d893-4ac3-a2c9-e214a7248f67" value="TOOL_WINDOW" />
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
+        <entry key="134bb500-d893-4ac3-a2c9-e214a7248f67">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="structure">
+                    <value>
+                      <list>
+                        <option value="dir:/Users/darren.gibson/Projects/simple-stock/src/main/kotlin/org/darren/stock/domain/actors" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
@@ -677,7 +743,8 @@
     <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.0.21&quot;" />
     <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.1&quot;.  Get tests working with Location API dependencies." />
     <MESSAGE value="refactored to more &quot;type&quot; to roles." />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored to more &quot;type&quot; to roles." />
+    <MESSAGE value="Before removal of Tracked/Untracked StockPot actors" />
+    <option name="LAST_COMMIT_MESSAGE" value="Before removal of Tracked/Untracked StockPot actors" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -688,7 +755,7 @@
         </breakpoint>
         <line-breakpoint type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt</url>
-          <line>52</line>
+          <line>54</line>
           <option name="timeStamp" value="70" />
         </line-breakpoint>
         <line-breakpoint type="kotlin-line">
@@ -704,14 +771,10 @@
           </properties>
           <option name="timeStamp" value="77" />
         </line-breakpoint>
-        <line-breakpoint type="kotlin-function">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt</url>
-          <line>43</line>
-          <properties class="org.darren.stock.domain.LocationApiClient.LocationDTO" method="isTracked">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="74" />
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt</url>
+          <line>21</line>
+          <option name="timeStamp" value="81" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -7,27 +7,30 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.SendChannel
 import java.time.LocalDateTime
 
-sealed class TrackedStockPotMessages : UntrackedStockPotMessages() {
-    class SaleEvent(val eventTime: LocalDateTime, val quantity: Double) : TrackedStockPotMessages() {
+typealias Reply = Result<Double>
+
+sealed class StockPotMessages {
+    class SaleEvent(val eventTime: LocalDateTime, val quantity: Double, val result: CompletableDeferred<Reply>) :
+        StockPotMessages() {
         override fun toString(): String {
             return "SaleEvent(eventTime=$eventTime, quantity=$quantity)"
         }
     }
 
-    class DeliveryEvent(val eventTime: LocalDateTime, val quantity: Double) : TrackedStockPotMessages() {
+    class DeliveryEvent(val eventTime: LocalDateTime, val quantity: Double) : StockPotMessages() {
         override fun toString(): String {
             return "DeliveryEvent(eventTime=$eventTime, quantity=$quantity)"
         }
     }
 
-    class GetValue(val response: CompletableDeferred<Double>) : TrackedStockPotMessages() {
+    class GetValue(val response: CompletableDeferred<Double>) : StockPotMessages() {
         override fun toString(): String {
             return "GetValue(response=$response)"
         }
     }
 
     class CountEvent(val eventTime: LocalDateTime, val quantity: Double, val reason: StockCountReason) :
-        TrackedStockPotMessages() {
+        StockPotMessages() {
         override fun toString(): String {
             return "CountEvent(eventTime=$eventTime, quantity=$quantity, reason=$reason)"
         }
@@ -36,11 +39,11 @@ sealed class TrackedStockPotMessages : UntrackedStockPotMessages() {
     class MoveEvent(
         val productId: String,
         val quantity: Double,
-        val to: SendChannel<TrackedStockPotMessages>,
+        val to: SendChannel<StockPotMessages>,
         val reason: StockMovementReason,
         val eventTime: LocalDateTime,
         val result: CompletableDeferred<MoveResult>
-    ) : TrackedStockPotMessages() {
+    ) : StockPotMessages() {
         override fun toString(): String {
             return "MoveEvent(productId='$productId', quantity=$quantity, to=$to, reason=$reason, eventTime=$eventTime)"
         }
@@ -52,7 +55,7 @@ sealed class TrackedStockPotMessages : UntrackedStockPotMessages() {
         val from: String,
         val reason: StockMovementReason,
         val eventTime: LocalDateTime
-    ) : TrackedStockPotMessages() {
+    ) : StockPotMessages() {
         override fun toString(): String {
             return "InternalMoveToEvent(productId='$productId', quantity=$quantity, from=$from, reason=$reason, eventTime=$eventTime)"
         }

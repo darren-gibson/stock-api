@@ -24,12 +24,7 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
         }
     }
 
-    suspend fun isTracked(locationId: String): Boolean {
-        val response = client.get("${baseUrl}/locations/$locationId")
-        if(response.status.isSuccess())
-            return response.body<LocationDTO>().isTracked
-        throw LocationNotFoundException(locationId)
-    }
+    suspend fun ensureValidLocation(locationId: String) = getLocation(locationId)
 
     suspend fun getLocationsHierarchy(locationId: String): Map<String, String> {
         val response = client.get("${baseUrl}/locations/$locationId/children")
@@ -38,14 +33,21 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
         throw LocationNotFoundException(locationId)
     }
 
+    suspend fun isShop(locationId: String): Boolean {
+        return getLocation(locationId).isShop
+    }
+
+    private suspend fun getLocation(locationId: String): LocationDTO {
+        val response = client.get("${baseUrl}/locations/$locationId")
+        if (response.status.isSuccess())
+            return response.body<LocationDTO>()
+        throw LocationNotFoundException(locationId)
+    }
+
     @Serializable
     data class LocationDTO(val id: String, val roles: Set<String>, val children: List<LocationDTO> = emptyList()) {
-        val isTracked // TODO: Implement this correctly
-            get() = isShop
-
-        private val isShop
+        val isShop
             get() = roles.contains(LocationRoles.Shop.name)
-
 
         fun toHierarchyMap(): Map<String, String> {
             // TODO("Implement me")

@@ -1,12 +1,13 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.OperationNotSupportedException
-import org.darren.stock.domain.actors.TrackedStockPotMessages
+import kotlinx.coroutines.CompletableDeferred
+import org.darren.stock.domain.actors.Reply
+import org.darren.stock.domain.actors.StockPotMessages
 import java.time.LocalDateTime
 
 suspend fun StockSystem.sale(locationId: String, productId: String, quantity: Double, eventTime: LocalDateTime) {
-    when (val type = getStockPot(locationId, productId)) {
-        is ChannelType.TrackedChannel -> type.channel.send(TrackedStockPotMessages.SaleEvent(eventTime, quantity))
-        else -> throw OperationNotSupportedException("Untracked location $locationId cannot perform sales.")
-    }
+    val stockPot = getStockPot(locationId, productId)
+    val result = CompletableDeferred<Reply>()
+    stockPot.send(StockPotMessages.SaleEvent(eventTime, quantity, result))
+    result.await().getOrThrow()
 }

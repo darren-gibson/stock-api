@@ -7,6 +7,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
+import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.LocationNotFoundException
 import org.darren.stock.domain.OperationNotSupportedException
 import org.darren.stock.domain.stockSystem.StockSystem
@@ -17,6 +18,8 @@ import java.time.LocalDateTime.now
 
 
 fun Routing.sale() {
+    val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+
     post("/stores/{locationId}/products/{productId}/sales") {
         val stockSystem = inject<StockSystem>(StockSystem::class.java).value
         val locationId = call.parameters["locationId"]!!
@@ -25,6 +28,8 @@ fun Routing.sale() {
         val request = call.receive<SaleRequestDTO>()
 
         try {
+            locations.ensureValidLocation(locationId)
+
             with(request) {
                 stockSystem.sale(locationId, productId, quantity, now())
                 call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, now()))
