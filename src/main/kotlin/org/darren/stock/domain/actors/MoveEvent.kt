@@ -11,8 +11,8 @@ class MoveEvent(
     val to: SendChannel<StockPotMessages>,
     val reason: StockMovementReason,
     val eventTime: LocalDateTime,
-    val result: CompletableDeferred<Reply>
-) : StockPotMessages() {
+    result: CompletableDeferred<Reply>
+) : StockPotMessages(result) {
     override suspend fun execute(location: Location, productId: String, currentStock: Double): Double {
         val response = Result.runCatching {
             performMove(location, productId, currentStock)
@@ -25,7 +25,10 @@ class MoveEvent(
         if (currentStock < quantity)
             throw InsufficientStockException()
 
-        to.send(InternalMoveToEvent(productId, quantity, location.id, reason, eventTime))
+        val internalMoveResult = CompletableDeferred<Reply>()
+
+        to.send(InternalMoveToEvent(productId, quantity, location.id, reason, eventTime, internalMoveResult))
+        internalMoveResult.await().getOrThrow()
         return currentStock - quantity
     }
 

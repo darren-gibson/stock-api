@@ -7,22 +7,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Removed Untracked Stock Pots">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/CountEvent.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/DeliveryEvent.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/GetValue.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/InternalMoveToEvent.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/MoveEvent.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/SaleEvent.kt" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Refactor to remove the switch statement for the Stock Pot Actor">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/MoveResult.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/CountEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/CountEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/DeliveryEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/DeliveryEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/GetValue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/GetValue.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/InternalMoveToEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/InternalMoveToEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/MoveEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/MoveEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/SaleEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/SaleEvent.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotMessages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotMessages.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Count.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Count.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Delivery.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Sale.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +126,7 @@
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Cucumber Java.Feature: 2. Delivery Contract.executor": "Run",
-    "Cucumber Java.Feature: 2. Sale Contract.executor": "Debug",
+    "Cucumber Java.Feature: 2. Sale Contract.executor": "Run",
     "Cucumber Java.Feature: 3. Sale.executor": "Run",
     "Cucumber Java.Feature: 4. Sale Error Flows.executor": "Run",
     "Cucumber Java.Feature: AdminOverride.executor": "Run",
@@ -678,13 +675,22 @@
       <option name="project" value="LOCAL" />
       <updated>1735207206307</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Refactor to remove the switch statement for the Stock Pot Actor">
+      <option name="closed" value="true" />
+      <created>1735211213695</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1735211213695</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="OPEN_GENERIC_TABS">
       <map>
         <entry key="134bb500-d893-4ac3-a2c9-e214a7248f67" value="TOOL_WINDOW" />
+        <entry key="6aebfd7e-9ecf-4e76-bd6b-e748cddd8cf0" value="TOOL_WINDOW" />
       </map>
     </option>
     <option name="TAB_STATES">
@@ -714,6 +720,11 @@
             </State>
           </value>
         </entry>
+        <entry key="6aebfd7e-9ecf-4e76-bd6b-e748cddd8cf0">
+          <value>
+            <State />
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
@@ -724,7 +735,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="refactor to introduce the concept of Stock and remove the logic of finding the correct stock pot from the test." />
     <MESSAGE value="Implement the ability to hold separate stock pots for a product in different locations" />
     <MESSAGE value="Implement support for a Sale from a location" />
     <MESSAGE value="Create a basic location hierarchy, will need to rework and implement the construct of some locations are tracked and support some operations, while some do not." />
@@ -749,7 +759,8 @@
     <MESSAGE value="refactored to more &quot;type&quot; to roles." />
     <MESSAGE value="Before removal of Tracked/Untracked StockPot actors" />
     <MESSAGE value="Removed Untracked Stock Pots" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed Untracked Stock Pots" />
+    <MESSAGE value="Refactor to remove the switch statement for the Stock Pot Actor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor to remove the switch statement for the Stock Pot Actor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -785,14 +796,6 @@
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt</url>
           <line>27</line>
           <option name="timeStamp" value="82" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/SaleEvent.kt</url>
-          <line>10</line>
-          <properties>
-            <option name="lambda-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="83" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

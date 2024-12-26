@@ -31,7 +31,10 @@ class StockPotActor(locationId: String, private val productId: String, initialQu
     private suspend fun onReceive(message: StockPotMessages) {
         logger.debug { "$this, MSG=$message" }
 
-        currentStock = message.execute(location, productId, currentStock)
+        message.result.complete(Reply.runCatching {
+            currentStock = message.execute(location, productId, currentStock)
+            currentStock
+        })
 
         logger.debug { this }
     }

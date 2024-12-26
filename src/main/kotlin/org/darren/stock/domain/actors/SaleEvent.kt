@@ -5,15 +5,10 @@ import org.darren.stock.domain.Location
 import org.darren.stock.domain.OperationNotSupportedException
 import java.time.LocalDateTime
 
-class SaleEvent(val eventTime: LocalDateTime, val quantity: Double, val result: CompletableDeferred<Reply>) :
-    StockPotMessages() {
-    override suspend fun execute(location: Location, productId: String, currentStock: Double): Double {
-        val response = Reply.runCatching {
-            performSale(location, currentStock)
-        }
-        result.complete(response)
-        return response.getOrElse { currentStock }
-    }
+class SaleEvent(val eventTime: LocalDateTime, val quantity: Double, result: CompletableDeferred<Reply>) :
+    StockPotMessages(result) {
+    override suspend fun execute(location: Location, productId: String, currentStock: Double) =
+        performSale(location, currentStock)
 
     private suspend fun performSale(location: Location, currentStock: Double): Double {
         if (location.isShop()) {

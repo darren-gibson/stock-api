@@ -3,13 +3,10 @@ package org.darren.stock.domain.actors
 import kotlinx.coroutines.CompletableDeferred
 import org.darren.stock.domain.Location
 
-class GetValue(val response: CompletableDeferred<Double>) : StockPotMessages() {
-    override suspend fun execute(location: Location, productId: String, currentStock: Double): Double {
-        response.complete(currentStock)
-        return currentStock
-    }
+class GetValue(result: CompletableDeferred<Reply>) : StockPotMessages(result) {
+    override suspend fun execute(location: Location, productId: String, currentStock: Double) = currentStock
 
     override fun toString(): String {
-        return "GetValue(response=$response)"
+        return "GetValue(response=$result)"
     }
 }

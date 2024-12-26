@@ -6,6 +6,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.actors.GetValue
+import org.darren.stock.domain.actors.Reply
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -14,10 +15,10 @@ object GetValue : KoinComponent {
         val stockPots = getAllStockPotAndAllChildrenForLocation(this, locationId, productId)
 
         return stockPots.map { sp ->
-            val completable = CompletableDeferred<Double>()
+            val completable = CompletableDeferred<Reply>()
             sp.send(GetValue(completable))
             completable
-        }.awaitAll().sum()
+        }.awaitAll().sumOf { it.getOrThrow() }
     }
 
     private suspend fun getAllStockPotAndAllChildrenForLocation(

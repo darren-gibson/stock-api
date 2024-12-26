@@ -1,5 +1,6 @@
 package org.darren.stock.domain.actors
 
+import kotlinx.coroutines.CompletableDeferred
 import org.darren.stock.domain.Location
 import org.darren.stock.domain.StockMovementReason
 import java.time.LocalDateTime
@@ -9,8 +10,9 @@ internal class InternalMoveToEvent(
     val quantity: Double,
     val from: String,
     val reason: StockMovementReason,
-    val eventTime: LocalDateTime
-) : StockPotMessages() {
+    val eventTime: LocalDateTime, result: CompletableDeferred<Reply>
+) :
+    StockPotMessages(result) {
     override suspend fun execute(location: Location, productId: String, currentStock: Double) =
         currentStock + quantity
 
