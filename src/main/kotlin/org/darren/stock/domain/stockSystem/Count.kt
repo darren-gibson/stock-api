@@ -1,7 +1,7 @@
 package org.darren.stock.domain.stockSystem
 
 import org.darren.stock.domain.StockCountReason
-import org.darren.stock.domain.actors.StockPotMessages.CountEvent
+import org.darren.stock.domain.actors.CountEvent
 import java.time.LocalDateTime
 
 suspend fun StockSystem.count(

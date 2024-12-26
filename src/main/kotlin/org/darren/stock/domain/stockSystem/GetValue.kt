@@ -5,6 +5,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.actors.GetValue
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -14,7 +15,7 @@ object GetValue : KoinComponent {
 
         return stockPots.map { sp ->
             val completable = CompletableDeferred<Double>()
-            sp.send(StockPotMessages.GetValue(completable))
+            sp.send(GetValue(completable))
             completable
         }.awaitAll().sum()
     }

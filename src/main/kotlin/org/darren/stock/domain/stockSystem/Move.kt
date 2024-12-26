@@ -1,12 +1,11 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.InsufficientStockException
-import org.darren.stock.domain.MoveResult
-import org.darren.stock.domain.StockMovement
-import org.darren.stock.domain.actors.StockPotMessages
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.SendChannel
-import org.darren.stock.domain.actors.StockPotMessages.*
+import org.darren.stock.domain.StockMovement
+import org.darren.stock.domain.actors.MoveEvent
+import org.darren.stock.domain.actors.Reply
+import org.darren.stock.domain.actors.StockPotMessages
 import java.time.LocalDateTime
 
 object Move {
@@ -23,14 +22,11 @@ object Move {
         from: SendChannel<StockPotMessages>,
         to: SendChannel<StockPotMessages>
     ) {
-        val result = CompletableDeferred<MoveResult>()
+        val result = CompletableDeferred<Reply>()
 
         with(move) {
             from.send(MoveEvent(product, quantity, to, reason, LocalDateTime.now(), result))
-            when (result.await()) {
-                MoveResult.Success -> return
-                MoveResult.InsufficientStock -> throw InsufficientStockException()
-            }
+            result.await().getOrThrow()
         }
     }
 }
