@@ -1,7 +1,7 @@
-@section-Movement @asciidoc
+@section-Movement @asciidoc @order-1
 Feature: Contract: Stock Movement Endpoint
 
-  ==== Create Stock Movement Transaction Endpoint Specification
+  === Create Stock Movement Transaction Endpoint Specification
 
   The Create Stock Movement Transaction endpoint enables users to log the transfer of stock between locations. This endpoint is essential for maintaining real-time accuracy in inventory tracking and ensuring seamless operational workflows. The endpoint supports detailed documentation of each transaction, capturing critical data points for transparency and traceability.
 
@@ -16,7 +16,7 @@ Feature: Contract: Stock Movement Endpoint
   | `response format`| JSON
   |===
 
-  == Input Parameters
+  ==== Input Parameters
 
   The Create Stock Movement Transaction endpoint accepts the following mandatory and optional input parameters:
 
@@ -33,7 +33,7 @@ Feature: Contract: Stock Movement Endpoint
   | `reason`               | The reason for the stock movement.                                | Optional | `"replenishment"`
   |===
 
-  == REST Endpoint Definition
+  ==== REST Endpoint Definition
 
   **Endpoint:**
   `POST /locations/{sourceLocationId}/{productId}/movements`
@@ -57,7 +57,7 @@ Feature: Contract: Stock Movement Endpoint
   }
   -----
 
-  == Example Response
+  ==== Example Response
 
   [source, http]
   .Successful response
@@ -76,7 +76,7 @@ Feature: Contract: Stock Movement Endpoint
   }
   -----
 
-  == Response Codes
+  ==== Response Codes
 
   [cols="1,3", options="header"]
   |===

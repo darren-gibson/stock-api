@@ -55,4 +55,10 @@ class ApiCallStepDefinitions : KoinComponent {
     private fun String.ignoreTimestamps(): String {
         return this.replace("<timestamp>", "\${json-unit.ignore}")
     }
+
+    @When("I send a GET request to {string}")
+    fun iSendAGETRequestTo(url: String): HttpResponse = runBlocking {
+        response = client.get(url)
+        return@runBlocking response
+    }
 }

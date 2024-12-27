@@ -44,6 +44,7 @@ class ServiceLifecycleSteps {
     private fun buildKtorTestApp(): TestApplication {
         return TestApplication {
             application { module() }
+
             externalServices {
                 hosts(locationHost) {
                     routing {

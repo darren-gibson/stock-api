@@ -12,6 +12,7 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.Delivery.delivery
+import org.darren.stock.ktor.GetStock.getStock
 import org.darren.stock.ktor.Move.move
 import org.darren.stock.ktor.Sale.sale
 import org.darren.stock.ktor.Status.statusEndpoint
@@ -42,10 +43,11 @@ fun Application.module() {
         })
     }
     routing {
+        move()
         statusEndpoint()
         stockCount()
         sale()
         delivery()
-        move()
+        getStock()
     }
 }

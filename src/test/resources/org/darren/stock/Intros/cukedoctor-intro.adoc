@@ -1,6 +1,11 @@
-@section-Intro
+= Introduction
 
-  Feature: Introduction
+== Features Not Yet Implemented
+
+* [ ] Idempotency
+* [ ] Consistency in multiple updates
+* [ ] Persistence
+* [ ] Event Store / Replay
 
     [ditaa, format="svg"]
     -----
@@ -20,7 +25,6 @@
     .-------------.  .--------------.
     |[Red Box]    |  |[Blue Box]    |
     '-------------'  '--------------'
-
     [Red Box]: {"fill":"#aa4444"}
     [Blue Box]: {"fill":"#ccccff"}
     -----
@@ -47,5 +51,3 @@
       "Cats" : 85
       "Rats" : 15
     -----
-
-    Scenario: Root

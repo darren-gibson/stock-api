@@ -7,22 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="more refactoring">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/MissingFieldsDTO.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/1. Movement Into.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/2. Movement Contract.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/working.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockMovementReason.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockMovementReason.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockActorStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockActorStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Movement.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/Movement.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Status.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Status/Status.feature" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement the Get Count endpoint and remove the direct use of the StockSystem from the test.">
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ProductStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ProductStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,6 +117,7 @@
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Cucumber Java.Feature: 1. Movement Into.executor": "Run",
     "Cucumber Java.Feature: 2. Delivery Contract.executor": "Run",
+    "Cucumber Java.Feature: 2. Get Stock Contract.executor": "Run",
     "Cucumber Java.Feature: 2. Movement Contract.executor": "Run",
     "Cucumber Java.Feature: 2. Sale Contract.executor": "Run",
     "Cucumber Java.Feature: 3. Sale.executor": "Run",
@@ -150,6 +138,7 @@
     "Cucumber Java.Scenario: Successfully record a delivery and update stock levels.executor": "Run",
     "Gradle.AsciiDoctorHelperKtTest.executor": "Run",
     "Gradle.Build simple-stock.executor": "Run",
+    "Gradle.Build stock-api.executor": "Run",
     "Gradle.Download Sources.executor": "Run",
     "Gradle.JsonSerializerTest.executor": "Run",
     "Gradle.RunSuiteTest (1).executor": "Run",
@@ -171,7 +160,7 @@
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/darren.gibson/Projects/simple-stock/gradle",
+    "last_opened_file_path": "/Users/darren.gibson/Projects/stock-api",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.54137933",
@@ -184,11 +173,11 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros" />
       <recent name="$PROJECT_DIR$/gradle" />
       <recent name="$PROJECT_DIR$/.gradle" />
       <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/darren/stock/ktor" />
-      <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -226,14 +215,14 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTestClass">
-    <configuration name="Feature: 1. Movement Into" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: 2. Get Stock Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/1. Movement Into.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: 1. Movement Into" />
+      <option name="SUGGESTED_NAME" value="Feature: 2. Get Stock Contract" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -332,7 +321,7 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Cucumber Java.Feature: 1. Movement Into" />
+      <item itemvalue="Cucumber Java.Feature: 2. Get Stock Contract" />
       <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
       <item itemvalue="Cucumber Java.Feature: Movement (1)" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
@@ -341,10 +330,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Feature: 2. Get Stock Contract" />
         <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
         <item itemvalue="Gradle.Tests in 'org.darren.stock'" />
         <item itemvalue="Cucumber Java.Feature: Movement (1)" />
-        <item itemvalue="Cucumber Java.Feature: 1. Movement Into" />
       </list>
     </recent_temporary>
   </component>
@@ -725,7 +714,23 @@
       <option name="project" value="LOCAL" />
       <updated>1735215376085</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="Introduce the Movement API Endpoint">
+      <option name="closed" value="true" />
+      <created>1735240172273</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1735240172273</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Implement the Get Count endpoint and remove the direct use of the StockSystem from the test.">
+      <option name="closed" value="true" />
+      <created>1735298878698</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1735298878698</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -777,8 +782,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Create a basic location hierarchy, will need to rework and implement the construct of some locations are tracked and support some operations, while some do not." />
-    <MESSAGE value="Refactor, introduce concept of untracked locations, but not implemented yet." />
     <MESSAGE value="Fix issues, refactor the StockPotActor to be a Actor class and Change StockActor to be StockSystem moving away from an Actor" />
     <MESSAGE value="Implement functionality for Tracked and Untracked locations" />
     <MESSAGE value="refactor to get the Test Runner to properly work using the correct runner" />
@@ -802,7 +805,9 @@
     <MESSAGE value="Refactor to remove the switch statement for the Stock Pot Actor" />
     <MESSAGE value="Simplify to request / response with StockPotActor" />
     <MESSAGE value="more refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="more refactoring" />
+    <MESSAGE value="Introduce the Movement API Endpoint" />
+    <MESSAGE value="Implement the Get Count endpoint and remove the direct use of the StockSystem from the test." />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement the Get Count endpoint and remove the direct use of the StockSystem from the test." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
