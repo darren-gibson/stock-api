@@ -1,38 +1,50 @@
 package org.darren.stock.ktor
 
+import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
+import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.LocationNotFoundException
+import org.darren.stock.domain.ProductQuantity
 import org.darren.stock.domain.stockSystem.Delivery.delivery
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
-import java.time.LocalDateTime.now
 
 object Delivery {
+    @OptIn(ExperimentalSerializationApi::class)
     fun Routing.delivery() {
+        val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+
         post("/locations/{locationId}/deliveries") {
             val stockSystem = inject<StockSystem>(StockSystem::class.java).value
-            val sourceLocationId = call.parameters["locationId"]!!
+            val locationId = call.parameters["locationId"]!!
 
-            val request = call.receive<DeliveryRequestDTO>()
 
             try {
+                val request = call.receive<DeliveryRequestDTO>()
+                locations.ensureValidLocations(locationId)
+
                 with(request) {
-                    stockSystem.delivery(sourceLocationId, productId, quantity, now())
-                    call.respond(
-                        Created, DeliveryResponseDTO(
-                            requestId, sourceLocationId, destinationLocationId,
-                            productId, quantity, now()
-                        )
-                    )
+                    stockSystem.delivery(locationId, supplierId, supplierRef, deliveryDate, products.productQuantity())
+                    call.respond(Created)
                 }
             } catch (e: LocationNotFoundException) {
                 call.respond(NotFound, ErrorDTO("LocationNotFound"))
+            } catch (e: BadRequestException) {
+                if (e.cause?.cause is MissingFieldException) {
+                    val missing: MissingFieldException = e.cause?.cause as MissingFieldException
+                    call.respond(BadRequest, MissingFieldsDTO(missing.missingFields))
+                } else {
+                    throw e
+                }
             }
         }
     }
@@ -40,19 +52,17 @@ object Delivery {
     @Serializable
     private data class DeliveryRequestDTO(
         val requestId: String,
-        val productId: String,
-        val quantity: Double,
-        val destinationLocationId: String
+        val supplierId: String,
+        val supplierRef: String,
+        @Serializable(with = DateSerializer::class)
+        val deliveryDate: LocalDateTime,
+        val products: List<ProductDTO>,
     )
 
     @Serializable
-    private data class DeliveryResponseDTO(
-        val requestId: String,
-        val sourceLocationId: String,
-        val destinationLocationId: String,
-        val productId: String,
-        val quantityDelivered: Double,
-        @Serializable(with = DateSerializer::class)
-        val deliveryTimestamp: LocalDateTime
-    )
+    data class ProductDTO(val productId: String, val quantity: Double)
+
+    private fun List<ProductDTO>.productQuantity(): List<ProductQuantity> {
+        return this.map { ProductQuantity(it.productId, it.quantity) }
+    }
 }

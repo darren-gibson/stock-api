@@ -1,6 +1,7 @@
 package org.darren.stock.steps
 
 import io.cucumber.java.DataTableType
+import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.*
@@ -40,6 +41,7 @@ class LocationAPIStepDefinitions : KoinComponent {
     @Given("{string} does not exist as a store")
     @Given("{string} does not exist as a Distribution Centre")
     @Given("an invalid location {string} is provided")
+    @Given("{string} does not exist as a location")
     fun anInvalidLocationIsProvided(locationId: String) {
         locations.remove(locationId)
     }
@@ -62,7 +64,6 @@ class LocationAPIStepDefinitions : KoinComponent {
             "createdAt": "2024-12-15T12:34:56Z"
         }"""
 
-
     @DataTableType
     fun locationEntryTransformer(row: Map<String?, String>): SimpleLocation {
         return SimpleLocation(row["id"]!!, row["type"]!!)
@@ -73,5 +74,11 @@ class LocationAPIStepDefinitions : KoinComponent {
     @Given("{string} is a {string} location")
     fun isALocation(locationId: String, role: String) {
         createLocationForTest(locationId, role)
+    }
+
+    @And("{string} is a receiving location in the network")
+    @And("{string} is a receiving location")
+    fun isAValidReceivingLocationInTheNetwork(locationId: String) {
+        theFollowingLocationsAreDefinedInTheLocationAPI(listOf(SimpleLocation(locationId, "Zone", "Zone")))
     }
 }

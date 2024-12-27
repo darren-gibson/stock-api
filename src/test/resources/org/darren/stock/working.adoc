@@ -1,43 +1,63 @@
-=== Get Stock Level for Product at Location Endpoint Specification
 
-The Get Stock Level for Product at Location endpoint provides real-time visibility into the inventory of specific products at designated locations. This functionality is essential for maintaining accurate inventory data and supporting operational decisions.
+=== Record Delivery Endpoint Specification
+
+The Record Delivery Endpoint enables the accurate logging of product deliveries from external suppliers into a location within the network. This functionality ensures seamless integration of incoming inventory into the system, supporting real-time stock updates and maintaining operational efficiency.
 
 [cols="1,3", options="header"]
 |===
 | Attribute        | Description
 
-| `endpoint`       | `/locations/{locationId}/products/{productId}`
-| `method`         | `GET`
-| `description`    | Retrieves the current stock level for a specific product at a given location.
+| `endpoint`       | `/locations/{locationId}/deliveries`
+| `method`         | `POST`
+| `description`    | Records a delivery of products from an external supplier into a specified receiving location.
 | `authentication` | Requires a valid API token with appropriate permissions.
+| `request format` | JSON
 | `response format`| JSON
 |===
 
 ==== Input Parameters
 
-The Get Stock Level for Product at Location endpoint accepts the following input parameters:
+The Record Delivery Endpoint accepts the following input parameters:
 
 [cols="1,4,1,2", options="header"]
 |===
-| Parameter              | Description                                                        | Required | Example
+| Parameter              | Description                                                       | Required | Example
 
-| `locationId`           | The identifier for the location.                                   | Yes      | `"warehouse1"`
-| `productId`            | The unique identifier for the product.                            | Yes      | `"product123"`
+| `locationId`           | The identifier for the receiving location within a warehouse (URI path). | Yes      | `"warehouse1-receiving"`
+| `requestId`            | A unique identifier for the request to ensure idempotency.        | Yes      | `"req-123456789"`
+| `supplierId`           | The unique identifier for the external supplier.                 | Yes      | `"supplier123"`
+| `supplierRef`          | A reference provided by the supplier for the delivery.           | No       | `"supplier-order-9876"`
+| `deliveryDate`         | The date and time of the delivery in ISO8601 format.             | Yes      | `"2024-12-26T15:35:00Z"`
+| `products`             | A list of products included in the delivery, including quantity. | Yes      | `[{"productId": "product456", "quantity": 100}]`
 | `Authentication Token` | The API token used for authentication.                            | Yes      | `Bearer abc123xyz`
 |===
 
 ==== REST Endpoint Definition
 
 **Endpoint:**
-`GET /locations/{locationId}/products/{productId}`
+`POST /locations/{locationId}/deliveries`
 
 [source, http]
-.Request to retrieve stock level
+.Request to record a delivery
 -----
-GET /locations/warehouse1/products/product123 HTTP/1.1
+POST /locations/warehouse1-receiving/deliveries HTTP/1.1
 Host: api.example.com
 Authorization: Bearer abc123xyz
+Content-Type: application/json
 Accept: application/json
+
+{
+    "requestId": "req-123456789",
+    "supplierId": "supplier123",
+    "supplierRef": "supplier-order-9876",
+    "deliveryDate": "2024-12-26T15:35:00Z",
+    "products": [
+        {
+            "productId": "product456",
+            "quantity": 100
+        }
+    ]
+}
 -----
 
 ==== Example Response
@@ -45,14 +65,13 @@ Accept: application/json
 [source, http]
 .Successful response
 -----
-HTTP/1.1 200 OK
+HTTP/1.1 201 Created
 Content-Type: application/json
 
 {
-"locationId": "warehouse1",
-"productId": "product123",
-"stockLevel": 150.5,
-"lastUpdated": "2024-12-26T15:35:00Z"
+    "deliveryId": "delivery789",
+    "status": "Recorded",
+    "timestamp": "2024-12-26T15:35:00Z"
 }
 -----
 
@@ -62,17 +81,19 @@ Content-Type: application/json
 |===
 | Code              | Description
 
-| `200 OK`          | Stock level successfully retrieved.
+| `201 Created`     | Delivery successfully recorded.
 | `400 Bad Request` | Invalid request data or missing required fields.
 | `401 Unauthorized`| Authentication token is missing or invalid.
-| `403 Forbidden`   | User does not have permission to access this data.
-| `404 Not Found`   | The specified location or product was not found.
+| `403 Forbidden`   | User does not have permission to access this functionality.
+| `409 Conflict`    | A delivery with the same `requestId` has already been processed.
 | `500 Internal Server Error` | An unexpected error occurred on the server.
 |===
 
 ==== Notes
 
+- **Idempotency Requirement:** The `requestId` ensures that duplicate submissions of the same request are handled gracefully.
 - **Authentication Requirement:** A valid API token with sufficient permissions is mandatory to use this endpoint.
-- **Precision in Stock Levels:** The `stockLevel` field is a double to support fractional quantities.
+- **Supplier Verification:** The `supplierId` must correspond to a registered external supplier.
+- **Delivery ID Generation:** A unique identifier is assigned to each recorded delivery for tracking purposes.
 
-The Get Stock Level for Product at Location endpoint provides a dependable method to monitor inventory and ensure operational consistency.
+The Record Delivery Endpoint provides a reliable way to document and track incoming deliveries, ensuring accurate inventory management and smooth operations.

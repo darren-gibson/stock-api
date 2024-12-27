@@ -1,3 +1,4 @@
+@section-Movement @asciidoc @order-2
 Feature: Feature: Stock Movement Transaction
   Stock Movement refers to the transfer of inventory from one location to another,
   typically recorded in an inventory management system. When movement occurs between tracked
