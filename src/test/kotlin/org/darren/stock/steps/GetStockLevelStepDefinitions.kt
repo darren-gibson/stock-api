@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 
 class GetStockLevelStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
-    private val testApp by inject<TestApplication>()
 
     @Then("the current stock level of {string} in {string} will equal {double}")
     @Then("the stock level of {string} in {string} should be updated to {double}")
@@ -52,6 +51,7 @@ class GetStockLevelStepDefinitions : KoinComponent {
 
     private fun getStockLevelFromApi(locationId: String, productId: String): HttpResponse =
         runBlocking {
+            val testApp by inject<TestApplication>()
             val url = "/locations/$locationId/products/$productId"
 
             val client = testApp.createClient { install(ContentNegotiation) {

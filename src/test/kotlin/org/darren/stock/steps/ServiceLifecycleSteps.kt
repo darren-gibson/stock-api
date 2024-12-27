@@ -13,11 +13,12 @@ import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.module
 import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
-class ServiceLifecycleSteps {
+class ServiceLifecycleSteps : KoinComponent {
     private lateinit var testApp: TestApplication
     private val locationHost = "http://location.api.darren.org"
 
