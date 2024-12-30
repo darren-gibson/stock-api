@@ -28,12 +28,19 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
 
     suspend fun ensureValidLocations(vararg locations: String) = locations.forEach { ensureValidLocation(it) }
 
-    suspend fun getLocationsHierarchy(locationId: String): Map<String, String> {
-        val response = client.get("${baseUrl}/locations/$locationId/children")
+    suspend fun getLocationsHierarchy(locationId: String, depth: Int? = null): LocationDTO {
+        val response = client.get(getHierarchyUri(depth, locationId))
         if(response.status.isSuccess())
-            return response.body<LocationDTO>().toHierarchyMap()
+            return response.body<LocationDTO>()
         throw LocationNotFoundException(locationId)
     }
+
+    private fun getHierarchyUri(depth: Int?, locationId: String) =
+        if (depth != null) {
+            "${baseUrl}/locations/$locationId/children?depth=$depth"
+        } else {
+            "${baseUrl}/locations/$locationId/children"
+        }
 
     suspend fun isShop(locationId: String): Boolean {
         return getLocation(locationId).isShop
@@ -50,28 +57,5 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
     data class LocationDTO(val id: String, val roles: Set<String>, val children: List<LocationDTO> = emptyList()) {
         val isShop
             get() = roles.contains(LocationRoles.Shop.name)
-
-        fun toHierarchyMap(): Map<String, String> {
-            // TODO("Implement me")
-//            val parent = id
-            return emptyMap()
-//            return children.flatMap { it.children }.map { it.id to parent.id }.
-        }
-
-//        fun <T> Iterable<*>.deepFlatten(): List<T> {
-//            val result = ArrayList<T>()
-//            for (element in this) {
-//                when (element) {
-//                    is Iterable<*> -> result.addAll(element.deepFlatten())
-//                    else -> result.add(element as T)
-//                }
-//            }
-//            return result
-//        }
-//
-//        val allChildren: List<LocationDTO>
-//            get() = children.flatMap {
-//                it.allChildren
-//            }
     }
 }

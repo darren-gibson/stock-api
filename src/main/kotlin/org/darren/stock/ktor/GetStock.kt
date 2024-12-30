@@ -7,6 +7,7 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.LocationNotFoundException
+import org.darren.stock.domain.StockLevel
 import org.darren.stock.domain.stockSystem.GetValue.getValue
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.koin.java.KoinJavaComponent.inject
@@ -21,12 +22,26 @@ object GetStock {
             val stockSystem = inject<StockSystem>(StockSystem::class.java).value
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!
+            val includeChildren = call.parameters["includeChildren"]?.toBoolean() ?: true
 
             try {
                 locations.ensureValidLocations(locationId)
 
-                val quantity = stockSystem.getValue(locationId, productId)
-                call.respond(OK, GetStockResponseDTO.from(locationId, productId, quantity))
+                val stockLevel = stockSystem.getValue(locationId, productId, includeChildren)
+
+                with(stockLevel) {
+                    if (includeChildren) {
+                        call.respond(
+                            OK, GetStockResponseDTO(
+                                locationId, productId, quantity, now(), totalQuantity,
+                                childLocations.map(ChildLocationsDTO::from)
+                            )
+                        )
+                    } else {
+                        call.respond(OK, GetStockResponseDTO(locationId, productId, quantity, now()))
+                    }
+                }
+
 
             } catch (e: LocationNotFoundException) {
                 call.respond(NotFound, ErrorDTO("LocationNotFound"))
@@ -40,12 +55,26 @@ object GetStock {
         val productId: String,
         val quantity: Double,
         @Serializable(with = DateSerializer::class)
-        val lastUpdated: LocalDateTime
+        val lastUpdated: LocalDateTime,
+        val totalQuantity: Double? = null,
+        val childLocations: List<ChildLocationsDTO> = emptyList()
+    )
+
+    @Serializable
+    data class ChildLocationsDTO(
+        val locationId: String, val quantity: Double, val totalQuantity: Double?,
+        val childLocations: List<ChildLocationsDTO> = emptyList()
     ) {
         companion object {
-            fun from(locationId: String, productId: String, quantity: Double): GetStockResponseDTO {
-                return GetStockResponseDTO(locationId, productId, quantity, now())
+            fun from(stockLevel: StockLevel): ChildLocationsDTO {
+                with(stockLevel) {
+                    return ChildLocationsDTO(
+                        locationId, quantity, totalQuantity,
+                        childLocations.map(ChildLocationsDTO::from)
+                    )
+                }
             }
         }
     }
 }
+

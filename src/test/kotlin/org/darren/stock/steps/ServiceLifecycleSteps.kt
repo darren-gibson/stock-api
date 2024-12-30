@@ -4,9 +4,12 @@ import io.cucumber.java.After
 import io.cucumber.java.Before
 import io.cucumber.java.en.Given
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
@@ -29,14 +32,23 @@ class ServiceLifecycleSteps : KoinComponent {
     @Before
     fun beforeAllScenarios() = runBlocking {
         testApp = buildKtorTestApp()
+        val client = testApp.createClient {
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                })
+            }
+        }
+
         startKoin {
             modules(
-                module { single { testApp } },
+                module { single { client } },
                 module { single<StockEventRepository> { InMemoryStockEventRepository() } },
                 module { single { LocationApiClient(locationHost) } },
                 module { single<StockSystem> { StockSystem() } },
                 module { single { testApp.client.engine } },
-                module { single<ServiceLifecycleSteps>{ this@ServiceLifecycleSteps } }
+                module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
+                module { single { ApiCallStepDefinitions() } }
             )
         }
         testApp.start()
@@ -50,10 +62,10 @@ class ServiceLifecycleSteps : KoinComponent {
                 hosts(locationHost) {
                     routing {
                         get("/locations/{id}") {
-                            locationResponder(call)
+                            getLocationByIdResponder(call)
                         }
                         get("/locations/{id}/children") {
-                            locationResponder(call)
+                            getChildrenByIdResponder(call)
                         }
                     }
                 }
@@ -61,9 +73,12 @@ class ServiceLifecycleSteps : KoinComponent {
         }
     }
 
-    var locationResponder: suspend (call: RoutingCall) -> Unit = {
-        logger.warn { "locationResponder not set" }
-    }
+    var getLocationByIdResponder: suspend (call: RoutingCall) -> Unit =
+        { logger.warn { "getLocationByIdResponder not set" } }
+
+    var getChildrenByIdResponder: suspend (call: RoutingCall) -> Unit =
+        { logger.warn { "getChildrenByIdResponder not set" } }
+
 
     @Given("the service is running")
     fun theServiceIsRunning() = runBlocking {

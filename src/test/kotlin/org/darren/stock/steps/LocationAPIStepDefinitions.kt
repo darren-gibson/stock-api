@@ -16,26 +16,30 @@ class LocationAPIStepDefinitions : KoinComponent {
         private val logger = KotlinLogging.logger {}
     }
 
-    private val serviceHelper by inject<ServiceLifecycleSteps>()
+    init {
+        val serviceHelper by inject<ServiceLifecycleSteps>()
+        serviceHelper.getLocationByIdResponder = this@LocationAPIStepDefinitions::mockGetLocationByIdApi
+        serviceHelper.getChildrenByIdResponder = this@LocationAPIStepDefinitions::mockGetChildrenByIdApi
+    }
+
     private val locations = mutableMapOf<String, SimpleLocation>()
 
+    @Given("the following locations exist:")
     @Given("the following locations are defined in the Location API:")
     fun theFollowingLocationsAreDefinedInTheLocationAPI(locationsToDefine: List<SimpleLocation>) = runBlocking {
         locations.putAll(locationsToDefine.map { it.id to it })
-        serviceHelper.locationResponder = this@LocationAPIStepDefinitions::mockLocationApi
     }
 
     @Given("{string} is a store")
     @Given("{string} is a Distribution Centre")
     fun is_a_store(locationId: String): Unit = runBlocking {
-        createLocationForTest(locationId)
+        createLocationForTest(locationId, "Shop")
     }
 
     private fun createLocationForTest(locationId: String, role: String? = null) {
         locations[locationId] =
             if (role == null) SimpleLocation(locationId, "Store")
-            else SimpleLocation(locationId, "Store", role)
-        serviceHelper.locationResponder = this@LocationAPIStepDefinitions::mockLocationApi
+            else SimpleLocation(locationId, role)
     }
 
     @Given("{string} does not exist as a store")
@@ -46,30 +50,40 @@ class LocationAPIStepDefinitions : KoinComponent {
         locations.remove(locationId)
     }
 
-    suspend fun mockLocationApi(call: RoutingCall) {
-        logger.debug { "test called with call=${call.pathParameters}" }
+    suspend fun mockGetLocationByIdApi(call: RoutingCall) = mockGetChildrenByIdApi(call)
+
+    suspend fun mockGetChildrenByIdApi(call: RoutingCall) {
+        logger.debug { "test called with route=${call.route} params=${call.pathParameters}" }
         val locationId = call.pathParameters["id"]
         val location = locations[locationId]
-        if (location != null)
-            call.respondText(toLocation(location), ContentType.Application.Json)
-        else call.respond(HttpStatusCode.NotFound)
+        if (location != null) {
+            val bodyText = toLocation(location, !call.queryParameters.contains("depth"))
+            logger.debug { "Returning $bodyText" }
+            call.respondText(bodyText, ContentType.Application.Json)
+        } else
+            call.respond(HttpStatusCode.NotFound)
     }
 
-    private fun toLocation(loc: SimpleLocation) =
+    private fun toLocation(loc: SimpleLocation, includeChildren: Boolean = true) =
         """{
             "id": "${loc.id}",
-            "type": "${loc.type}",
             "name": "${loc.id}",
             "roles": ["${loc.role}"],
             "createdAt": "2024-12-15T12:34:56Z"
+            ${if (includeChildren) ""","children": [${childLocations(loc)}]""" else ""}
         }"""
+
+    private fun childLocations(loc: SimpleLocation): String {
+        return locations.filter { it.value.parent == loc.id }
+            .map { toLocation(it.value) }.joinToString(", ")
+    }
 
     @DataTableType
     fun locationEntryTransformer(row: Map<String?, String>): SimpleLocation {
-        return SimpleLocation(row["id"]!!, row["type"]!!)
+        return SimpleLocation(row["Location Id"]!!, row["Role"]!!, row["Parent Location Id"])
     }
 
-    data class SimpleLocation(val id: String, val type: String, val role: String = "Shop")
+    data class SimpleLocation(val id: String, val role: String = "Shop", val parent: String? = null)
 
     @Given("{string} is a {string} location")
     fun isALocation(locationId: String, role: String) {
@@ -79,6 +93,6 @@ class LocationAPIStepDefinitions : KoinComponent {
     @And("{string} is a receiving location in the network")
     @And("{string} is a receiving location")
     fun isAValidReceivingLocationInTheNetwork(locationId: String) {
-        theFollowingLocationsAreDefinedInTheLocationAPI(listOf(SimpleLocation(locationId, "Zone", "Zone")))
+        theFollowingLocationsAreDefinedInTheLocationAPI(listOf(SimpleLocation(locationId, "Zone")))
     }
 }

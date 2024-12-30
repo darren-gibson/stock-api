@@ -3,12 +3,10 @@ package org.darren.stock.steps
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.When
-import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
@@ -16,7 +14,7 @@ import org.koin.core.component.inject
 
 class DeliveryStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
-    private val testApp by inject<TestApplication>()
+    private val client: HttpClient by inject()
 
 
     @Given("{string} is due to be delivered by {string} to {string} with a quantity of {double}")
@@ -47,8 +45,6 @@ class DeliveryStepDefinitions : KoinComponent {
 
     private suspend fun runDeliveryForProducts(locationId: String, vararg products: Pair<String, Double>) {
         val payload = buildBody(products.toList())
-
-        val client = testApp.createClient { install(ContentNegotiation) { json() } }
 
         response = client.post("/locations/$locationId/deliveries") {
             setBody(payload)

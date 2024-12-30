@@ -3,10 +3,10 @@ package org.darren.stock.steps
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
+import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -15,11 +15,11 @@ import org.koin.core.component.inject
 
 class StatusStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
-    private val testApp: TestApplication by inject()
+    private val client: HttpClient by inject()
 
     @When("I send a GET request to the {string} endpoint")
     fun iSendAGETRequestToTheEndpoint(endpoint: String) = runBlocking {
-        response = testApp.client.request(endpoint)
+        response = client.request(endpoint)
     }
 
     @Then("the response status code should be {int}")

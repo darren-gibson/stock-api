@@ -5,36 +5,69 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.StockLevel
 import org.darren.stock.domain.actors.events.GetValue
 import org.darren.stock.domain.actors.Reply
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 object GetValue : KoinComponent {
-    suspend fun StockSystem.getValue(locationId: String, productId: String): Double {
-        val stockPots = getAllStockPotAndAllChildrenForLocation(this, locationId, productId)
-
-        return stockPots.map { sp ->
-            val completable = CompletableDeferred<Reply>()
-            sp.send(GetValue(completable))
-            completable
-        }.awaitAll().sumOf { it.getOrThrow() }
-    }
-
-    private suspend fun getAllStockPotAndAllChildrenForLocation(
-        system: StockSystem, locationId: String, productId: String
-    ): Set<SendChannel<StockPotMessages>> {
+    suspend fun StockSystem.getValue(locationId: String, productId: String, includeChildren: Boolean): StockLevel {
         val locationApi by inject<LocationApiClient>()
-        val allLocations = locationApi.getLocationsHierarchy(locationId)
+        val allLocations = locationApi.getLocationsHierarchy(locationId, if(includeChildren) null else 1)
 
-        return allStockPotsForLocations(system, locationId, allLocations, productId)
+        val stockPots = getAllStockPotAndAllChildrenForLocation(allLocations, productId)
+
+        val stockCountByLocation = stockPots.entries.associate { sp ->
+            val completable = CompletableDeferred<Reply>()
+            sp.value.send(GetValue(completable))
+            sp.key to completable
+        }
+
+        stockCountByLocation.values.awaitAll()
+
+        return convertToStockLevel(allLocations, productId, stockCountByLocation)
     }
 
-    private fun allStockPotsForLocations(
-        system: StockSystem, locationId: String, allLocations: Map<String, String>, productId: String
-    ): Set<SendChannel<StockPotMessages>> {
-        val uniqueLocations = allLocations.keys.union(allLocations.values).union(setOf(locationId)).toSet()
-        return uniqueLocations.mapNotNull { system.stockPots[it to productId] }.toSet()
+    private suspend fun convertToStockLevel(
+        location: LocationApiClient.LocationDTO,
+        productId: String,
+        stockCountByLocation: Map<String, CompletableDeferred<Reply>>
+    ): StockLevel {
+        val quantity = stockCountByLocation[location.id]?.await()?.getOrThrow() ?: 0.0
+
+        val stockLevel = StockLevel(location.id, productId, quantity, location.children.map {
+            convertToStockLevel(it, productId, stockCountByLocation)
+        })
+        return stockLevel
+    }
+
+    private fun StockSystem.getAllStockPotAndAllChildrenForLocation(
+        allLocations: LocationApiClient.LocationDTO,
+        productId: String
+    ): Map<String, SendChannel<StockPotMessages>> {
+        val locationSet = extractAllLocationIds(allLocations).toSet()
+
+        return allStockPotsForLocations(locationSet, productId)
+    }
+
+//    private fun getAllLocations(location: LocationApiClient.LocationDTO): Set<String> =
+//        setOf(location.id).plus(location.children.flatMap(::getAllLocations))
+
+    private fun extractAllLocationIds(location: LocationApiClient.LocationDTO): Sequence<String> = sequence {
+        yield(location.id)
+        yieldAll(location.children.flatMap(::extractAllLocationIds))
+    }
+
+    private fun StockSystem.allStockPotsForLocations(allLocations: Set<String>, productId: String) =
+        allLocations.associateWithNotNull { stockPots[it to productId] }
+
+    inline fun <K, V> Set<K>.associateWithNotNull(transform: (K) -> V?): Map<K, V> {
+        return buildMap {
+            for (key in this@associateWithNotNull) {
+                transform(key)?.let { value -> put(key, value) }
+            }
+        }
     }
 }
 

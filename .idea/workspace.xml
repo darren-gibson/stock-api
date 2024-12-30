@@ -7,13 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Implement the delivery feature">
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add Get Stock to include Child Locations where they exist.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/GetStockLevelStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/GetStockLevelStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/PersistenceStepDefinitions.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros/cukedoctor-intro.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros/cukedoctor-intro.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Persistance.feature" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StatusStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StatusStepDefinitions.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,9 +137,12 @@
     "Cucumber Java.Scenario: Fail to record a delivery due to missing required fields.executor": "Run",
     "Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop.executor": "Debug",
     "Cucumber Java.Scenario: Fail to record a product sale due to an invalid location.executor": "Run",
+    "Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations.executor": "Run",
     "Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure.executor": "Debug",
     "Cucumber Java.Scenario: Successfully create a stock count.executor": "Run",
     "Cucumber Java.Scenario: Successfully record a delivery and update stock levels.executor": "Run",
+    "Cucumber Java.Scenario: Successfully record a product sale and reduce stock level.executor": "Run",
+    "Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location.executor": "Run",
     "Gradle.AsciiDoctorHelperKtTest.executor": "Run",
     "Gradle.Build simple-stock.executor": "Run",
     "Gradle.Build stock-api.executor": "Run",
@@ -224,54 +223,15 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTestClass">
-    <configuration name="Feature: Delivery" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Scenario: Retrieve the stock level only for the specific location without child locations" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/Delivery.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: Delivery" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.cucumber.core.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Scenario: Delivery of multiple products" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/Delivery.feature" />
-      <option name="GLUE" value="org.darren.stock.steps" />
-      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
-      <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Delivery of multiple products$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Delivery of multiple products$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Delivery of multiple products" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.cucumber.core.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Scenario: Fail to record a delivery due to invalid values" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" />
-      <option name="GLUE" value="org.darren.stock.steps" />
-      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
-      <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Fail to record a delivery due to invalid values$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Fail to record a delivery due to invalid values$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Fail to record a delivery due to invalid values" />
+      <option name="NAME_FILTER" value="^Retrieve the stock level only for the specific location without child locations$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Retrieve the stock level only for the specific location without child locations$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Retrieve the stock level only for the specific location without child locations" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -292,6 +252,46 @@
       <option name="NAME_FILTER" value="^Stock retrieval remains consistent after a system failure$" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Stock retrieval remains consistent after a system failure$&quot;" />
       <option name="SUGGESTED_NAME" value="Scenario: Stock retrieval remains consistent after a system failure" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scenario: Successfully record a product sale and reduce stock level" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^Successfully record a product sale and reduce stock level$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully record a product sale and reduce stock level$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Successfully record a product sale and reduce stock level" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scenario: Successfully retrieve the stock level of a product at a location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^Successfully retrieve the stock level of a product at a location$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully retrieve the stock level of a product at a location$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Successfully retrieve the stock level of a product at a location" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -328,19 +328,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Cucumber Java.Feature: Delivery" />
-      <item itemvalue="Cucumber Java.Scenario: Delivery of multiple products" />
-      <item itemvalue="Cucumber Java.Scenario: Fail to record a delivery due to invalid values" />
+      <item itemvalue="Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations" />
+      <item itemvalue="Cucumber Java.Scenario: Successfully record a product sale and reduce stock level" />
+      <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
       <item itemvalue="Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations" />
+        <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
+        <item itemvalue="Cucumber Java.Scenario: Successfully record a product sale and reduce stock level" />
         <item itemvalue="Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure" />
-        <item itemvalue="Cucumber Java.Feature: Delivery" />
-        <item itemvalue="Cucumber Java.Scenario: Delivery of multiple products" />
-        <item itemvalue="Cucumber Java.Scenario: Fail to record a delivery due to invalid values" />
       </list>
     </recent_temporary>
   </component>
@@ -352,30 +352,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Initial setup hooked up to cucumber">
-      <option name="closed" value="true" />
-      <created>1732443077613</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1732443077613</updated>
-    </task>
-    <task id="LOCAL-00004" summary="refactor to introduce the concept of Stock and remove the logic of finding the correct stock pot from the test.">
-      <option name="closed" value="true" />
-      <created>1732446301280</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1732446301280</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Implement the ability to hold separate stock pots for a product in different locations">
-      <option name="closed" value="true" />
-      <created>1732451690241</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1732451690241</updated>
     </task>
     <task id="LOCAL-00006" summary="Implement the ability to hold separate stock pots for a product in different locations">
       <option name="closed" value="true" />
@@ -745,7 +721,31 @@
       <option name="project" value="LOCAL" />
       <updated>1735313977787</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Remove persistence tests until I have a better way to test them">
+      <option name="closed" value="true" />
+      <created>1735315990313</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1735315990313</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Add Get Stock to include Child Locations where they exist.">
+      <option name="closed" value="true" />
+      <created>1735556074859</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1735556074859</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Add Get Stock to include Child Locations where they exist.">
+      <option name="closed" value="true" />
+      <created>1735556088207</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1735556088207</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -797,8 +797,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Implement functionality for Tracked and Untracked locations" />
-    <MESSAGE value="refactor to get the Test Runner to properly work using the correct runner" />
     <MESSAGE value="Implement stock move feature between Tracked locations" />
     <MESSAGE value="Add ktor to the project with the _status endpoint" />
     <MESSAGE value="Add Koin to the app and start shift towards using and IOC DI" />
@@ -822,7 +820,9 @@
     <MESSAGE value="Introduce the Movement API Endpoint" />
     <MESSAGE value="Implement the Get Count endpoint and remove the direct use of the StockSystem from the test." />
     <MESSAGE value="Implement the delivery feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement the delivery feature" />
+    <MESSAGE value="Remove persistence tests until I have a better way to test them" />
+    <MESSAGE value="Add Get Stock to include Child Locations where they exist." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Get Stock to include Child Locations where they exist." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -831,16 +831,6 @@
           <properties class="java.net.ConnectException" package="java.net" />
           <option name="timeStamp" value="37" />
         </breakpoint>
-        <line-breakpoint type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt</url>
-          <line>56</line>
-          <option name="timeStamp" value="70" />
-        </line-breakpoint>
-        <line-breakpoint type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt</url>
-          <line>34</line>
-          <option name="timeStamp" value="71" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt</url>
           <line>27</line>
@@ -852,14 +842,9 @@
           <option name="timeStamp" value="84" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt</url>
-          <line>26</line>
-          <option name="timeStamp" value="91" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/GetStockLevelStepDefinitions.kt</url>
-          <line>53</line>
-          <option name="timeStamp" value="94" />
+          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt</url>
+          <line>56</line>
+          <option name="timeStamp" value="109" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

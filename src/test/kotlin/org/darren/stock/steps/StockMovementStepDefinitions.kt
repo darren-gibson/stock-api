@@ -10,9 +10,11 @@ import org.darren.stock.domain.StockMovement
 import org.darren.stock.domain.StockMovementReason
 import org.junit.jupiter.api.assertInstanceOf
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 class StockMovementStepDefinitions : KoinComponent {
+    private val apiCallStepDefinitions by inject<ApiCallStepDefinitions>()
     private var lastException: Exception? = null
     lateinit var response: HttpResponse
 
@@ -32,7 +34,7 @@ class StockMovementStepDefinitions : KoinComponent {
                               "reason": "replenishment"
                           }"""
 
-                        response = ApiCallStepDefinitions().sendPostRequest(url, payload)
+                        response = apiCallStepDefinitions.sendPostRequest(url, payload)
                     } catch (e: Exception) {
                         lastException = e
                     }

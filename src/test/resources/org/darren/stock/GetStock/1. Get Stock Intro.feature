@@ -10,6 +10,100 @@ The Get Stock Level for Product at Location endpoint enables:
 * Accurate monitoring of stock levels for individual products at specific locations.
 * Timely access to inventory data for operational and strategic decision-making.
 * Real-time updates to reflect the most current inventory status.
+* Flexibility to query stock levels either for a location including all its child locations or exclusively for the specified location.
+
+=== Hierarchical Location Support
+
+Locations are organised in a hierarchical structure, allowing for efficient inventory management across estates. By default, this endpoint returns the stock levels for the specified location and all its child locations. Optionally, the query can be restricted to return stock levels only for the specific location.
+
+The following diagram illustrates an example retail hierarchy:
+
+[mermaid]
+-----
+---
+config:
+    look: handDrawn
+    theme: neutral
+---
+flowchart LR
+    subgraph key["Key"]
+        t["(building)"]
+        u["(untracked)"]
+        m["(moveable)"]
+    end
+
+    subgraph estate[" "]
+
+        subgraph sc["Supply Chain"]
+            direction TB
+            subgraph dcs["Distribution Centres"]
+                direction TB
+                dc1["Castle Donington"]
+                dc2["Bradford"]
+                D1["Dispatch"]
+                R1["Receiving"]
+                D2["Dispatch"]
+                R2["Receiving"]
+                cages1@{ shape: procs, label: "Cages-1"}
+                cages2@{ shape: procs, label: "Cages-2"}
+                cages3@{ shape: procs, label: "Cages-3"}
+                cages4@{ shape: procs, label: "Cages-4"}
+                R1-->cages1
+                D1-->cages2
+                R2-->cages3
+                D2-->cages4
+            end
+
+            subgraph fleet["Transport"]
+                direction TB
+                truck1["Truck-1"]
+                truckn@{ shape: procs, label: "Truck-n"}
+                cages5@{ shape: procs, label: "Cages-5"}
+                cages6@{ shape: procs, label: "Cages-6"}
+                truck1 --> cages5
+                truckn --> cages6
+            end
+        end
+
+        subgraph s1["Stores"]
+            direction TB
+            store2["Cambridge"]
+            store1["Royston"]
+            region1["South East"]
+            E["Backstage 1"]
+            F["Shop Floor 2"]
+            G["Shelf-a"]
+            H["Shelf-b"]
+            bs2["Backstage 2"]
+            K["Shop Floor 2"]
+            L["Shelf-c"]
+            M["Shelf-d"]
+            cages7@{ shape: procs, label: "Cages-7"}
+        end
+
+        region1 --> store1 & store2
+        store1 --> E & F
+        F --> G & H
+        store2 --> bs2 & K
+        K --> L & M
+        A["Estate"] --> s1 & sc
+        dc1 --> D1
+        dc1 --> R1
+        dc2 --> D2
+        dc2 --> R2
+        bs2 --> cages7
+
+    end
+
+    style estate fill:none,stroke:none;
+
+    classDef tracked fill:#00C853;
+
+    classDef movable fill:yellow;
+
+    class store1,store2,dc1,dc2,t tracked;
+    class cages1,cages2,cages3,cages4,cages5,cages6,cages7,m movable;
+-----
 
 === Use Cases for Stock Level Retrieval
 

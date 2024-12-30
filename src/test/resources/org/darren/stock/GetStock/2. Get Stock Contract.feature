@@ -11,7 +11,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
 
     | `endpoint`       | `/locations/{locationId}/products/{productId}`
     | `method`         | `GET`
-    | `description`    | Retrieves the current stock level for a specific product at a given location.
+    | `description`    | Retrieves the current stock level for a specific product at a given location, including child locations by default.
     | `authentication` | Requires a valid API token with appropriate permissions.
     | `response format`| JSON
     |===
@@ -24,8 +24,9 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
     |===
     | Parameter              | Description                                                       | Required | Example
 
-    | `locationId`           | The identifier for the location.                                  | Yes      | `"warehouse1"`
+    | `locationId`           | The identifier for the location.                                  | Yes      | `"DC01"`
     | `productId`            | The unique identifier for the product.                            | Yes      | `"product123"`
+    | `includeChildren`      | A flag to specify whether to include stock levels from child locations. Defaults to true. | No | `false`
     | `Authentication Token` | The API token used for authentication.                            | Yes      | `Bearer abc123xyz`
     |===
 
@@ -37,7 +38,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
     [source, http]
     .Request to retrieve stock level
     -----
-    GET /locations/warehouse1/products/product123 HTTP/1.1
+    GET /locations/DC01/products/product123?includeChildren=true HTTP/1.1
     Host: api.example.com
     Authorization: Bearer abc123xyz
     Accept: application/json
@@ -52,10 +53,30 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
     Content-Type: application/json
 
     {
-      "locationId": "warehouse1",
+      "locationId": "DC01",
       "productId": "product123",
       "quantity": 150.5,
-      "lastUpdated": "2024-12-26T15:35:00Z"
+      "totalQuantity": 230.0,
+      "lastUpdated": "2024-12-26T15:35:00Z",
+      "childLocations": [
+        {
+          "locationId": "WH01",
+          "quantity": 50.0,
+          "totalQuantity": 80.0,
+          "childLocations": [
+            {
+              "locationId": "SU01",
+              "quantity": 30.0,
+              "totalQuantity": 30.0
+            }
+          ]
+        },
+        {
+          "locationId": "WH02",
+          "quantity": 30.5,
+          "totalQuantity": 30.5
+        }
+      ]
     }
     -----
 
@@ -77,26 +98,76 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
 
     - **Authentication Requirement:** A valid API token with sufficient permissions is mandatory to use this endpoint.
     - **Precision in Quantities:** The `quantity` field is a double to support fractional quantities.
+    - **Hierarchy Support:** By default, the endpoint includes stock levels for child locations. Set `includeChildren=false` to limit results to the specified location only.
 
     The Get Stock Level for Product at Location endpoint provides a dependable method to monitor inventory and ensure operational consistency.
 
   Background:
-    Given "warehouse1" is a Distribution Centre
+    Given the following locations exist:
+      | Location Id      | Parent Location Id | Role               |
+      | DC01             |                    | Distribution Centre|
+      | WH01             | DC01               | Warehouse          |
+      | SU01             | WH01               | Storage Unit       |
+      | WH02             | DC01               | Warehouse          |
+
+    And the following are the current stock levels:
+      | Location Id      | Product       | Stock Level |
+      | DC01             | product123    | 150.5       |
+      | WH01             | product123    | 50.0        |
+      | SU01             | product123    | 30.0        |
+      | WH02             | product123    | 30.5        |
 
   Scenario: Successfully retrieve the stock level of a product at a location
   This is a "happy path" test to ensure the endpoint returns the correct stock level for valid input.
-    Given a product "product123" exists in "warehouse1" with a stock level of 150.5
-    When I send a GET request to "/locations/warehouse1/products/product123"
+    When I send a GET request to "/locations/DC01/products/product123"
     Then the API should respond with status code 200
     And the response body should contain:
       """asciidoc
       [source, json]
       -----
       {
-          "locationId": "warehouse1",
+          "locationId": "DC01",
           "productId": "product123",
           "quantity": 150.5,
-          "lastUpdated": "<timestamp>" (1)
+          "totalQuantity": 261.0,
+          "lastUpdated": "<timestamp>",
+          "childLocations": [
+            {
+              "locationId": "WH01",
+              "quantity": 50.0,
+              "totalQuantity": 80.0,
+              "childLocations": [
+                {
+                  "locationId": "SU01",
+                  "quantity": 30.0,
+                  "totalQuantity": 30.0
+                }
+              ]
+            },
+            {
+              "locationId": "WH02",
+              "quantity": 30.5,
+              "totalQuantity": 30.5
+            }
+          ]
+      }
+      -----
+      <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
+      """
+
+  Scenario: Retrieve the stock level only for the specific location without child locations
+  This test ensures the endpoint respects the `includeChildren=false` parameter.
+    When I send a GET request to "/locations/DC01/products/product123?includeChildren=false"
+    Then the API should respond with status code 200
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "locationId": "DC01",
+          "productId": "product123",
+          "quantity": 150.5,
+          "lastUpdated": "<timestamp>"
       }
       -----
       <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
@@ -105,8 +176,8 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
 #  Scenario: Fail to retrieve stock level due to invalid product
 #  This test ensures that the endpoint returns an appropriate error when the product does not exist.
 #
-#    Given "product456" does not exist in "warehouse1"
-#    When I send a GET request to "/locations/warehouse1/products/product456"
+#    Given "product456" does not exist in "DC01"
+#    When I send a GET request to "/locations/DC01/products/product456"
 #    Then the API should respond with status code 404
 #    And the response body should contain:
 #      """asciidoc
@@ -138,7 +209,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
 #  This test ensures that the endpoint returns a proper error response when the authentication token lacks necessary permissions.
 #
 #    Given I have an invalid or insufficient API token
-#    When I send a GET request to "/locations/warehouse1/products/product123"
+#    When I send a GET request to "/locations/DC01/products/product123"
 #    Then the API should respond with status code 403
 #    And the response body should contain:
 #      """asciidoc

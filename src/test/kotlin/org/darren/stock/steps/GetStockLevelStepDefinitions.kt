@@ -3,13 +3,11 @@ package org.darren.stock.steps
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Then
+import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.darren.stock.ktor.DateSerializer
@@ -51,13 +49,8 @@ class GetStockLevelStepDefinitions : KoinComponent {
 
     private fun getStockLevelFromApi(locationId: String, productId: String): HttpResponse =
         runBlocking {
-            val testApp by inject<TestApplication>()
+            val client: HttpClient by inject()
             val url = "/locations/$locationId/products/$productId"
-
-            val client = testApp.createClient { install(ContentNegotiation) {
-                json()
-            } }
-
             response = client.get(url)
             return@runBlocking response
         }
