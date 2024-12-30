@@ -32,6 +32,11 @@ class GetStockLevelStepDefinitions : KoinComponent {
         return stock.quantity
     }
 
+    private suspend fun getTotalStockLevel(locationId: String, productId: String): Double {
+        val stock = getStock(locationId, productId)
+        return stock.totalQuantity ?: Double.MIN_VALUE
+    }
+
     private suspend fun getStock(locationId: String, productId: String): GetStock {
         response = getStockLevelFromApi(locationId, productId)
         assertEquals(HttpStatusCode.OK, response.status)
@@ -44,6 +49,7 @@ class GetStockLevelStepDefinitions : KoinComponent {
         val locationId: String,
         val productId: String,
         val quantity: Double,
+        val totalQuantity: Double? = null,
         @Serializable(with = DateSerializer::class) val lastUpdated: LocalDateTime
     )
 
@@ -64,9 +70,19 @@ class GetStockLevelStepDefinitions : KoinComponent {
         }
     }
 
+    @Then("the total stock levels should be updated as follows:")
+    fun theTotalStockLevelsShouldBeUpdatedAsFollows(expectedStockLevels: List<ExpectedStock>) = runBlocking {
+        expectedStockLevels.forEach { expected ->
+            val actual = getTotalStockLevel(expected.location, expected.product)
+            assertEquals(expected.quantity, actual)
+        }
+    }
+
+
+
     data class ExpectedStock(val location: String, val product: String, val quantity: Double)
 
     @DataTableType
     fun expectedStockTransformer(row: Map<String?, String>) =
-        ExpectedStock(row["location"]!!, row["product"]!!, row["quantity"]!!.toDouble())
+        ExpectedStock(row["Location Id"]!!, row["Product"]!!, row["Stock Level"]!!.toDouble())
 }

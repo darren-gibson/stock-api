@@ -12,6 +12,7 @@ import org.junit.jupiter.api.assertInstanceOf
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
+import io.cucumber.java.en.And
 
 class StockMovementStepDefinitions : KoinComponent {
     private val apiCallStepDefinitions by inject<ApiCallStepDefinitions>()
@@ -24,20 +25,7 @@ class StockMovementStepDefinitions : KoinComponent {
 
             stockMovements.forEach { movement ->
                 with(movement) {
-                    try {
-                        val url = "/locations/$from/$product/movements"
-                        val requestId = UUID.randomUUID().toString()
-                        val payload = """{
-                              "destinationLocationId": "$to",
-                              "quantity": $quantity,
-                              "requestId": "$requestId",
-                              "reason": "replenishment"
-                          }"""
-
-                        response = apiCallStepDefinitions.sendPostRequest(url, payload)
-                    } catch (e: Exception) {
-                        lastException = e
-                    }
+                    performStockMove(from, to, product, quantity)
                 }
             }
         }
@@ -53,4 +41,26 @@ class StockMovementStepDefinitions : KoinComponent {
             row["source"]!!, row["destination"]!!, row["product"]!!,
             row["quantity"]!!.toDouble(), StockMovementReason.valueOf(row["reason"]!!)
         )
+
+    @And("{double} {string} is moved from {string} to {string}")
+    fun moveFromTo(quantity: Double, product: String, from: String, to: String) = runBlocking {
+        performStockMove(from, to, product, quantity)
+    }
+
+    private suspend fun performStockMove(from: String, to: String, product: String, quantity: Double) {
+        try {
+            val url = "/locations/$from/$product/movements"
+            val requestId = UUID.randomUUID().toString()
+            val payload = """{
+                                  "destinationLocationId": "$to",
+                                  "quantity": $quantity,
+                                  "requestId": "$requestId",
+                                  "reason": "replenishment"
+                              }"""
+
+            response = apiCallStepDefinitions.sendPostRequest(url, payload)
+        } catch (e: Exception) {
+            lastException = e
+        }
+    }
 }

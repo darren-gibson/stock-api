@@ -95,4 +95,9 @@ class LocationAPIStepDefinitions : KoinComponent {
     fun isAValidReceivingLocationInTheNetwork(locationId: String) {
         theFollowingLocationsAreDefinedInTheLocationAPI(listOf(SimpleLocation(locationId, "Zone")))
     }
+
+    @And("{string} is moved to {string}")
+    fun isMovedTo(locationId: String, newParentLocationId: String) {
+        locations[locationId] = locations[locationId]!!.copy(parent = newParentLocationId)
+    }
 }

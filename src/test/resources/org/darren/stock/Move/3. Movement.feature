@@ -33,9 +33,9 @@ Feature: Feature: Stock Movement Transaction
       | source | destination | product   | quantity | reason        |
       | DC1    | Store1      | Product A | 100      | Replenishment |
     Then the stock levels should be updated as follows:
-      | location | product   | quantity |
-      | DC1      | Product A | 900      |
-      | Store1   | Product A | 300      |
+      | Location Id | Product   | Stock Level |
+      | DC1         | Product A | 900         |
+      | Store1      | Product A | 300         |
 
   Scenario: Stock movement fails due to insufficient stock at the source
     Given a Distribution Centre "DC1" with 50 units of "Product B"
@@ -45,6 +45,6 @@ Feature: Feature: Stock Movement Transaction
       | DC1    | Store2      | Product B | 100      | Replenishment |
     Then the move request should fail with an InsufficientStock exception
     And the stock levels should remain unchanged:
-      | location | product   | quantity |
-      | DC1      | Product B | 50       |
-      | Store2   | Product B | 10       |
+      | Location Id | Product   | Stock Level |
+      | DC1         | Product B | 50          |
+      | Store2      | Product B | 10          |
