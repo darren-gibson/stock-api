@@ -25,7 +25,7 @@ object Delivery {
                 locations.ensureValidLocations(locationId)
 
                 with(request) {
-                    stockSystem.delivery(locationId, supplierId, supplierRef, deliveryDate, products.productQuantity())
+                    stockSystem.delivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
                     call.respond(Created)
                 }
             }
@@ -38,7 +38,7 @@ object Delivery {
         val supplierId: String,
         val supplierRef: String,
         @Serializable(with = DateSerializer::class)
-        val deliveryDate: LocalDateTime,
+        val deliveredAt: LocalDateTime,
         val products: List<ProductDTO>,
     )
 

@@ -29,7 +29,7 @@ Feature: Contract: Record Delivery Endpoint
     | `requestId`            | A unique identifier for the request to ensure idempotency.        | Yes      | `"req-123456789"`
     | `supplierId`           | The unique identifier for the external supplier.                 | Yes      | `"supplier123"`
     | `supplierRef`          | A reference provided by the supplier for the delivery.           | No       | `"supplier-order-9876"`
-    | `deliveryDate`         | The date and time of the delivery in ISO8601 format.             | Yes      | `"2024-12-26T15:35:00Z"`
+    | `deliveredAt`          | The date and time the delivery actually occurred in ISO8601 format. | Yes      | `"2024-12-26T15:35:00Z"`
     | `products`             | A list of products included in the delivery, including quantity. | Yes      | `[{"productId": "product456", "quantity": 100}]`
     | `Authentication Token` | The API token used for authentication.                            | Yes      | `Bearer abc123xyz`
     |===
@@ -52,7 +52,7 @@ Feature: Contract: Record Delivery Endpoint
         "requestId": "req-123456789",
         "supplierId": "supplier123",
         "supplierRef": "supplier-order-9876",
-        "deliveryDate": "2024-12-26T15:35:00Z",
+        "deliveredAt": "2024-12-26T15:35:00Z",
         "products": [
             {
                 "productId": "product456",
@@ -112,7 +112,7 @@ Feature: Contract: Record Delivery Endpoint
           "requestId": "req-987654321",
           "supplierId": "supplier123",
           "supplierRef": "supplier-order-1234",
-          "deliveryDate": "2024-12-26T15:35:00Z",
+          "deliveredAt": "2024-12-26T15:35:00Z",
           "products": [
               {
                   "productId": "product456",
@@ -140,7 +140,7 @@ Feature: Contract: Record Delivery Endpoint
           "requestId": "req-555555555",
           "supplierId": "supplier123",
           "supplierRef": "supplier-invoice-9999",
-          "deliveryDate": "2024-12-26T15:35:00Z",
+          "deliveredAt": "2024-12-26T15:35:00Z",
           "products": [
               {
                   "productId": "product456",
@@ -179,7 +179,37 @@ Feature: Contract: Record Delivery Endpoint
       [source, json]
       -----
       {
-          "missingFields": ["requestId", "deliveryDate"]
+          "missingFields": ["requestId", "deliveredAt"]
+      }
+      -----
+      """
+
+  Scenario: Fail to record a delivery due to invalid `deliveredAt` format
+    When I send a POST request to "/locations/warehouse1-receiving/deliveries" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "req-999999999",
+          "supplierId": "supplier123",
+          "supplierRef": "supplier-invalid-ref",
+          "deliveredAt": "invalid-date-format",
+          "products": [
+              {
+                  "productId": "product456",
+                  "quantity": 100
+              }
+          ]
+      }
+      -----
+      """
+    Then the API should respond with status code 400
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "invalidValues": ["deliveredAt"]
       }
       -----
       """
