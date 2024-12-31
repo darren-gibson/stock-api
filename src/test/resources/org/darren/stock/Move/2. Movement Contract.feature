@@ -31,6 +31,7 @@ Feature: Contract: Stock Movement Endpoint
   | `requestId`            | A unique identifier for the request.                              | Yes      | `"req-12345"`
   | `Authentication Token` | The API token used for authentication.                            | Yes      | `Bearer abc123xyz`
   | `reason`               | The reason for the stock movement.                                | Optional | `"replenishment"`
+  | `movedAt`              | The timestamp when the stock movement occurred.                   | Yes      | `"2024-12-26T15:35:00Z"`
   |===
 
   ==== REST Endpoint Definition
@@ -53,7 +54,8 @@ Feature: Contract: Stock Movement Endpoint
       "requestId": "req-12345",
       "destinationLocationId": "store3",
       "quantity": 50.5,
-      "reason": "replenishment"
+      "reason": "replenishment",
+      "movedAt": "2024-12-26T15:35:00Z"
   }
   -----
 
@@ -72,7 +74,7 @@ Feature: Contract: Stock Movement Endpoint
       "quantity": 50.5,
       "productId": "product123",
       "reason": "replenishment",
-      "createdAt": "2024-12-26T15:35:00Z"
+      "movedAt": "2024-12-26T15:35:00Z"
   }
   -----
 
@@ -103,7 +105,7 @@ Feature: Contract: Stock Movement Endpoint
     And "store3" is a store
 
   Scenario: Successfully record a stock movement transaction
-  This is a "happy path" test to ensure that the stock movement endpoint accepts a valid JSON request and records the transaction correctly.
+    This is a "happy path" test to ensure that the stock movement endpoint accepts a valid JSON request and records the transaction correctly.
     Given a product "product123" exists in "warehouse1" with a stock level of 100.5
     When I send a POST request to "/locations/warehouse1/product123/movements" with the following payload:
       """asciidoc
@@ -113,7 +115,8 @@ Feature: Contract: Stock Movement Endpoint
           "destinationLocationId": "store3",
           "quantity": 50.5,
           "requestId": "req-12345",
-          "reason": "replenishment"
+          "reason": "replenishment",
+          "movedAt": "2024-12-26T15:35:00Z"
       }
       -----
       """
@@ -129,7 +132,7 @@ Feature: Contract: Stock Movement Endpoint
           "quantity": 50.5,
           "productId": "product123",
           "reason": "replenishment",
-          "createdAt": "<timestamp>" (1)
+          "movedAt": "2024-12-26T15:35:00" (1)
       }
       -----
       <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
@@ -148,7 +151,8 @@ Feature: Contract: Stock Movement Endpoint
           "requestId": "req-12346",
           "destinationLocationId": "store3",
           "quantity": 10.0,
-          "reason": "replenishment"
+          "reason": "replenishment",
+          "movedAt": "2024-12-26T15:35:00Z"
       }
       -----
       """
@@ -183,13 +187,41 @@ Feature: Contract: Stock Movement Endpoint
       [source, json]
       -----
       {
-          "missingFields": ["requestId", "reason"]
+          "missingFields": ["requestId", "reason", "movedAt"]
+      }
+      -----
+      """
+
+  Scenario: Fail to record a stock movement due to invalid movedAt timestamp
+    This test ensures that the `movedAt` field is validated properly.
+
+    Given a product "product123" exists in "warehouse1" with a stock level of 100.5
+    When I send a POST request to "/locations/warehouse1/product123/movements" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "destinationLocationId": "store3",
+          "quantity": 20.0,
+          "requestId": "req-12349",
+          "reason": "replenishment",
+          "movedAt": "invalid-timestamp"
+      }
+      -----
+      """
+    Then the API should respond with status code 400
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "invalidValues":["movedAt"]
       }
       -----
       """
 
   Scenario: Fail to record a stock movement due to multiple missing input parameters
-    This test ensures that the stock movement endpoint returns an error response when multiple required parameters are missing.
+  This test ensures that the stock movement endpoint returns an error response when multiple required parameters are missing.
 
     Given a product "product123" exists in "warehouse1" with a stock level of 100.5
     When I send a POST request to "/locations/warehouse1/product123/movements" with the following payload:
@@ -208,7 +240,7 @@ Feature: Contract: Stock Movement Endpoint
       [source, json]
       -----
       {
-          "missingFields": ["destinationLocationId", "quantity"]
+          "missingFields": ["destinationLocationId", "quantity", "movedAt"]
       }
       -----
       """
@@ -240,3 +272,4 @@ Feature: Contract: Stock Movement Endpoint
 #      }
 #      -----
 #      """
+

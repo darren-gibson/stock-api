@@ -16,7 +16,7 @@ import org.darren.stock.domain.stockSystem.Move.move
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
-import java.time.LocalDateTime.now
+import java.time.format.DateTimeParseException
 
 object Move {
     @OptIn(ExperimentalSerializationApi::class)
@@ -32,21 +32,30 @@ object Move {
                 val request = call.receive<MoveRequestDTO>()
                 locations.ensureValidLocations(sourceId, request.destinationLocationId)
 
-                val movement = request.toStockMovement(sourceId, productId)
-                stockSystem.move(movement)
-                call.respond(Created, MoveResponseDTO.from(request.requestId, movement))
+                with(request) {
+                    stockSystem.move(sourceId, destinationLocationId, productId, quantity, reason, movedAt)
+                    call.respond(
+                        Created,
+                        MoveResponseDTO(
+                            requestId, sourceId, destinationLocationId, productId, quantity, reason, movedAt
+                        )
+                    )
+                }
 
             } catch (e: LocationNotFoundException) {
                 call.respond(NotFound, ErrorDTO("LocationNotFound"))
             } catch (e: OperationNotSupportedException) {
                 call.respond(Conflict, ErrorDTO("LocationNotSupported"))
-            }  catch (e: BadRequestException) {
+            } catch (e: BadRequestException) {
                 if (e.cause?.cause is MissingFieldException) {
                     val missing: MissingFieldException = e.cause?.cause as MissingFieldException
                     call.respond(BadRequest, MissingFieldsDTO(missing.missingFields))
+                } else if (e.cause?.cause is DateTimeParseException) {
+                    call.respond(BadRequest, InvalidValuesDTO(listOf("movedAt")))
                 } else {
                     throw e
                 }
+
             }
         }
     }
@@ -56,11 +65,10 @@ object Move {
         val requestId: String,
         val destinationLocationId: String,
         val quantity: Double,
-        val reason: StockMovementReason
-    ) {
-        fun toStockMovement(sourceId: String, productId: String) =
-            StockMovement(sourceId, destinationLocationId, productId, quantity, reason)
-    }
+        val reason: MovementReason,
+        @Serializable(with = DateSerializer::class)
+        val movedAt: LocalDateTime
+    )
 
     @Serializable
     private data class MoveResponseDTO(
@@ -69,16 +77,8 @@ object Move {
         val destinationLocationId: String,
         val productId: String,
         val quantity: Double,
-        val reason: StockMovementReason,
+        val reason: MovementReason,
         @Serializable(with = DateSerializer::class)
-        val createdAt: LocalDateTime
-    ) {
-        companion object {
-            fun from(requestId: String, movement: StockMovement): MoveResponseDTO {
-                with(movement) {
-                    return MoveResponseDTO(requestId, from, to, product, quantity, reason, now())
-                }
-            }
-        }
-    }
+        val movedAt: LocalDateTime
+    )
 }

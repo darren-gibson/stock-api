@@ -3,7 +3,7 @@ package org.darren.stock.domain.actors.events
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.InsufficientStockException
-import org.darren.stock.domain.StockMovementReason
+import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.StockState
 import org.darren.stock.domain.actors.Reply
 import java.time.LocalDateTime
@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 class MoveEvent(
     val quantity: Double,
     val to: SendChannel<StockPotMessages>,
-    val reason: StockMovementReason,
+    val reason: MovementReason,
     private val eventTime: LocalDateTime,
     result: CompletableDeferred<Reply>
 ) : StockPotMessages(result) {

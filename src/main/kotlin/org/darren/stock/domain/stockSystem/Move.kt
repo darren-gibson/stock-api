@@ -1,31 +1,20 @@
 package org.darren.stock.domain.stockSystem
 
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.channels.SendChannel
-import org.darren.stock.domain.StockMovement
+import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.actors.events.MoveEvent
 import org.darren.stock.domain.actors.Reply
-import org.darren.stock.domain.actors.events.StockPotMessages
 import java.time.LocalDateTime
 
 object Move {
-    suspend fun StockSystem.move(movement: StockMovement) {
-        val from = getStockPot(movement.from, movement.product)
-        val to = getStockPot(movement.to, movement.product)
-
-        move(movement, from, to)
-    }
-
-    private suspend fun move(
-        move: StockMovement,
-        from: SendChannel<StockPotMessages>,
-        to: SendChannel<StockPotMessages>
+    suspend fun StockSystem.move(
+        from: String, to: String, product: String, quantity: Double, reason: MovementReason, movedAt: LocalDateTime
     ) {
+        val fromPot = getStockPot(from, product)
+        val toPot = getStockPot(to, product)
         val result = CompletableDeferred<Reply>()
 
-        with(move) {
-            from.send(MoveEvent(quantity, to, reason, LocalDateTime.now(), result))
-            result.await().getOrThrow()
-        }
+        fromPot.send(MoveEvent(quantity, toPot, reason, movedAt, result))
+        result.await().getOrThrow()
     }
 }

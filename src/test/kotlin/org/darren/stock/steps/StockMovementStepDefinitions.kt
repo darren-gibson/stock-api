@@ -1,18 +1,17 @@
 package org.darren.stock.steps
 
 import io.cucumber.java.DataTableType
+import io.cucumber.java.en.And
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import org.darren.stock.domain.InsufficientStockException
-import org.darren.stock.domain.StockMovement
-import org.darren.stock.domain.StockMovementReason
 import org.junit.jupiter.api.assertInstanceOf
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.format.DateTimeFormatter
 import java.util.*
-import io.cucumber.java.en.And
 
 class StockMovementStepDefinitions : KoinComponent {
     private val apiCallStepDefinitions by inject<ApiCallStepDefinitions>()
@@ -39,7 +38,7 @@ class StockMovementStepDefinitions : KoinComponent {
     fun locationEntryTransformer(row: Map<String?, String>) =
         StockMovement(
             row["source"]!!, row["destination"]!!, row["product"]!!,
-            row["quantity"]!!.toDouble(), StockMovementReason.valueOf(row["reason"]!!)
+            row["quantity"]!!.toDouble(), row["reason"]!!
         )
 
     @And("{double} {string} is moved from {string} to {string}")
@@ -51,11 +50,13 @@ class StockMovementStepDefinitions : KoinComponent {
         try {
             val url = "/locations/$from/$product/movements"
             val requestId = UUID.randomUUID().toString()
+            val movedAt = DateTimeFormatter.ISO_DATE_TIME.format(java.time.LocalDateTime.now())
             val payload = """{
                                   "destinationLocationId": "$to",
                                   "quantity": $quantity,
                                   "requestId": "$requestId",
-                                  "reason": "replenishment"
+                                  "reason": "replenishment",
+                                  "movedAt": "$movedAt"
                               }"""
 
             response = apiCallStepDefinitions.sendPostRequest(url, payload)
@@ -63,4 +64,12 @@ class StockMovementStepDefinitions : KoinComponent {
             lastException = e
         }
     }
+
+    data class StockMovement(
+        val from: String,
+        val to: String,
+        val product: String,
+        val quantity: Double,
+        val reason: String
+    )
 }

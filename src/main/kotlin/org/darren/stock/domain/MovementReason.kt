@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class StockMovementReason {
+enum class MovementReason {
     @SerialName("replenishment")
     Replenishment,
 }
