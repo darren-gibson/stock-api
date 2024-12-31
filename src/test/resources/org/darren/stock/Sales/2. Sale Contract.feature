@@ -2,7 +2,7 @@
 Feature: Sale Endpoint: Contract
 
   *Purpose*
-  The Sale Endpoint must behave according to the contract described in the specification.  These tests exercise the API and are transparent about the inputs/outputs of the API to ensure that it behalves according to the specification.  If any of these tests fail, then the contract must have changed either the request/response structure or the underlying behaviour i.e. a breaking change.
+  The Sale Endpoint must behave according to the contract described in the specification. These tests exercise the API and are transparent about the inputs/outputs of the API to ensure that it behaves according to the specification. If any of these tests fail, then the contract must have changed either the request/response structure or the underlying behaviour i.e., a breaking change.
 
   *Request*
 
@@ -14,6 +14,7 @@ Feature: Sale Endpoint: Contract
   | productId   | string   | Path       | Yes        | The unique identifier of the product being sold.              | Product-123
   | requestId   | string   | Body       | Yes        | A unique identifier for the sale request to ensure idempotency.| sale-001-12345
   | quantity    | number   | Body       | Yes        | The number of units of the product being sold.                | 5.0
+  | soldAt      | string   | Body       | Yes        | The timestamp of when the sale occurred, in ISO 8601 format.  | 2024-12-07T12:00:00Z
   |===
 
   *Response*
@@ -26,7 +27,7 @@ Feature: Sale Endpoint: Contract
   | locationId     | string   | Body       | The unique identifier of the location where the sale occurred.| Store-001
   | productId      | string   | Body       | The unique identifier of the product sold.                    | Product-123
   | quantitySold   | integer  | Body       | The number of units of the product sold.                      | 5.0
-  | saleTimestamp  | string   | Body       | The timestamp when the sale was recorded, in ISO 8601 format. | 2024-12-07T12:00:00Z
+  | soldAt         | string   | Body       | The timestamp of when the sale occurred, in ISO 8601 format.  | 2024-12-07T12:00:00Z
   |===
 
 .*OpenAPI Specification*, Click here.
@@ -70,6 +71,7 @@ Feature: Sale Endpoint: Contract
                 required:
                   - requestId
                   - quantity
+                  - soldAt
                 properties:
                   requestId:
                     type: string
@@ -80,6 +82,11 @@ Feature: Sale Endpoint: Contract
                     description: The quantity of the product being sold.
                     minimum: 0.0001
                     example: 5.00
+                  soldAt:
+                    type: string
+                    format: date-time
+                    description: The timestamp of when the sale occurred.
+                    example: "2024-12-07T12:00:00Z"
         responses:
           '201':
             description: Sale recorded successfully.
@@ -100,7 +107,7 @@ Feature: Sale Endpoint: Contract
                     quantitySold:
                       type: number
                       example: 5.0
-                    saleTimestamp:
+                    soldAt:
                       type: string
                       format: date-time
                       example: "2024-12-07T12:00:00Z"
@@ -161,7 +168,8 @@ Feature: Sale Endpoint: Contract
       -----
       {
           "requestId": "abc123-e89b-12d3-a456-426614174000",
-          "quantity": 5
+          "quantity": 5,
+          "soldAt": "2024-12-07T12:00:00Z"
       }
       -----
       """
@@ -175,7 +183,7 @@ Feature: Sale Endpoint: Contract
         "location": "Store-001",
         "productId": "SKU12345",
         "quantitySold": 5.0,
-        "saleTimestamp": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+$" (1)
+        "soldAt": "2024-12-07T12:00:00" (1)
       }
       -----
       <1> timestamp in the ISO8601 format, e.g: 2024-12-11T09:16:29.577617
@@ -191,7 +199,8 @@ Feature: Sale Endpoint: Contract
       -----
       {
           "requestId": "abc123-e89b-12d3-a456-426614174001",
-          "quantity": 5
+          "quantity": 5,
+          "soldAt": "2024-12-07T12:00:00Z"
       }
       -----
       """
@@ -206,7 +215,6 @@ Feature: Sale Endpoint: Contract
       -----
       """
 
-
   Scenario: Fail to record a product sale against a location that's not a shop
   This test ensures that the Sale endpoint returns a proper error response when the specified location is not a shop.
     Given "Store-001" is a "Warehouse" location
@@ -216,7 +224,8 @@ Feature: Sale Endpoint: Contract
       -----
       {
           "requestId": "abc123-e89b-12d3-a456-426614174009",
-          "quantity": 5
+          "quantity": 5,
+          "soldAt": "2024-12-07T12:00:00Z"
       }
       -----
       """
@@ -230,7 +239,59 @@ Feature: Sale Endpoint: Contract
       }
       -----
       """
-#  Scenario: Handle duplicate sale request using the same requestId
+
+  Scenario: Fail to record a product sale with missing soldAt field
+    This test ensures that the Sale endpoint returns a proper error response when the soldAt field is missing.
+    Given "Store-001" is a store
+    And a product "SKU12345" exists in "Store-001" with a stock level of 50
+    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "abc123-e89b-12d3-a456-426614174010",
+          "quantity": 5
+      }
+      -----
+      """
+    Then the API should respond with status code 400
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "missingFields": ["soldAt"]
+      }
+      -----
+      """
+
+  Scenario: Fail to record a product sale with an invalid soldAt format
+    This test ensures that the Sale endpoint returns a proper error response when the soldAt field has an invalid format.
+    Given "Store-001" is a store
+    And a product "SKU12345" exists in "Store-001" with a stock level of 50
+    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "abc123-e89b-12d3-a456-426614174011",
+          "quantity": 5,
+          "soldAt": "12-07-2024"
+      }
+      -----
+      """
+    Then the API should respond with status code 400
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "invalidValues": ["soldAt"]
+      }
+      -----
+      """
+
+    #  Scenario: Handle duplicate sale request using the same requestId
 #    Given "Store-001" is a store
 #    And a product "SKU12345" exists in "Store-001" with a stock level of 45
 #    And a sale request with "requestId": "abc123-e89b-12d3-a456-426614174000" has already been processed

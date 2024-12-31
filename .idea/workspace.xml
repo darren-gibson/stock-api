@@ -7,11 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Introduce StockState, and start to implement pendingAdjustments.">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/CucumberHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/CucumberHelper.kt" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="add soldAt field in request and response">
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,6 +136,7 @@
     "Cucumber Java.Scenario: Fail to record a delivery due to missing required fields.executor": "Run",
     "Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop.executor": "Debug",
     "Cucumber Java.Scenario: Fail to record a product sale due to an invalid location.executor": "Run",
+    "Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format.executor": "Run",
     "Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations.executor": "Run",
     "Cucumber Java.Scenario: Sale by each.executor": "Run",
     "Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure.executor": "Debug",
@@ -227,15 +225,15 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTestClass">
-    <configuration name="Scenario: Retrieve the stock level only for the specific location without child locations" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Scenario: Fail to record a product sale with an invalid soldAt format" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Retrieve the stock level only for the specific location without child locations$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Retrieve the stock level only for the specific location without child locations$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Retrieve the stock level only for the specific location without child locations" />
+      <option name="NAME_FILTER" value="^Fail to record a product sale with an invalid soldAt format$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Fail to record a product sale with an invalid soldAt format$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Fail to record a product sale with an invalid soldAt format" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -267,15 +265,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Successfully retrieve the stock level of a product at a location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Scenario: Successfully record a product sale and reduce stock level" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Successfully retrieve the stock level of a product at a location$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully retrieve the stock level of a product at a location$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Successfully retrieve the stock level of a product at a location" />
+      <option name="NAME_FILTER" value="^Successfully record a product sale and reduce stock level$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully record a product sale and reduce stock level$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Successfully record a product sale and reduce stock level" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -332,19 +330,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations" />
+      <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format" />
       <item itemvalue="Cucumber Java.Scenario: Sale by each" />
       <item itemvalue="Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" />
-      <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
+      <item itemvalue="Cucumber Java.Scenario: Successfully record a product sale and reduce stock level" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format" />
+        <item itemvalue="Cucumber Java.Scenario: Successfully record a product sale and reduce stock level" />
         <item itemvalue="Cucumber Java.Scenario: Sale by each" />
         <item itemvalue="Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" />
-        <item itemvalue="Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations" />
-        <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
       </list>
     </recent_temporary>
   </component>
@@ -356,22 +354,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Implement support for a Sale from a location">
-      <option name="closed" value="true" />
-      <created>1732454676191</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1732454676192</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Create a basic location hierarchy, will need to rework and implement the construct of some locations are tracked and support some operations, while some do not.">
-      <option name="closed" value="true" />
-      <created>1732647421871</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1732647421871</updated>
     </task>
     <task id="LOCAL-00011" summary="Create a basic location hierarchy, will need to rework and implement the construct of some locations are tracked and support some operations, while some do not.">
       <option name="closed" value="true" />
@@ -749,7 +731,23 @@
       <option name="project" value="LOCAL" />
       <updated>1735643067082</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="Introduce StockState, and start to implement pendingAdjustments.">
+      <option name="closed" value="true" />
+      <created>1735643199931</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1735643199931</updated>
+    </task>
+    <task id="LOCAL-00059" summary="add soldAt field in request and response">
+      <option name="closed" value="true" />
+      <created>1735646136229</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1735646136229</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -801,7 +799,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Add Koin to the app and start shift towards using and IOC DI" />
     <MESSAGE value="Add support for JSON for the response" />
     <MESSAGE value="Implement the Count API with wiring up the tests using Koin" />
     <MESSAGE value="Implement Location Not Found when adding a count to an invalid location" />
@@ -826,7 +823,8 @@
     <MESSAGE value="Add Get Stock to include Child Locations where they exist." />
     <MESSAGE value="Add top-level example for ProductsThroughSupplyChain.feature" />
     <MESSAGE value="Introduce StockState, and start to implement pendingAdjustments." />
-    <option name="LAST_COMMIT_MESSAGE" value="Introduce StockState, and start to implement pendingAdjustments." />
+    <MESSAGE value="add soldAt field in request and response" />
+    <option name="LAST_COMMIT_MESSAGE" value="add soldAt field in request and response" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
