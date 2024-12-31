@@ -7,8 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="add soldAt field in request and response">
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="add countedAt field for a StockCount">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,6 +226,25 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTestClass">
+    <configuration name="Feature: AdminOverride" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Counts/AdminOverride.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
+      <option name="SUGGESTED_NAME" value="Feature: AdminOverride" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Scenario: Fail to record a product sale with an invalid soldAt format" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
       <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" />
@@ -285,26 +305,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" />
-      <option name="GLUE" value="org.darren.stock.steps" />
-      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
-      <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^The sale of a product in a location where the current stock is zero results in a pending adjustment$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^The sale of a product in a location where the current stock is zero results in a pending adjustment$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.cucumber.core.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="RunSuiteTestClass" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -330,19 +330,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Cucumber Java.Feature: AdminOverride" />
       <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format" />
       <item itemvalue="Cucumber Java.Scenario: Sale by each" />
-      <item itemvalue="Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" />
       <item itemvalue="Cucumber Java.Scenario: Successfully record a product sale and reduce stock level" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Feature: AdminOverride" />
         <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format" />
         <item itemvalue="Cucumber Java.Scenario: Successfully record a product sale and reduce stock level" />
         <item itemvalue="Cucumber Java.Scenario: Sale by each" />
-        <item itemvalue="Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" />
       </list>
     </recent_temporary>
   </component>
@@ -354,22 +354,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Create a basic location hierarchy, will need to rework and implement the construct of some locations are tracked and support some operations, while some do not.">
-      <option name="closed" value="true" />
-      <created>1732647495917</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1732647495917</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Refactor, introduce concept of untracked locations, but not implemented yet.">
-      <option name="closed" value="true" />
-      <created>1732696791869</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1732696791870</updated>
     </task>
     <task id="LOCAL-00013" summary="Fix issues, refactor the StockPotActor to be a Actor class and Change StockActor to be StockSystem moving away from an Actor">
       <option name="closed" value="true" />
@@ -747,7 +731,23 @@
       <option name="project" value="LOCAL" />
       <updated>1735646136229</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="add soldAt field in request and response">
+      <option name="closed" value="true" />
+      <created>1735646159115</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1735646159115</updated>
+    </task>
+    <task id="LOCAL-00061" summary="add countedAt field for a StockCount">
+      <option name="closed" value="true" />
+      <created>1735647227029</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1735647227029</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -799,7 +799,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Add support for JSON for the response" />
     <MESSAGE value="Implement the Count API with wiring up the tests using Koin" />
     <MESSAGE value="Implement Location Not Found when adding a count to an invalid location" />
     <MESSAGE value="update step definitions" />
@@ -824,7 +823,8 @@
     <MESSAGE value="Add top-level example for ProductsThroughSupplyChain.feature" />
     <MESSAGE value="Introduce StockState, and start to implement pendingAdjustments." />
     <MESSAGE value="add soldAt field in request and response" />
-    <option name="LAST_COMMIT_MESSAGE" value="add soldAt field in request and response" />
+    <MESSAGE value="add countedAt field for a StockCount" />
+    <option name="LAST_COMMIT_MESSAGE" value="add countedAt field for a StockCount" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

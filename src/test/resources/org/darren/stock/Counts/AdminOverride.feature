@@ -31,7 +31,8 @@ Feature: Override stock count record for Product in a Location
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174000",
           "reason": "AdminOverride",
-          "quantity": 100
+          "quantity": 100,
+          "countedAt": "2024-12-11T09:16:29.577617"
       }
       -----
       """
@@ -46,7 +47,7 @@ Feature: Override stock count record for Product in a Location
         "productId": "SKU12345",
         "quantity": 100.0,
         "reason": "AdminOverride",
-        "createdAt": "${json-unit.regex}^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+$" (1)
+        "countedAt": "2024-12-11T09:16:29.577617" (1)
       }
       -----
       <1> timestamp in the ISO8601 format, e.g: 2024-12-11T09:16:29.577617
@@ -76,7 +77,7 @@ Feature: Override stock count record for Product in a Location
 #      """
 #
   Scenario: Fail to create a stock count due to invalid location
-    locations must exist and be know to the system before counts can be recorded against them.  Attempting to set the stock level for a product in a location that does not exist will result in an error.
+    locations must exist and be known to the system before counts can be recorded against them. Attempting to set the stock level for a product in a location that does not exist will result in an error.
     Given an invalid location "Invalid-Warehouse" is provided
     When I send a POST request to "/locations/Invalid-Warehouse/products/SKU12345/counts" with the following payload:
       """asciidoc
@@ -85,7 +86,8 @@ Feature: Override stock count record for Product in a Location
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174003",
           "reason": "AdminOverride",
-          "quantity": 100
+          "quantity": 100,
+          "countedAt": "2024-12-11T09:16:29.577617"
       }
       -----
       """
@@ -109,7 +111,8 @@ Feature: Override stock count record for Product in a Location
       -----
       {
           "reason": "AdminOverride",
-          "quantity": 100
+          "quantity": 100,
+          "countedAt": "2024-12-11T09:16:29.577617"
       }
       -----
       """
@@ -124,7 +127,41 @@ Feature: Override stock count record for Product in a Location
       -----
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174002",
+          "quantity": 100,
+          "countedAt": "2024-12-11T09:16:29.577617"
+      }
+      -----
+      """
+    Then the API should respond with status code 400
+
+  Scenario: Fail to create a stock count due to missing countedAt
+    Given "Warehouse-01" is a Distribution Centre
+    And a valid product code "SKU12345" exists
+    When I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "123e4567-e89b-12d3-a456-426614174002",
+          "reason": "AdminOverride",
           "quantity": 100
+      }
+      -----
+      """
+    Then the API should respond with status code 400
+
+  Scenario: Fail to create a stock count due to invalid countedAt
+    Given "Warehouse-01" is a Distribution Centre
+    And a valid product code "SKU12345" exists
+    When I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "123e4567-e89b-12d3-a456-426614174002",
+          "reason": "AdminOverride",
+          "quantity": 100,
+          "countedAt": "invalid-timestamp"
       }
       -----
       """

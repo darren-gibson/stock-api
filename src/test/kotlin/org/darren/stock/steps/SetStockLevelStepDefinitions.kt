@@ -6,6 +6,8 @@ import io.cucumber.java.en.Given
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.LocalDateTime.now
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class SetStockLevelStepDefinitions : KoinComponent {
@@ -22,7 +24,9 @@ class SetStockLevelStepDefinitions : KoinComponent {
     fun theStockLevelOfProductInStoreIs(productId: String, locationId: String, quantity: Double) = runBlocking {
         val url = "/locations/$locationId/products/$productId/counts"
         val requestId = UUID.randomUUID().toString()
-        val payload = """{"requestId": "$requestId", "reason": "AdminOverride", "quantity": $quantity}"""
+        val countedAt = now().format(DateTimeFormatter.ISO_DATE_TIME)
+
+        val payload = """{"requestId": "$requestId", "reason": "AdminOverride", "countedAt": "$countedAt", "quantity": $quantity}"""
 
         apiCallStepDefinitions.sendPostRequest(url, payload)
     }
