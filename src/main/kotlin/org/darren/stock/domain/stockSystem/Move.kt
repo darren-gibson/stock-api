@@ -24,7 +24,7 @@ object Move {
         val result = CompletableDeferred<Reply>()
 
         with(move) {
-            from.send(MoveEvent(product, quantity, to, reason, LocalDateTime.now(), result))
+            from.send(MoveEvent(quantity, to, reason, LocalDateTime.now(), result))
             result.await().getOrThrow()
         }
     }

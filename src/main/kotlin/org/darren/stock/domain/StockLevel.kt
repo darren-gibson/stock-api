@@ -1,11 +1,19 @@
 package org.darren.stock.domain
 
+import java.time.LocalDateTime
+
 data class StockLevel(
-    val locationId: String,
-    val productId: String,
-    val quantity: Double,
+    val state: StockState,
     val childLocations: List<StockLevel> = emptyList()
 ) {
     val totalQuantity: Double
-        get() = quantity + childLocations.sumOf { it.totalQuantity }
+        get() = state.quantity + childLocations.sumOf { it.totalQuantity }
+    val quantity: Double
+        get() = state.quantity
+    val lastUpdated: LocalDateTime
+        get() = state.lastUpdated
+    val locationId: String
+        get() = state.location.id
+    val pendingAdjustment: Double
+        get() = state.pendingAdjustment
 }

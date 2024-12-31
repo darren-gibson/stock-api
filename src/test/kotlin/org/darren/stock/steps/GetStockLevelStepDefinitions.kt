@@ -23,13 +23,12 @@ class GetStockLevelStepDefinitions : KoinComponent {
     @Then("the stock level of {string} in {string} should be updated to {double}")
     fun theCurrentStockLevelOfProductInStoreWillEqual(productId: String, locationId: String, expectedQuantity: Double) =
         runBlocking {
-            val actualStock = getStockLevel(locationId, productId)
+            val actualStock = getStockLevel(locationId, productId).quantity
             assertEquals(expectedQuantity, actualStock)
         }
 
-    private suspend fun getStockLevel(locationId: String, productId: String): Double {
-        val stock = getStock(locationId, productId)
-        return stock.quantity
+    private suspend fun getStockLevel(locationId: String, productId: String): GetStock {
+        return getStock(locationId, productId)
     }
 
     private suspend fun getTotalStockLevel(locationId: String, productId: String): Double {
@@ -50,6 +49,7 @@ class GetStockLevelStepDefinitions : KoinComponent {
         val productId: String,
         val quantity: Double,
         val totalQuantity: Double? = null,
+        val pendingAdjustment: Double = 0.0,
         @Serializable(with = DateSerializer::class) val lastUpdated: LocalDateTime
     )
 
@@ -66,7 +66,8 @@ class GetStockLevelStepDefinitions : KoinComponent {
     fun theStockLevelsShouldBeUpdatedAsFollows(expectedStockLevels: List<ExpectedStock>) = runBlocking {
         expectedStockLevels.forEach { expected ->
             val actual = getStockLevel(expected.location, expected.product)
-            assertEquals(expected.quantity, actual)
+            assertEquals(expected.quantity, actual.quantity, "Stock level for ${expected.product} in ${expected.location} does not match")
+            assertEquals(expected.pendingAdjustment, actual.pendingAdjustment, "Pending adjustment for ${expected.product} in ${expected.location} does not match")
         }
     }
 
@@ -74,15 +75,14 @@ class GetStockLevelStepDefinitions : KoinComponent {
     fun theTotalStockLevelsShouldBeUpdatedAsFollows(expectedStockLevels: List<ExpectedStock>) = runBlocking {
         expectedStockLevels.forEach { expected ->
             val actual = getTotalStockLevel(expected.location, expected.product)
-            assertEquals(expected.quantity, actual)
+            assertEquals(expected.quantity, actual, "Total stock level for ${expected.product} in ${expected.location} does not match")
         }
     }
 
-
-
-    data class ExpectedStock(val location: String, val product: String, val quantity: Double)
+    data class ExpectedStock(val location: String, val product: String, val quantity: Double, val pendingAdjustment: Double)
 
     @DataTableType
     fun expectedStockTransformer(row: Map<String?, String>) =
-        ExpectedStock(row["Location Id"]!!, row["Product"]!!, row["Stock Level"]!!.toDouble())
+        ExpectedStock(row["Location Id"]!!, row["Product"]!!, row["Stock Level"]!!.toDouble(),
+            row["Pending Adjustment"]?.toDouble() ?: 0.0)
 }

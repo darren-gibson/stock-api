@@ -7,13 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add Get Stock to include Child Locations where they exist.">
-      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros/ProductsThroughSupplyChain.feature" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Introduce StockState, and start to implement pendingAdjustments.">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/GetStockLevelStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/GetStockLevelStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockMovementStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/StockMovementStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/3. Movement.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/3. Movement.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/CucumberHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/CucumberHelper.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,11 +60,11 @@
         <option value="Kotlin Interface" />
         <option value="Class" />
         <option value="Kotlin Object" />
-        <option value="Kotlin Data Class" />
         <option value="Kotlin File" />
         <option value="JUnit5 Test Class" />
         <option value="Kotlin Enum" />
         <option value="Kotlin Class" />
+        <option value="Kotlin Data Class" />
       </list>
     </option>
   </component>
@@ -142,11 +140,13 @@
     "Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop.executor": "Debug",
     "Cucumber Java.Scenario: Fail to record a product sale due to an invalid location.executor": "Run",
     "Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations.executor": "Run",
+    "Cucumber Java.Scenario: Sale by each.executor": "Run",
     "Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure.executor": "Debug",
     "Cucumber Java.Scenario: Successfully create a stock count.executor": "Run",
     "Cucumber Java.Scenario: Successfully record a delivery and update stock levels.executor": "Run",
     "Cucumber Java.Scenario: Successfully record a product sale and reduce stock level.executor": "Run",
     "Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location.executor": "Run",
+    "Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment.executor": "Run",
     "Gradle.AsciiDoctorHelperKtTest.executor": "Run",
     "Gradle.Build simple-stock.executor": "Run",
     "Gradle.Build stock-api.executor": "Run",
@@ -171,7 +171,7 @@
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/darren.gibson/Projects/stock-api/src/test/resources/org/darren/stock/Move",
+    "last_opened_file_path": "/Users/darren.gibson/Projects/stock-api/src/test/resources/org/darren/stock",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.54137933",
@@ -184,11 +184,11 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock" />
       <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move" />
       <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros" />
       <recent name="$PROJECT_DIR$/gradle" />
       <recent name="$PROJECT_DIR$/.gradle" />
-      <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -247,35 +247,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Stock retrieval remains consistent after a system failure" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Scenario: Sale by each" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Persistance.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/3. Sale.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Stock retrieval remains consistent after a system failure$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Stock retrieval remains consistent after a system failure$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Stock retrieval remains consistent after a system failure" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.cucumber.core.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Scenario: Successfully record a product sale and reduce stock level" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" />
-      <option name="GLUE" value="org.darren.stock.steps" />
-      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
-      <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Successfully record a product sale and reduce stock level$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully record a product sale and reduce stock level$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Successfully record a product sale and reduce stock level" />
+      <option name="NAME_FILTER" value="^Sale by each$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Sale by each$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Sale by each" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -296,6 +276,26 @@
       <option name="NAME_FILTER" value="^Successfully retrieve the stock level of a product at a location$" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully retrieve the stock level of a product at a location$&quot;" />
       <option name="SUGGESTED_NAME" value="Scenario: Successfully retrieve the stock level of a product at a location" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^The sale of a product in a location where the current stock is zero results in a pending adjustment$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^The sale of a product in a location where the current stock is zero results in a pending adjustment$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -333,18 +333,18 @@
     </configuration>
     <list>
       <item itemvalue="Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations" />
-      <item itemvalue="Cucumber Java.Scenario: Successfully record a product sale and reduce stock level" />
+      <item itemvalue="Cucumber Java.Scenario: Sale by each" />
+      <item itemvalue="Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" />
       <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
-      <item itemvalue="Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Scenario: Sale by each" />
+        <item itemvalue="Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment" />
         <item itemvalue="Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations" />
         <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
-        <item itemvalue="Cucumber Java.Scenario: Successfully record a product sale and reduce stock level" />
-        <item itemvalue="Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure" />
       </list>
     </recent_temporary>
   </component>
@@ -356,22 +356,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Implement the ability to hold separate stock pots for a product in different locations">
-      <option name="closed" value="true" />
-      <created>1732451878413</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1732451878413</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Implement support for a Sale from a location">
-      <option name="closed" value="true" />
-      <created>1732452905380</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1732452905380</updated>
     </task>
     <task id="LOCAL-00009" summary="Implement support for a Sale from a location">
       <option name="closed" value="true" />
@@ -749,7 +733,23 @@
       <option name="project" value="LOCAL" />
       <updated>1735556195930</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Add top-level example for ProductsThroughSupplyChain.feature">
+      <option name="closed" value="true" />
+      <created>1735564740645</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1735564740645</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Introduce StockState, and start to implement pendingAdjustments.">
+      <option name="closed" value="true" />
+      <created>1735643067082</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1735643067082</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -801,8 +801,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Implement stock move feature between Tracked locations" />
-    <MESSAGE value="Add ktor to the project with the _status endpoint" />
     <MESSAGE value="Add Koin to the app and start shift towards using and IOC DI" />
     <MESSAGE value="Add support for JSON for the response" />
     <MESSAGE value="Implement the Count API with wiring up the tests using Koin" />
@@ -826,7 +824,9 @@
     <MESSAGE value="Implement the delivery feature" />
     <MESSAGE value="Remove persistence tests until I have a better way to test them" />
     <MESSAGE value="Add Get Stock to include Child Locations where they exist." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Get Stock to include Child Locations where they exist." />
+    <MESSAGE value="Add top-level example for ProductsThroughSupplyChain.feature" />
+    <MESSAGE value="Introduce StockState, and start to implement pendingAdjustments." />
+    <option name="LAST_COMMIT_MESSAGE" value="Introduce StockState, and start to implement pendingAdjustments." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -835,21 +835,6 @@
           <properties class="java.net.ConnectException" package="java.net" />
           <option name="timeStamp" value="37" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt</url>
-          <line>27</line>
-          <option name="timeStamp" value="82" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt</url>
-          <line>26</line>
-          <option name="timeStamp" value="84" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt</url>
-          <line>56</line>
-          <option name="timeStamp" value="109" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>

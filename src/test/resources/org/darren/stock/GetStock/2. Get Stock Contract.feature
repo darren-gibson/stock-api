@@ -5,6 +5,8 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
 
     The Get Stock Level for Product at Location endpoint provides real-time visibility into the inventory of specific products at designated locations. This functionality is essential for maintaining accurate inventory data and supporting operational decisions.
 
+    In addition to stock levels, the endpoint now includes a `pendingAdjustment` field, representing any known discrepancies between the recorded stock and actual stock that have not yet been reconciled. If no discrepancies exist, the `pendingAdjustment` field is omitted from the response. This ensures transparency in stock anomalies and enhances inventory accuracy.
+
     [cols="1,3", options="header"]
     |===
     | Attribute        | Description
@@ -62,6 +64,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
         {
           "locationId": "WH01",
           "quantity": 50.0,
+          "pendingAdjustment": 3.0,
           "totalQuantity": 80.0,
           "childLocations": [
             {
@@ -96,8 +99,9 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
 
     ==== Notes
 
+    - **`pendingAdjustment` Field:** Represents any unrecorded or known discrepancies in the stock level. If no adjustments are pending, this field is omitted from the response.
     - **Authentication Requirement:** A valid API token with sufficient permissions is mandatory to use this endpoint.
-    - **Precision in Quantities:** The `quantity` field is a double to support fractional quantities.
+    - **Precision in Quantities:** The `quantity` and `pendingAdjustment` fields are doubles to support fractional values.
     - **Hierarchy Support:** By default, the endpoint includes stock levels for child locations. Set `includeChildren=false` to limit results to the specified location only.
 
     The Get Stock Level for Product at Location endpoint provides a dependable method to monitor inventory and ensure operational consistency.
@@ -111,14 +115,14 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
       | WH02             | DC01               | Warehouse          |
 
     And the following are the current stock levels:
-      | Location Id      | Product       | Stock Level |
-      | DC01             | product123    | 150.5       |
-      | WH01             | product123    | 50.0        |
-      | SU01             | product123    | 30.0        |
-      | WH02             | product123    | 30.5        |
+      | Location Id      | Product       | Stock Level | Pending Adjustment |
+      | DC01             | product123    | 150.5       | 5.0                |
+      | WH01             | product123    | 50.0        | 3.0                |
+      | SU01             | product123    | 30.0        | 0.0                |
+      | WH02             | product123    | 30.5        | 2.0                |
 
   Scenario: Successfully retrieve the stock level of a product at a location
-  This is a "happy path" test to ensure the endpoint returns the correct stock level for valid input.
+  This is a "happy path" test to ensure the endpoint returns the correct stock level and pending adjustments for valid input.
     When I send a GET request to "/locations/DC01/products/product123"
     Then the API should respond with status code 200
     And the response body should contain:
@@ -129,12 +133,14 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           "locationId": "DC01",
           "productId": "product123",
           "quantity": 150.5,
+          "pendingAdjustment": 5.0,
           "totalQuantity": 261.0,
           "lastUpdated": "<timestamp>",
           "childLocations": [
             {
               "locationId": "WH01",
               "quantity": 50.0,
+              "pendingAdjustment": 3.0,
               "totalQuantity": 80.0,
               "childLocations": [
                 {
@@ -147,6 +153,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
             {
               "locationId": "WH02",
               "quantity": 30.5,
+              "pendingAdjustment": 2.0,
               "totalQuantity": 30.5
             }
           ]
@@ -156,7 +163,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
       """
 
   Scenario: Retrieve the stock level only for the specific location without child locations
-  This test ensures the endpoint respects the `includeChildren=false` parameter.
+  This test ensures the endpoint respects the `includeChildren=false` parameter and still returns `pendingAdjustment` if applicable.
     When I send a GET request to "/locations/DC01/products/product123?includeChildren=false"
     Then the API should respond with status code 200
     And the response body should contain:
@@ -167,6 +174,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           "locationId": "DC01",
           "productId": "product123",
           "quantity": 150.5,
+          "pendingAdjustment": 5.0,
           "lastUpdated": "<timestamp>"
       }
       -----

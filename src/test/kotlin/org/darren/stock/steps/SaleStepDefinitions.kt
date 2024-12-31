@@ -16,7 +16,7 @@ class SaleStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
     private val apiCallStepDefinitions by inject<ApiCallStepDefinitions>()
 
-    @When("there is a sale of {double} {string} in the {string} store")
+    @When("there is a sale of {quantity} of {string} in the {string} store")
     fun thereIsASaleOfProductInStore(quantity: Double, productId: String, locationId: String): HttpResponse =
         runBlocking {
             val url = "/stores/$locationId/products/$productId/sales"

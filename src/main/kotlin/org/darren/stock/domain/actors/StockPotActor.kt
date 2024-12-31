@@ -6,15 +6,15 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import org.darren.stock.domain.Location
+import org.darren.stock.domain.StockState
 import org.darren.stock.domain.actors.events.StockPotMessages
 import org.koin.core.component.KoinComponent
 
-typealias Reply = Result<Double>
+typealias Reply = Result<StockState>
 
-class StockPotActor(locationId: String, private val productId: String, initialQuantity: Double) :
+class StockPotActor(locationId: String, productId: String, initialQuantity: Double) :
     KoinComponent {
-    private var currentStock = initialQuantity
-    private val location = Location(locationId)
+    private var currentState = StockState(Location(locationId), productId, initialQuantity)
 
     companion object {
 
@@ -35,14 +35,14 @@ class StockPotActor(locationId: String, private val productId: String, initialQu
         logger.debug { "$this, MSG=$message" }
 
         message.result.complete(Reply.runCatching {
-            currentStock = message.execute(location, productId, currentStock)
-            currentStock
+            currentState = message.execute(currentState)
+            currentState
         })
 
         logger.debug { this }
     }
 
     override fun toString(): String {
-        return "StockPotActor(location='${location.id}', productId='$productId', currentStock=$currentStock)"
+        return "StockPotActor(state='$currentState')"
     }
 }

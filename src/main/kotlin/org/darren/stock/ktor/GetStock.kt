@@ -12,7 +12,6 @@ import org.darren.stock.domain.stockSystem.GetValue.getValue
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
-import java.time.LocalDateTime.now
 
 object GetStock {
     fun Routing.getStock() {
@@ -33,16 +32,14 @@ object GetStock {
                     if (includeChildren) {
                         call.respond(
                             OK, GetStockResponseDTO(
-                                locationId, productId, quantity, now(), totalQuantity,
+                                locationId, productId, quantity, pendingAdjustment, lastUpdated, totalQuantity,
                                 childLocations.map(ChildLocationsDTO::from)
                             )
                         )
                     } else {
-                        call.respond(OK, GetStockResponseDTO(locationId, productId, quantity, now()))
+                        call.respond(OK, GetStockResponseDTO(locationId, productId, quantity, pendingAdjustment, lastUpdated))
                     }
                 }
-
-
             } catch (e: LocationNotFoundException) {
                 call.respond(NotFound, ErrorDTO("LocationNotFound"))
             }
@@ -54,6 +51,7 @@ object GetStock {
         val locationId: String,
         val productId: String,
         val quantity: Double,
+        val pendingAdjustment: Double = 0.0,
         @Serializable(with = DateSerializer::class)
         val lastUpdated: LocalDateTime,
         val totalQuantity: Double? = null,
@@ -77,4 +75,3 @@ object GetStock {
         }
     }
 }
-
