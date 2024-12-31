@@ -1,25 +1,19 @@
 package org.darren.stock.ktor
 
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
-import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
-import io.ktor.http.HttpStatusCode.Companion.NotFound
-import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
-import org.darren.stock.domain.*
+import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.stockSystem.Move.move
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.ExceptionWrapper.runWithExceptionHandling
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
-import java.time.format.DateTimeParseException
 
 object Move {
-    @OptIn(ExperimentalSerializationApi::class)
     fun Routing.move() {
         val locations by inject<LocationApiClient>(LocationApiClient::class.java)
 
@@ -28,7 +22,7 @@ object Move {
             val sourceId = call.parameters["sourceLocationId"]!!
             val productId = call.parameters["productId"]!!
 
-            try {
+            runWithExceptionHandling(call, "movedAt") {
                 val request = call.receive<MoveRequestDTO>()
                 locations.ensureValidLocations(sourceId, request.destinationLocationId)
 
@@ -41,21 +35,6 @@ object Move {
                         )
                     )
                 }
-
-            } catch (e: LocationNotFoundException) {
-                call.respond(NotFound, ErrorDTO("LocationNotFound"))
-            } catch (e: OperationNotSupportedException) {
-                call.respond(Conflict, ErrorDTO("LocationNotSupported"))
-            } catch (e: BadRequestException) {
-                if (e.cause?.cause is MissingFieldException) {
-                    val missing: MissingFieldException = e.cause?.cause as MissingFieldException
-                    call.respond(BadRequest, MissingFieldsDTO(missing.missingFields))
-                } else if (e.cause?.cause is DateTimeParseException) {
-                    call.respond(BadRequest, InvalidValuesDTO(listOf("movedAt")))
-                } else {
-                    throw e
-                }
-
             }
         }
     }

@@ -1,17 +1,11 @@
 package org.darren.stock.ktor
 
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Created
-import io.ktor.http.HttpStatusCode.Companion.NotFound
-import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationApiClient
-import org.darren.stock.domain.LocationNotFoundException
 import org.darren.stock.domain.ProductQuantity
 import org.darren.stock.domain.stockSystem.Delivery.delivery
 import org.darren.stock.domain.stockSystem.StockSystem
@@ -19,7 +13,6 @@ import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Delivery {
-    @OptIn(ExperimentalSerializationApi::class)
     fun Routing.delivery() {
         val locations by inject<LocationApiClient>(LocationApiClient::class.java)
 
@@ -27,23 +20,13 @@ object Delivery {
             val stockSystem = inject<StockSystem>(StockSystem::class.java).value
             val locationId = call.parameters["locationId"]!!
 
-
-            try {
+            ExceptionWrapper.runWithExceptionHandling(call, "deliveredAt") {
                 val request = call.receive<DeliveryRequestDTO>()
                 locations.ensureValidLocations(locationId)
 
                 with(request) {
                     stockSystem.delivery(locationId, supplierId, supplierRef, deliveryDate, products.productQuantity())
                     call.respond(Created)
-                }
-            } catch (e: LocationNotFoundException) {
-                call.respond(NotFound, ErrorDTO("LocationNotFound"))
-            } catch (e: BadRequestException) {
-                if (e.cause?.cause is MissingFieldException) {
-                    val missing: MissingFieldException = e.cause?.cause as MissingFieldException
-                    call.respond(BadRequest, MissingFieldsDTO(missing.missingFields))
-                } else {
-                    throw e
                 }
             }
         }

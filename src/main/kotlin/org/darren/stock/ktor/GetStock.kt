@@ -1,15 +1,14 @@
 package org.darren.stock.ktor
 
-import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationApiClient
-import org.darren.stock.domain.LocationNotFoundException
 import org.darren.stock.domain.StockLevel
 import org.darren.stock.domain.stockSystem.GetValue.getValue
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.ExceptionWrapper.runWithExceptionHandling
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -23,7 +22,7 @@ object GetStock {
             val productId = call.parameters["productId"]!!
             val includeChildren = call.parameters["includeChildren"]?.toBoolean() ?: true
 
-            try {
+            runWithExceptionHandling(call) {
                 locations.ensureValidLocations(locationId)
 
                 val stockLevel = stockSystem.getValue(locationId, productId, includeChildren)
@@ -40,8 +39,6 @@ object GetStock {
                         call.respond(OK, GetStockResponseDTO(locationId, productId, quantity, pendingAdjustment, lastUpdated))
                     }
                 }
-            } catch (e: LocationNotFoundException) {
-                call.respond(NotFound, ErrorDTO("LocationNotFound"))
             }
         }
     }
