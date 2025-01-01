@@ -7,12 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add tests that demonstrates the adjustment only affects based on the event time">
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Enable StockPots to start and load state from the repository on Startup">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/SaleStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/SaleStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,8 +61,8 @@
         <option value="Kotlin Enum" />
         <option value="Kotlin Data Class" />
         <option value="Kotlin Object" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Interface" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -249,14 +246,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Feature: 2. Movement Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: PendingAdjustments" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/2. Movement Contract.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: 2. Movement Contract" />
+      <option name="SUGGESTED_NAME" value="Feature: PendingAdjustments" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -268,14 +265,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Feature: PendingAdjustments" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Scenario: Successfully retrieve the stock level of a product at a location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: PendingAdjustments" />
+      <option name="NAME_FILTER" value="^Successfully retrieve the stock level of a product at a location$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully retrieve the stock level of a product at a location$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Successfully retrieve the stock level of a product at a location" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -321,17 +319,17 @@
     <list>
       <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
       <item itemvalue="Cucumber Java.Feature: PendingAdjustments" />
-      <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
+      <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
       <item itemvalue="Kotlin.ApplicationKt" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
         <item itemvalue="Kotlin.ApplicationKt" />
         <item itemvalue="Cucumber Java.Feature: PendingAdjustments" />
         <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
-        <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
       </list>
     </recent_temporary>
   </component>
@@ -343,22 +341,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Implement stock move feature between Tracked locations">
-      <option name="closed" value="true" />
-      <created>1732963237459</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1732963237459</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Add ktor to the project with the _status endpoint">
-      <option name="closed" value="true" />
-      <created>1733258671264</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1733258671264</updated>
     </task>
     <task id="LOCAL-00022" summary="Add Koin to the app and start shift towards using and IOC DI">
       <option name="closed" value="true" />
@@ -736,7 +718,23 @@
       <option name="project" value="LOCAL" />
       <updated>1735735642825</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="Make the Sale Uri consistent with /locations/ and remove the /stores/">
+      <option name="closed" value="true" />
+      <created>1735736740311</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1735736740311</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Enable StockPots to start and load state from the repository on Startup">
+      <option name="closed" value="true" />
+      <created>1735741943413</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1735741943413</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -788,8 +786,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Refactor to clean up the StockSystem" />
-    <MESSAGE value="Refactor again to move the StockSystem facade to use extension methods." />
     <MESSAGE value="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features." />
     <MESSAGE value="Continue refactor and improve docs" />
     <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.0.21&quot;" />
@@ -813,7 +809,9 @@
     <MESSAGE value="update Delivery to use the deliveredAt field." />
     <MESSAGE value="major refactor to separate messages and events and store events that could be persisted and replayed." />
     <MESSAGE value="Add tests that demonstrates the adjustment only affects based on the event time" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add tests that demonstrates the adjustment only affects based on the event time" />
+    <MESSAGE value="Make the Sale Uri consistent with /locations/ and remove the /stores/" />
+    <MESSAGE value="Enable StockPots to start and load state from the repository on Startup" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enable StockPots to start and load state from the repository on Startup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -824,19 +822,19 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt</url>
-          <line>54</line>
+          <line>59</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
           <option name="timeStamp" value="118" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/persistence/InMemoryStockEventRepository.kt</url>
-          <line>9</line>
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt</url>
+          <line>36</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
-          <option name="timeStamp" value="119" />
+          <option name="timeStamp" value="121" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

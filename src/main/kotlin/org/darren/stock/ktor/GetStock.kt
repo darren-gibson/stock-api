@@ -57,14 +57,14 @@ object GetStock {
 
     @Serializable
     data class ChildLocationsDTO(
-        val locationId: String, val quantity: Double, val totalQuantity: Double?,
+        val locationId: String, val quantity: Double, val pendingAdjustment: Double = 0.0 ,val totalQuantity: Double?,
         val childLocations: List<ChildLocationsDTO> = emptyList()
     ) {
         companion object {
             fun from(stockLevel: StockLevel): ChildLocationsDTO {
                 with(stockLevel) {
                     return ChildLocationsDTO(
-                        locationId, quantity, totalQuantity,
+                        locationId, quantity, pendingAdjustment, totalQuantity,
                         childLocations.map(ChildLocationsDTO::from)
                     )
                 }

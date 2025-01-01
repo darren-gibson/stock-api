@@ -115,11 +115,11 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
       | WH02             | DC01               | Warehouse          |
 
     And the following are the current stock levels:
-      | Location Id      | Product       | Stock Level | Pending Adjustment |
-      | DC01             | product123    | 150.5       | 5.0                |
-      | WH01             | product123    | 50.0        | 3.0                |
-      | SU01             | product123    | 30.0        | 0.0                |
-      | WH02             | product123    | 30.5        | 2.0                |
+      | Location Id | Product    | Stock Level | Pending Adjustment |
+      | DC01        | product123 | 150.5       | -5.0               |
+      | WH01        | product123 | 50.0        | -3.0               |
+      | SU01        | product123 | 30.0        | 0.0                |
+      | WH02        | product123 | 30.5        | -2.0               |
 
   Scenario: Successfully retrieve the stock level of a product at a location
   This is a "happy path" test to ensure the endpoint returns the correct stock level and pending adjustments for valid input.
@@ -133,14 +133,14 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           "locationId": "DC01",
           "productId": "product123",
           "quantity": 150.5,
-          "pendingAdjustment": 5.0,
+          "pendingAdjustment": -5.0,
           "totalQuantity": 261.0,
           "lastUpdated": "<timestamp>",
           "childLocations": [
             {
               "locationId": "WH01",
               "quantity": 50.0,
-              "pendingAdjustment": 3.0,
+              "pendingAdjustment": -3.0,
               "totalQuantity": 80.0,
               "childLocations": [
                 {
@@ -153,7 +153,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
             {
               "locationId": "WH02",
               "quantity": 30.5,
-              "pendingAdjustment": 2.0,
+              "pendingAdjustment": -2.0,
               "totalQuantity": 30.5
             }
           ]
@@ -174,7 +174,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           "locationId": "DC01",
           "productId": "product123",
           "quantity": 150.5,
-          "pendingAdjustment": 5.0,
+          "pendingAdjustment": -5.0,
           "lastUpdated": "<timestamp>"
       }
       -----

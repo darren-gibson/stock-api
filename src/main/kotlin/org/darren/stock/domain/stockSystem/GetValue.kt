@@ -51,23 +51,12 @@ object GetValue : KoinComponent {
     ): Map<String, SendChannel<StockPotMessages>> {
         val locationSet = extractAllLocationIds(allLocations).toSet()
 
-        return allStockPotsForLocations(locationSet, productId)
+        return getAllActiveStockPotsFor(locationSet, productId)
     }
 
     private fun extractAllLocationIds(location: LocationApiClient.LocationDTO): Sequence<String> = sequence {
         yield(location.id)
         yieldAll(location.children.flatMap(::extractAllLocationIds))
-    }
-
-    private fun StockSystem.allStockPotsForLocations(allLocations: Set<String>, productId: String) =
-        allLocations.associateWithNotNull { stockPots[it to productId] }
-
-    inline fun <K, V> Set<K>.associateWithNotNull(transform: (K) -> V?): Map<K, V> {
-        return buildMap {
-            for (key in this@associateWithNotNull) {
-                transform(key)?.let { value -> put(key, value) }
-            }
-        }
     }
 }
 

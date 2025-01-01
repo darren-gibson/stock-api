@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.runBlocking
 import org.darren.stock.domain.Location
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.StockState
@@ -19,6 +20,10 @@ typealias Reply = Result<StockState>
 class StockPotActor(locationId: String, productId: String) : KoinComponent {
     private var currentState = StockState(Location(locationId), productId)
     private val repository: StockEventRepository by inject()
+
+    init {
+        runBlocking { recreateState() }
+    }
 
     companion object {
         private val logger = KotlinLogging.logger {}
