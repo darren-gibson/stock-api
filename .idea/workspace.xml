@@ -7,10 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="refactored to add ExceptionWrapper">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="major refactor to separate messages and events and store events that could be persisted and replayed.">
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/NullStockPotEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/NullStockPotEvent.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,14 +54,14 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Kotlin Interface" />
         <option value="Class" />
         <option value="Kotlin File" />
         <option value="JUnit5 Test Class" />
         <option value="Kotlin Enum" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Data Class" />
         <option value="Kotlin Object" />
+        <option value="Kotlin Class" />
+        <option value="Kotlin Interface" />
       </list>
     </option>
   </component>
@@ -113,92 +111,93 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Cucumber Java.Feature: 1. Movement Into.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: 2. Delivery Contract.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: 2. Get Stock Contract.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: 2. Movement Contract.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: 2. Sale Contract.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: 3. Sale.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: 4. Sale Error Flows.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: AdminOverride.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: ChildStockLocations.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: Delivery.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: Movement (1).executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: Movement.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: Persistance.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: Sale (1).executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: Sale.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Feature: Status.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Delivery of multiple products.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Fail to create a stock count due to invalid location.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Fail to record a delivery due to invalid values.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Fail to record a delivery due to missing required fields.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop.executor&quot;: &quot;Debug&quot;,
-    &quot;Cucumber Java.Scenario: Fail to record a product sale due to an invalid location.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Sale by each.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure.executor&quot;: &quot;Debug&quot;,
-    &quot;Cucumber Java.Scenario: Successfully create a stock count.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Successfully record a delivery and update stock levels.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Successfully record a product sale and reduce stock level.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location.executor&quot;: &quot;Run&quot;,
-    &quot;Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.AsciiDoctorHelperKtTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build simple-stock.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build stock-api.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JsonSerializerTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.RunSuiteTest (1).executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.RunSuiteTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.RunSuiteTestClass.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Tests in 'com.darren.stock'.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Tests in 'org.darren.stock'.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.simple-stock [buildFromAvro].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.simple-stock [run].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.simple-stock [testClasses].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.simple-stock [test].executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin.ApplicationKt.executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin.ApplicationKtKt.executor&quot;: &quot;Debug&quot;,
-    &quot;Kotlin.MainKt.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/darren.gibson/Projects/stock-api/src/test/resources/org/darren/stock&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.54137933&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Cucumber Java.Feature: 1. Movement Into.executor": "Run",
+    "Cucumber Java.Feature: 2. Delivery Contract.executor": "Run",
+    "Cucumber Java.Feature: 2. Get Stock Contract.executor": "Run",
+    "Cucumber Java.Feature: 2. Movement Contract.executor": "Run",
+    "Cucumber Java.Feature: 2. Sale Contract.executor": "Run",
+    "Cucumber Java.Feature: 3. Sale.executor": "Run",
+    "Cucumber Java.Feature: 4. Sale Error Flows.executor": "Run",
+    "Cucumber Java.Feature: AdminOverride.executor": "Run",
+    "Cucumber Java.Feature: ChildStockLocations.executor": "Run",
+    "Cucumber Java.Feature: Delivery.executor": "Run",
+    "Cucumber Java.Feature: Movement (1).executor": "Run",
+    "Cucumber Java.Feature: Movement.executor": "Run",
+    "Cucumber Java.Feature: PendingAdjustments.executor": "Run",
+    "Cucumber Java.Feature: Persistance.executor": "Run",
+    "Cucumber Java.Feature: Sale (1).executor": "Run",
+    "Cucumber Java.Feature: Sale.executor": "Run",
+    "Cucumber Java.Feature: Status.executor": "Run",
+    "Cucumber Java.Scenario: Delivery of multiple products.executor": "Run",
+    "Cucumber Java.Scenario: Fail to create a stock count due to invalid location.executor": "Run",
+    "Cucumber Java.Scenario: Fail to record a delivery due to invalid values.executor": "Run",
+    "Cucumber Java.Scenario: Fail to record a delivery due to missing required fields.executor": "Run",
+    "Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop.executor": "Debug",
+    "Cucumber Java.Scenario: Fail to record a product sale due to an invalid location.executor": "Run",
+    "Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format.executor": "Run",
+    "Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations.executor": "Run",
+    "Cucumber Java.Scenario: Sale by each.executor": "Run",
+    "Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure.executor": "Debug",
+    "Cucumber Java.Scenario: Successfully create a stock count.executor": "Run",
+    "Cucumber Java.Scenario: Successfully record a delivery and update stock levels.executor": "Run",
+    "Cucumber Java.Scenario: Successfully record a product sale and reduce stock level.executor": "Run",
+    "Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location.executor": "Run",
+    "Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment.executor": "Run",
+    "Gradle.AsciiDoctorHelperKtTest.executor": "Run",
+    "Gradle.Build simple-stock.executor": "Run",
+    "Gradle.Build stock-api.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.JsonSerializerTest.executor": "Run",
+    "Gradle.RunSuiteTest (1).executor": "Run",
+    "Gradle.RunSuiteTest.executor": "Run",
+    "Gradle.RunSuiteTestClass.executor": "Run",
+    "Gradle.Tests in 'com.darren.stock'.executor": "Run",
+    "Gradle.Tests in 'org.darren.stock'.executor": "Run",
+    "Gradle.simple-stock [buildFromAvro].executor": "Run",
+    "Gradle.simple-stock [run].executor": "Run",
+    "Gradle.simple-stock [testClasses].executor": "Run",
+    "Gradle.simple-stock [test].executor": "Run",
+    "Kotlin.ApplicationKt.executor": "Run",
+    "Kotlin.ApplicationKtKt.executor": "Debug",
+    "Kotlin.MainKt.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/darren.gibson/Projects/stock-api/src/main/kotlin/org/darren/stock/domain/actors/messages",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.54137933",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages" />
       <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock" />
       <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move" />
       <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros" />
       <recent name="$PROJECT_DIR$/gradle" />
-      <recent name="$PROJECT_DIR$/.gradle" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/helpers" />
       <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock/Status" />
       <recent name="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move" />
       <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Deliveries" />
       <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Locations" />
-      <recent name="$PROJECT_DIR$/src/test/resources/com/darren/stock/Sales" />
     </key>
     <key name="CreateKotlinClassDialog.RecentsKey">
       <recent name="org.darren.stock.domain" />
@@ -206,11 +205,11 @@
       <recent name="com.darren.stock.ktor" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="org.darren.stock.steps.helpers" />
       <recent name="org.darren.stock.domain.actors.events" />
       <recent name="com.darren.stock.domain.stockSystem" />
       <recent name="com.darren.stock.domain.actors" />
       <recent name="com.darren.stock.steps" />
-      <recent name="com.darren.stock" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="com.darren.stock.steps" />
@@ -226,7 +225,7 @@
       <command value="gradle test" />
     </option>
   </component>
-  <component name="RunManager" selected="Cucumber Java.Feature: 2. Delivery Contract">
+  <component name="RunManager" selected="Gradle.RunSuiteTestClass">
     <configuration name="Feature: 2. Delivery Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
       <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" />
@@ -284,15 +283,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Fail to record a product sale with an invalid soldAt format" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: PendingAdjustments" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/2. Sale Contract.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Fail to record a product sale with an invalid soldAt format$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Fail to record a product sale with an invalid soldAt format$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Fail to record a product sale with an invalid soldAt format" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
+      <option name="SUGGESTED_NAME" value="Feature: PendingAdjustments" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -330,18 +328,18 @@
     </configuration>
     <list>
       <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
+      <item itemvalue="Cucumber Java.Feature: PendingAdjustments" />
       <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
       <item itemvalue="Cucumber Java.Feature: AdminOverride" />
-      <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Feature: PendingAdjustments" />
+        <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
         <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
         <item itemvalue="Cucumber Java.Feature: AdminOverride" />
-        <item itemvalue="Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format" />
       </list>
     </recent_temporary>
   </component>
@@ -353,22 +351,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Implement functionality for Tracked and Untracked locations">
-      <option name="closed" value="true" />
-      <created>1732714946393</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1732714946393</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Implement functionality for Tracked and Untracked locations">
-      <option name="closed" value="true" />
-      <created>1732717455569</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1732717455569</updated>
     </task>
     <task id="LOCAL-00017" summary="Implement functionality for Tracked and Untracked locations">
       <option name="closed" value="true" />
@@ -746,7 +728,23 @@
       <option name="project" value="LOCAL" />
       <updated>1735661475001</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="update Delivery to use the deliveredAt field.">
+      <option name="closed" value="true" />
+      <created>1735663571694</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1735663571694</updated>
+    </task>
+    <task id="LOCAL-00065" summary="major refactor to separate messages and events and store events that could be persisted and replayed.">
+      <option name="closed" value="true" />
+      <created>1735732742947</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1735732742947</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -798,8 +796,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Implement Location Not Found when adding a count to an invalid location" />
-    <MESSAGE value="update step definitions" />
     <MESSAGE value="Add Sale API endpoint" />
     <MESSAGE value="Refactor to clean up the StockSystem" />
     <MESSAGE value="Refactor again to move the StockSystem facade to use extension methods." />
@@ -823,7 +819,9 @@
     <MESSAGE value="add soldAt field in request and response" />
     <MESSAGE value="add countedAt field for a StockCount" />
     <MESSAGE value="refactored to add ExceptionWrapper" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored to add ExceptionWrapper" />
+    <MESSAGE value="update Delivery to use the deliveredAt field." />
+    <MESSAGE value="major refactor to separate messages and events and store events that could be persisted and replayed." />
+    <option name="LAST_COMMIT_MESSAGE" value="major refactor to separate messages and events and store events that could be persisted and replayed." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -832,6 +830,22 @@
           <properties class="java.net.ConnectException" package="java.net" />
           <option name="timeStamp" value="37" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt</url>
+          <line>54</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="118" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/persistence/InMemoryStockEventRepository.kt</url>
+          <line>9</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="119" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>

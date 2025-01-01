@@ -1,24 +1,26 @@
 package org.darren.stock.domain.actors.events
 
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.serialization.Serializable
 import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.StockState
-import org.darren.stock.domain.actors.Reply
+import org.darren.stock.ktor.DateSerializer
 import java.time.LocalDateTime
 
+@Serializable
 internal class InternalMoveToEvent(
     val productId: String,
     val quantity: Double,
     val from: String,
     val reason: MovementReason,
-    val eventTime: LocalDateTime, result: CompletableDeferred<Reply>
+    @Serializable(with = DateSerializer::class)
+    override val eventDateTime: LocalDateTime
 ) :
-    StockPotMessages(result) {
+    StockPotEvent() {
 
-    override suspend fun execute(state: StockState) =
-        state.copy(quantity = state.quantity + quantity, lastUpdated = eventTime)
+    override suspend fun apply(state: StockState) =
+        state.copy(quantity = state.quantity + quantity, lastUpdated = eventDateTime)
 
     override fun toString(): String {
-        return "InternalMoveToEvent(productId='$productId', quantity=$quantity, from=$from, reason=$reason, eventTime=$eventTime)"
+        return "InternalMoveToEvent(eventDateTime=$eventDateTime, productId='$productId', quantity=$quantity, from='$from', reason=$reason)"
     }
 }

@@ -7,16 +7,17 @@ import io.cucumber.java.en.When
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import org.darren.stock.domain.InsufficientStockException
+import org.darren.stock.steps.helpers.TestDateTimeProvider
 import org.junit.jupiter.api.assertInstanceOf
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class StockMovementStepDefinitions : KoinComponent {
     private val apiCallStepDefinitions by inject<ApiCallStepDefinitions>()
     private var lastException: Exception? = null
     lateinit var response: HttpResponse
+    private val dateTimeProvider: TestDateTimeProvider by inject()
 
     @When("I initiate a stock movement transaction with the following details:")
     fun iInitiateAStockMovementTransactionWithTheFollowingDetails(stockMovements: List<StockMovement>) =
@@ -50,7 +51,7 @@ class StockMovementStepDefinitions : KoinComponent {
         try {
             val url = "/locations/$from/$product/movements"
             val requestId = UUID.randomUUID().toString()
-            val movedAt = DateTimeFormatter.ISO_DATE_TIME.format(java.time.LocalDateTime.now())
+            val movedAt = dateTimeProvider.nowAsString()
             val payload = """{
                                   "destinationLocationId": "$to",
                                   "quantity": $quantity,

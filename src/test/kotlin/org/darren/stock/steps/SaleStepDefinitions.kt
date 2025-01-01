@@ -6,6 +6,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
+import org.darren.stock.steps.helpers.TestDateTimeProvider
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -16,6 +17,7 @@ import java.util.*
 class SaleStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
     private val apiCallStepDefinitions by inject<ApiCallStepDefinitions>()
+    private val dateTimeProvider: TestDateTimeProvider by inject()
 
     @When("there is a sale of {quantity} of {string} in the {string} store")
     fun thereIsASaleOfProductInStore(quantity: Double, productId: String, locationId: String) = runBlocking {
@@ -30,7 +32,7 @@ class SaleStepDefinitions : KoinComponent {
     ) = runBlocking {
         val url = "/stores/$locationId/products/$productId/sales"
         val requestId = UUID.randomUUID().toString()
-        val soldAt = "2021-09-01T12:00:00"
+        val soldAt = dateTimeProvider.nowAsString()
         val payload = """{ "requestId": "$requestId", "soldAt": "$soldAt", "quantity": $quantity }"""
 
         return@runBlocking apiCallStepDefinitions.sendPostRequest(url, payload)

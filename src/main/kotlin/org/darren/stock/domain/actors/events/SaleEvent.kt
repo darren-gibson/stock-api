@@ -1,33 +1,28 @@
 package org.darren.stock.domain.actors.events
 
-import kotlinx.coroutines.CompletableDeferred
-import org.darren.stock.domain.OperationNotSupportedException
+import kotlinx.serialization.Serializable
 import org.darren.stock.domain.StockState
-import org.darren.stock.domain.actors.Reply
+import org.darren.stock.ktor.DateSerializer
 import java.time.LocalDateTime
 
-class SaleEvent(val eventTime: LocalDateTime, val quantity: Double, result: CompletableDeferred<Reply>) :
-    StockPotMessages(result) {
+@Serializable
+class SaleEvent(
+    @Serializable(with = DateSerializer::class)
+    override val eventDateTime: LocalDateTime, val quantity: Double) :
+    StockPotEvent() {
 
-    override suspend fun execute(state: StockState): StockState {
-        if (state.location.isShop())
-            return performSale(state)
-
-        throw OperationNotSupportedException("Location '${state.location.id}' is not a shop")
-    }
-
-    private fun performSale(state: StockState): StockState {
+    override suspend fun apply(state: StockState): StockState {
         val newQuantity = state.quantity - quantity
         if (newQuantity < 0) {
             return state.copy(
-                quantity = 0.0, pendingAdjustment = state.pendingAdjustment + newQuantity, lastUpdated = eventTime
+                quantity = 0.0, pendingAdjustment = state.pendingAdjustment + newQuantity, lastUpdated = eventDateTime
             )
         }
 
-        return state.copy(quantity = newQuantity, lastUpdated = eventTime)
+        return state.copy(quantity = newQuantity, lastUpdated = eventDateTime)
     }
 
     override fun toString(): String {
-        return "SaleEvent(eventTime=$eventTime, quantity=$quantity)"
+        return "SaleEvent(eventDateTime=$eventDateTime, quantity=$quantity)"
     }
 }

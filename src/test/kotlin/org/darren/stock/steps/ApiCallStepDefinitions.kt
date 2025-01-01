@@ -9,6 +9,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
+import org.darren.stock.steps.helpers.removeAsciiDocs
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.component.KoinComponent

@@ -1,6 +1,5 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.actors.events.StockPotMessages
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.SendChannel
@@ -8,8 +7,9 @@ import org.darren.stock.domain.Location
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockLevel
 import org.darren.stock.domain.StockState
-import org.darren.stock.domain.actors.events.GetValue
 import org.darren.stock.domain.actors.Reply
+import org.darren.stock.domain.actors.messages.GetValue
+import org.darren.stock.domain.actors.messages.StockPotMessages
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -53,9 +53,6 @@ object GetValue : KoinComponent {
 
         return allStockPotsForLocations(locationSet, productId)
     }
-
-//    private fun getAllLocations(location: LocationApiClient.LocationDTO): Set<String> =
-//        setOf(location.id).plus(location.children.flatMap(::getAllLocations))
 
     private fun extractAllLocationIds(location: LocationApiClient.LocationDTO): Sequence<String> = sequence {
         yield(location.id)

@@ -1,40 +1,24 @@
 package org.darren.stock.domain.actors.events
 
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.channels.SendChannel
-import org.darren.stock.domain.InsufficientStockException
+import kotlinx.serialization.Serializable
 import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.StockState
-import org.darren.stock.domain.actors.Reply
+import org.darren.stock.ktor.DateSerializer
 import java.time.LocalDateTime
 
+@Serializable
 class MoveEvent(
     val quantity: Double,
-    val to: SendChannel<StockPotMessages>,
+    val to: String,
     val reason: MovementReason,
-    private val eventTime: LocalDateTime,
-    result: CompletableDeferred<Reply>
-) : StockPotMessages(result) {
+    @Serializable(with = DateSerializer::class)
+    override val eventDateTime: LocalDateTime
+) : StockPotEvent() {
 
-    private suspend fun performMove(state: StockState): StockState {
-        if (state.quantity < quantity)
-            throw InsufficientStockException()
-
-        val internalMoveResult = CompletableDeferred<Reply>()
-            to.send(InternalMoveToEvent(state.productId, quantity, state.location.id, reason, eventTime, internalMoveResult))
-        internalMoveResult.await().getOrThrow()
-        return state.copy(quantity = state.quantity - quantity, lastUpdated = eventTime)
-    }
-
-    override suspend fun execute(state: StockState): StockState {
-        val response = Result.runCatching {
-            performMove(state)
-        }
-        result.complete(response)
-        return response.getOrElse { state }
-    }
+    override suspend fun apply(state: StockState) =
+        state.copy(quantity = state.quantity - quantity, lastUpdated = eventDateTime)
 
     override fun toString(): String {
-        return "MoveEvent(quantity=$quantity, to=$to, reason=$reason, eventTime=$eventTime)"
+        return "MoveEvent(eventDateTime=$eventDateTime, quantity=$quantity, to=$to, reason=$reason)"
     }
 }

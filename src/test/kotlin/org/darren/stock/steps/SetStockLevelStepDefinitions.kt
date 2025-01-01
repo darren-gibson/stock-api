@@ -4,14 +4,15 @@ import io.cucumber.java.DataTableType
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import kotlinx.coroutines.runBlocking
+import org.darren.stock.steps.helpers.TestDateTimeProvider
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.time.LocalDateTime.now
-import java.time.format.DateTimeFormatter
+import java.time.LocalDateTime
 import java.util.*
 
 class SetStockLevelStepDefinitions : KoinComponent {
     private val apiCallStepDefinitions by inject<ApiCallStepDefinitions>()
+    private val dateTimeProvider: TestDateTimeProvider by inject()
 
     @Given("a Distribution Centre {string} with {double} units of {string}")
     @Given("a Store {string} with {double} units of {string}")
@@ -24,7 +25,7 @@ class SetStockLevelStepDefinitions : KoinComponent {
     fun theStockLevelOfProductInStoreIs(productId: String, locationId: String, quantity: Double) = runBlocking {
         val url = "/locations/$locationId/products/$productId/counts"
         val requestId = UUID.randomUUID().toString()
-        val countedAt = now().format(DateTimeFormatter.ISO_DATE_TIME)
+        val countedAt = dateTimeProvider.asString(LocalDateTime.MIN)
 
         val payload = """{"requestId": "$requestId", "reason": "AdminOverride", "countedAt": "$countedAt", "quantity": $quantity}"""
 

@@ -2,8 +2,8 @@ package org.darren.stock.domain.stockSystem
 
 import kotlinx.coroutines.CompletableDeferred
 import org.darren.stock.domain.MovementReason
-import org.darren.stock.domain.actors.events.MoveEvent
 import org.darren.stock.domain.actors.Reply
+import org.darren.stock.domain.actors.messages.RecordMove
 import java.time.LocalDateTime
 
 object Move {
@@ -14,7 +14,7 @@ object Move {
         val toPot = getStockPot(to, product)
         val result = CompletableDeferred<Reply>()
 
-        fromPot.send(MoveEvent(quantity, toPot, reason, movedAt, result))
+        fromPot.send(RecordMove(quantity, toPot, reason, movedAt, result))
         result.await().getOrThrow()
     }
 }

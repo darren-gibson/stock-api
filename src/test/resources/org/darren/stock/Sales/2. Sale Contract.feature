@@ -155,8 +155,9 @@ Feature: Sale Endpoint: Contract
   -----
 ====
 
-#  Background:
+  Background:
 #    Given the API is authenticated with a valid bearer token
+  And it's 12:00 on 2024-12-07
 
   Scenario: Successfully record a product sale and reduce stock level
     This is a "happy path" test to ensure that the Sale endpoint accepts a valid JSON request and reduces the stock as a result.

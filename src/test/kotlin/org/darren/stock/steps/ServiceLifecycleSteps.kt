@@ -10,11 +10,13 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.module
 import org.darren.stock.persistence.InMemoryStockEventRepository
+import org.darren.stock.steps.helpers.TestDateTimeProvider
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
@@ -48,7 +50,9 @@ class ServiceLifecycleSteps : KoinComponent {
                 module { single<StockSystem> { StockSystem() } },
                 module { single { testApp.client.engine } },
                 module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
-                module { single { ApiCallStepDefinitions() } }
+                module { single { ApiCallStepDefinitions() } },
+                module { single { TestDateTimeProvider() } },
+                module { single<DateTimeProvider> { get<TestDateTimeProvider>() } }
             )
         }
         testApp.start()

@@ -103,6 +103,7 @@ Feature: Contract: Stock Movement Endpoint
   Background:
     Given "warehouse1" is a Distribution Centre
     And "store3" is a store
+    And it's 15:35 on 2024-12-26
 
   Scenario: Successfully record a stock movement transaction
     This is a "happy path" test to ensure that the stock movement endpoint accepts a valid JSON request and records the transaction correctly.

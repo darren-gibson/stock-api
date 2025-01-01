@@ -4,9 +4,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.ProductQuantity
-import org.darren.stock.domain.actors.events.DeliveryEvent
 import org.darren.stock.domain.actors.Reply
-import org.darren.stock.domain.actors.events.StockPotMessages
+import org.darren.stock.domain.actors.messages.RecordDelivery
+import org.darren.stock.domain.actors.messages.StockPotMessages
 import java.time.LocalDateTime
 
 object Delivery {
@@ -18,6 +18,7 @@ object Delivery {
             delivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate)
         }
         deferredList.awaitAll()
+        // TODO: What happens if the delivery fails?
 
         // else -> throw OperationNotSupportedException("Untracked location $locationId cannot accept deliveries.")
     }
@@ -30,7 +31,7 @@ object Delivery {
         deliveryDate: LocalDateTime
     ): CompletableDeferred<Reply> {
         val result = CompletableDeferred<Reply>()
-        stockPot.send(DeliveryEvent(quantity, supplierId, supplierRef, deliveryDate, result))
+        stockPot.send(RecordDelivery(quantity, supplierId, supplierRef, deliveryDate, result))
         return result
     }
 }
