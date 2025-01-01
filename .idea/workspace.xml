@@ -8,7 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="major refactor to separate messages and events and store events that could be persisted and replayed.">
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/NullStockPotEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/NullStockPotEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/DeliveryStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/DeliveryStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -351,14 +353,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Implement functionality for Tracked and Untracked locations">
-      <option name="closed" value="true" />
-      <created>1732717467811</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1732717467811</updated>
     </task>
     <task id="LOCAL-00018" summary="Implement functionality for Tracked and Untracked locations">
       <option name="closed" value="true" />
@@ -744,7 +738,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735732742947</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="major refactor to separate messages and events and store events that could be persisted and replayed.">
+      <option name="closed" value="true" />
+      <created>1735732769065</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1735732769065</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

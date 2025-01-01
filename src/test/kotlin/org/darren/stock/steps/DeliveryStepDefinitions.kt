@@ -77,6 +77,7 @@ class DeliveryStepDefinitions : KoinComponent {
     }
 
     @When("there is a delivery of {double} {string} to {string}")
+    @When("there is a delivery of {quantity} of {string} to {string}")
     fun thereIsADeliveryOfTo(quantity: Double, productId: String, locationId: String) = runBlocking {
         runDeliveryForProducts(locationId, productId to quantity)
     }
