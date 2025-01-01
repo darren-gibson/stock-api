@@ -163,7 +163,7 @@ Feature: Sale Endpoint: Contract
     This is a "happy path" test to ensure that the Sale endpoint accepts a valid JSON request and reduces the stock as a result.
     Given "Store-001" is a store
     And a product "SKU12345" exists in "Store-001" with a stock level of 50
-    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+    When I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
       """asciidoc
       [source, json]
       -----
@@ -194,7 +194,7 @@ Feature: Sale Endpoint: Contract
   Scenario: Fail to record a product sale due to an invalid location
   This test ensures that the Sale endpoint returns a proper error response when the specified location does not exist.
     Given "Invalid-Store" does not exist as a store
-    When I send a POST request to "/stores/Invalid-Store/products/SKU12345/sales" with the following payload:
+    When I send a POST request to "/locations/Invalid-Store/products/SKU12345/sales" with the following payload:
       """asciidoc
       [source, json]
       -----
@@ -219,7 +219,7 @@ Feature: Sale Endpoint: Contract
   Scenario: Fail to record a product sale against a location that's not a shop
   This test ensures that the Sale endpoint returns a proper error response when the specified location is not a shop.
     Given "Store-001" is a "Warehouse" location
-    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+    When I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
       """asciidoc
       [source, json]
       -----
@@ -245,7 +245,7 @@ Feature: Sale Endpoint: Contract
     This test ensures that the Sale endpoint returns a proper error response when the soldAt field is missing.
     Given "Store-001" is a store
     And a product "SKU12345" exists in "Store-001" with a stock level of 50
-    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+    When I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
       """asciidoc
       [source, json]
       -----
@@ -270,7 +270,7 @@ Feature: Sale Endpoint: Contract
     This test ensures that the Sale endpoint returns a proper error response when the soldAt field has an invalid format.
     Given "Store-001" is a store
     And a product "SKU12345" exists in "Store-001" with a stock level of 50
-    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+    When I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
       """asciidoc
       [source, json]
       -----
@@ -296,7 +296,7 @@ Feature: Sale Endpoint: Contract
 #    Given "Store-001" is a store
 #    And a product "SKU12345" exists in "Store-001" with a stock level of 45
 #    And a sale request with "requestId": "abc123-e89b-12d3-a456-426614174000" has already been processed
-#    When I resend the POST request to "/stores/Store-001/products/SKU12345/sales" with the same payload:
+#    When I resend the POST request to "/locations/Store-001/products/SKU12345/sales" with the same payload:
 #      """
 #      {
 #          "requestId": "abc123-e89b-12d3-a456-426614174000",
@@ -317,7 +317,7 @@ Feature: Sale Endpoint: Contract
 #  Scenario: Fail to record a sale due to insufficient stock
 #    Given "Store-001" is a store
 #    And a product "SKU12345" exists in "Store-001" with a stock level of 3
-#    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+#    When I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
 #      """
 #      {
 #          "requestId": "def456-e89b-12d3-a456-426614174000",
@@ -337,7 +337,7 @@ Feature: Sale Endpoint: Contract
 #  Scenario: Fail to record a sale due to invalid request payload
 #    Given "Store-001" is a store
 #    And a product "SKU12345" exists in "Store-001" with a stock level of 45
-#    When I send a POST request to "/stores/Store-001/products/SKU12345/sales" with the following payload:
+#    When I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
 #      """
 #      {
 #          "quantity": 5

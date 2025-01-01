@@ -16,7 +16,7 @@ object Sale {
     fun Routing.sale() {
         val locations by inject<LocationApiClient>(LocationApiClient::class.java)
 
-        post("/stores/{locationId}/products/{productId}/sales") {
+        post("/locations/{locationId}/products/{productId}/sales") {
             val stockSystem = inject<StockSystem>(StockSystem::class.java).value
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!

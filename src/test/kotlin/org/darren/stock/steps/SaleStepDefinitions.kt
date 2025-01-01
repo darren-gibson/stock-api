@@ -30,7 +30,7 @@ class SaleStepDefinitions : KoinComponent {
         productId: String,
         quantity: Double
     ) = runBlocking {
-        val url = "/stores/$locationId/products/$productId/sales"
+        val url = "/locations/$locationId/products/$productId/sales"
         val requestId = UUID.randomUUID().toString()
         val soldAt = dateTimeProvider.nowAsString()
         val payload = """{ "requestId": "$requestId", "soldAt": "$soldAt", "quantity": $quantity }"""

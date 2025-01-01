@@ -8,6 +8,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
@@ -21,6 +22,7 @@ import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.fileProperties
+import java.time.LocalDateTime
 
 fun main(args: Array<String>) {
     startKoin {
@@ -29,7 +31,14 @@ fun main(args: Array<String>) {
             module { single<HttpClientEngine> { Java.create() } },
             module { single { LocationApiClient(getProperty("LOCATION_API")) } },
             module { single<StockSystem> { StockSystem() } },
-            module { single<StockEventRepository> { InMemoryStockEventRepository() } }
+            module { single<StockEventRepository> { InMemoryStockEventRepository() } },
+            module {
+                single<DateTimeProvider> {
+                    object : DateTimeProvider {
+                        override fun now() = LocalDateTime.now()
+                    }
+                }
+            }
         )
     }
     io.ktor.server.netty.EngineMain.main(args)
