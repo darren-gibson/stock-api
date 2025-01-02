@@ -7,9 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Enable StockPots to start and load state from the repository on Startup">
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Enable Stock API to respect cache headers provided by the Location API in its response.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,9 +60,9 @@
         <option value="JUnit5 Test Class" />
         <option value="Kotlin Enum" />
         <option value="Kotlin Data Class" />
-        <option value="Kotlin Object" />
         <option value="Kotlin Interface" />
         <option value="Kotlin Class" />
+        <option value="Kotlin Object" />
       </list>
     </option>
   </component>
@@ -118,6 +118,7 @@
     "Cucumber Java.Feature: 1. Movement Into.executor": "Run",
     "Cucumber Java.Feature: 2. Delivery Contract.executor": "Run",
     "Cucumber Java.Feature: 2. Get Stock Contract.executor": "Run",
+    "Cucumber Java.Feature: 2. LocationAPI.executor": "Run",
     "Cucumber Java.Feature: 2. Movement Contract.executor": "Run",
     "Cucumber Java.Feature: 2. Sale Contract.executor": "Run",
     "Cucumber Java.Feature: 3. Sale.executor": "Run",
@@ -154,7 +155,7 @@
     "Gradle.JsonSerializerTest.executor": "Run",
     "Gradle.RunSuiteTest (1).executor": "Run",
     "Gradle.RunSuiteTest.executor": "Run",
-    "Gradle.RunSuiteTestClass.executor": "Run",
+    "Gradle.RunSuiteTestClass.executor": "Debug",
     "Gradle.Tests in 'com.darren.stock'.executor": "Run",
     "Gradle.Tests in 'org.darren.stock'.executor": "Run",
     "Gradle.simple-stock [buildFromAvro].executor": "Run",
@@ -227,14 +228,14 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTestClass">
-    <configuration name="Feature: 2. Delivery Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: 2. LocationAPI" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Architecture/2. LocationAPI.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: 2. Delivery Contract" />
+      <option name="SUGGESTED_NAME" value="Feature: 2. LocationAPI" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -317,7 +318,7 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
+      <item itemvalue="Cucumber Java.Feature: 2. LocationAPI" />
       <item itemvalue="Cucumber Java.Feature: PendingAdjustments" />
       <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
@@ -326,10 +327,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Feature: 2. LocationAPI" />
         <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
         <item itemvalue="Kotlin.ApplicationKt" />
         <item itemvalue="Cucumber Java.Feature: PendingAdjustments" />
-        <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
       </list>
     </recent_temporary>
   </component>
@@ -341,22 +342,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Add Koin to the app and start shift towards using and IOC DI">
-      <option name="closed" value="true" />
-      <created>1733564987552</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1733564987552</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Add support for JSON for the response">
-      <option name="closed" value="true" />
-      <created>1733570520452</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1733570520452</updated>
     </task>
     <task id="LOCAL-00024" summary="Implement the Count API with wiring up the tests using Koin">
       <option name="closed" value="true" />
@@ -734,7 +719,23 @@
       <option name="project" value="LOCAL" />
       <updated>1735741943413</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Enable StockPots to start and load state from the repository on Startup">
+      <option name="closed" value="true" />
+      <created>1735742016990</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1735742016990</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Enable Stock API to respect cache headers provided by the Location API in its response.">
+      <option name="closed" value="true" />
+      <created>1735807937419</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1735807937419</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -786,7 +787,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features." />
     <MESSAGE value="Continue refactor and improve docs" />
     <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.0.21&quot;" />
     <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.1&quot;.  Get tests working with Location API dependencies." />
@@ -811,7 +811,8 @@
     <MESSAGE value="Add tests that demonstrates the adjustment only affects based on the event time" />
     <MESSAGE value="Make the Sale Uri consistent with /locations/ and remove the /stores/" />
     <MESSAGE value="Enable StockPots to start and load state from the repository on Startup" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enable StockPots to start and load state from the repository on Startup" />
+    <MESSAGE value="Enable Stock API to respect cache headers provided by the Location API in its response." />
+    <option name="LAST_COMMIT_MESSAGE" value="Enable Stock API to respect cache headers provided by the Location API in its response." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -828,13 +829,14 @@
           </properties>
           <option name="timeStamp" value="118" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt</url>
-          <line>36</line>
-          <properties>
-            <option name="lambda-ordinal" value="-1" />
+        <line-breakpoint enabled="true" type="kotlin-function">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt</url>
+          <line>45</line>
+          <properties class="org.darren.stock.domain.LocationApiClient" method="getHierarchyUri">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
           </properties>
-          <option name="timeStamp" value="121" />
+          <option name="timeStamp" value="126" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

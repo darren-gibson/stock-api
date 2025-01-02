@@ -3,13 +3,17 @@ package org.darren.stock.steps
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
+import io.cucumber.java.en.Then
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.*
+import io.ktor.http.CacheControl.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class LocationAPIStepDefinitions : KoinComponent {
     companion object {
@@ -23,6 +27,8 @@ class LocationAPIStepDefinitions : KoinComponent {
     }
 
     private val locations = mutableMapOf<String, SimpleLocation>()
+    private val countOfCallsByLocation = mutableMapOf<String, Int>()
+    private val cacheControlByLocation = mutableMapOf<String, String>()
 
     @Given("the following locations exist:")
     @Given("the following locations are defined in the Location API:")
@@ -50,18 +56,38 @@ class LocationAPIStepDefinitions : KoinComponent {
         locations.remove(locationId)
     }
 
-    suspend fun mockGetLocationByIdApi(call: RoutingCall) = mockGetChildrenByIdApi(call)
+    suspend fun mockGetLocationByIdApi(call: RoutingCall) {
+        val locationId = call.pathParameters["id"]!!
+        countOfCallsByLocation[locationId] = countOfCallsByLocation.getOrDefault(locationId, 0) + 1
+        respondToGetChildrenByIdCall(call)
+    }
 
     suspend fun mockGetChildrenByIdApi(call: RoutingCall) {
-        logger.debug { "test called with route=${call.route} params=${call.pathParameters}" }
-        val locationId = call.pathParameters["id"]
+        respondToGetChildrenByIdCall(call)
+    }
+
+    private suspend fun respondToGetChildrenByIdCall(call: RoutingCall) {
+        val locationId = call.pathParameters["id"]!!
+        logger.debug { "test called with route=${call.route} params=${call.pathParameters}, count=${countOfCallsByLocation[locationId]}" }
         val location = locations[locationId]
         if (location != null) {
+            call.response.cacheControl(getCacheControlForLocation(locationId))
             val bodyText = toLocation(location, !call.queryParameters.contains("depth"))
-            logger.debug { "Returning $bodyText" }
+            logger.debug { "Returning $bodyText, with cache=${getCacheControlForLocation(locationId)}" }
             call.respondText(bodyText, ContentType.Application.Json)
         } else
             call.respond(HttpStatusCode.NotFound)
+    }
+
+    private fun getCacheControlForLocation(locationId: String): CacheControl {
+        val value = cacheControlByLocation.getOrDefault(locationId, "no-cache")
+        value.split("=").let { parts ->
+            when (parts[0]) {
+                "no-cache" -> return NoCache(null)
+                "max-age" -> return MaxAge(parts[1].toInt())
+                else -> return NoCache(null)
+            }
+        }
     }
 
     private fun toLocation(loc: SimpleLocation, includeChildren: Boolean = true) =
@@ -99,5 +125,28 @@ class LocationAPIStepDefinitions : KoinComponent {
     @And("{string} is moved to {string}")
     fun isMovedTo(locationId: String, newParentLocationId: String) {
         locations[locationId] = locations[locationId]!!.copy(parent = newParentLocationId)
+    }
+
+    @Given("the Location API responds to get location requests with the following cache-control header:")
+    fun theLocationAPIRespondsToGetLocationRequestsWithTheFollowingCacheControlHeader(setting: List<CacheControlSetting>) {
+        cacheControlByLocation.putAll(setting.map { it.id to it.header })
+        setting.forEach { createLocationForTest(it.id) }
+    }
+
+    @DataTableType
+    fun cacheControlSettingTransformer(row: Map<String?, String>): CacheControlSetting {
+        return CacheControlSetting(row["Location Id"]!!, row["Cache-Control"]!!)
+    }
+
+    data class CacheControlSetting(val id: String, val header: String)
+
+    @Then("the Location API should have been called no more than once for {string}")
+    fun theLocationAPIShouldHaveBeenCalledNoMoreThanOnceFor(locationId: String) {
+        assertEquals(1, countOfCallsByLocation.getOrDefault(locationId, 0))
+    }
+
+    @Then("the Location API should have been called more than once for {string}")
+    fun theLocationAPIShouldHaveBeenCalledMoreThanOnceFor(locationId: String) {
+        assertTrue(countOfCallsByLocation.getOrDefault(locationId, 0) > 1)
     }
 }

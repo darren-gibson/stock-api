@@ -24,7 +24,7 @@ class StockSystem : KoinComponent {
     fun createStockPotActor(locationId: String, productId: String) =
         GlobalScope.stockPotActor(locationId, productId)
 
-    // TODO: Neet to consider how to handle the case where a stock pot is no longer needed
+    // TODO: Need to consider how to handle the case where a stock pot is no longer needed
     fun getAllActiveStockPotsFor(locationIds: Set<String>, productId: String):
             Map<String, SendChannel<StockPotMessages>>{
         val allPossible = locationIds.map { loc -> loc to productId }.toSet()

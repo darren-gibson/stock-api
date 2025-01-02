@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
+import io.cucumber.java.en.When
 
 class GetStockLevelStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
@@ -85,4 +86,11 @@ class GetStockLevelStepDefinitions : KoinComponent {
     fun expectedStockTransformer(row: Map<String?, String>) =
         ExpectedStock(row["Location Id"]!!, row["Product"]!!, row["Stock Level"]!!.toDouble(),
             row["Pending Adjustment"]?.toDouble() ?: 0.0)
+
+    @When("I get the stock level for {string} in {string} multiple times")
+    fun iGetTheStockLevelForInMultipleTimes(productId: String, locationId: String) = runBlocking {
+        repeat(5) {
+            getStockLevel(locationId, productId)
+        }
+    }
 }
