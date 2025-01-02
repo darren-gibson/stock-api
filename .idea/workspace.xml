@@ -8,8 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Enable Stock API to respect cache headers provided by the Location API in its response.">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/InvalidValuesException.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/DateSerializer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/DateSerializer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/ExceptionWrapper.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/GetStock.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/GetStock.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,8 +69,8 @@
         <option value="Kotlin Enum" />
         <option value="Kotlin Data Class" />
         <option value="Kotlin Interface" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Object" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -99,7 +107,7 @@
     </scriptDefinition>
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -145,6 +153,7 @@
     "Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure.executor": "Debug",
     "Cucumber Java.Scenario: Successfully create a stock count.executor": "Run",
     "Cucumber Java.Scenario: Successfully record a delivery and update stock levels.executor": "Run",
+    "Cucumber Java.Scenario: Successfully record a delivery with multiple products.executor": "Run",
     "Cucumber Java.Scenario: Successfully record a product sale and reduce stock level.executor": "Run",
     "Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location.executor": "Run",
     "Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment.executor": "Run",
@@ -155,7 +164,7 @@
     "Gradle.JsonSerializerTest.executor": "Run",
     "Gradle.RunSuiteTest (1).executor": "Run",
     "Gradle.RunSuiteTest.executor": "Run",
-    "Gradle.RunSuiteTestClass.executor": "Debug",
+    "Gradle.RunSuiteTestClass.executor": "Run",
     "Gradle.Tests in 'com.darren.stock'.executor": "Run",
     "Gradle.Tests in 'org.darren.stock'.executor": "Run",
     "Gradle.simple-stock [buildFromAvro].executor": "Run",
@@ -247,14 +256,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Feature: PendingAdjustments" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Scenario: Successfully record a delivery with multiple products" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: PendingAdjustments" />
+      <option name="NAME_FILTER" value="^Successfully record a delivery with multiple products$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully record a delivery with multiple products$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Successfully record a delivery with multiple products" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -319,7 +329,7 @@
     </configuration>
     <list>
       <item itemvalue="Cucumber Java.Feature: 2. LocationAPI" />
-      <item itemvalue="Cucumber Java.Feature: PendingAdjustments" />
+      <item itemvalue="Cucumber Java.Scenario: Successfully record a delivery with multiple products" />
       <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
       <item itemvalue="Kotlin.ApplicationKt" />
@@ -327,10 +337,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Scenario: Successfully record a delivery with multiple products" />
         <item itemvalue="Cucumber Java.Feature: 2. LocationAPI" />
         <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
         <item itemvalue="Kotlin.ApplicationKt" />
-        <item itemvalue="Cucumber Java.Feature: PendingAdjustments" />
       </list>
     </recent_temporary>
   </component>
@@ -342,14 +352,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Implement the Count API with wiring up the tests using Koin">
-      <option name="closed" value="true" />
-      <created>1733666644710</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1733666644710</updated>
     </task>
     <task id="LOCAL-00025" summary="Implement Location Not Found when adding a count to an invalid location">
       <option name="closed" value="true" />
@@ -735,7 +737,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735807937419</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="Enable Stock API to respect cache headers provided by the Location API in its response.">
+      <option name="closed" value="true" />
+      <created>1735808950972</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1735808950972</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -822,21 +832,9 @@
           <option name="timeStamp" value="37" />
         </breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt</url>
-          <line>59</line>
-          <properties>
-            <option name="lambda-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="118" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-function">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt</url>
-          <line>45</line>
-          <properties class="org.darren.stock.domain.LocationApiClient" method="getHierarchyUri">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="126" />
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt</url>
+          <line>74</line>
+          <option name="timeStamp" value="131" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

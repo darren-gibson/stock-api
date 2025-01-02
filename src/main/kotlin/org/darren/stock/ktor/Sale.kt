@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.stockSystem.Sale.sale
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.ktor.ExceptionWrapper.runWithExceptionHandling
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -20,14 +19,12 @@ object Sale {
             val stockSystem = inject<StockSystem>(StockSystem::class.java).value
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!
-            runWithExceptionHandling(call, "soldAt") {
-                val request = call.receive<SaleRequestDTO>()
-                locations.ensureValidLocation(locationId)
+            val request = call.receive<SaleRequestDTO>()
+            locations.ensureValidLocation(locationId)
 
-                with(request) {
-                    stockSystem.sale(locationId, productId, quantity, soldAt)
-                    call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, soldAt))
-                }
+            with(request) {
+                stockSystem.sale(locationId, productId, quantity, soldAt)
+                call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, soldAt))
             }
         }
     }

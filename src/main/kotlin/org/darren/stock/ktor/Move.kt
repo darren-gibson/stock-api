@@ -9,7 +9,6 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.stockSystem.Move.move
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.ktor.ExceptionWrapper.runWithExceptionHandling
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -22,19 +21,17 @@ object Move {
             val sourceId = call.parameters["sourceLocationId"]!!
             val productId = call.parameters["productId"]!!
 
-            runWithExceptionHandling(call, "movedAt") {
-                val request = call.receive<MoveRequestDTO>()
-                locations.ensureValidLocations(sourceId, request.destinationLocationId)
+            val request = call.receive<MoveRequestDTO>()
+            locations.ensureValidLocations(sourceId, request.destinationLocationId)
 
-                with(request) {
-                    stockSystem.move(sourceId, destinationLocationId, productId, quantity, reason, movedAt)
-                    call.respond(
-                        Created,
-                        MoveResponseDTO(
-                            requestId, sourceId, destinationLocationId, productId, quantity, reason, movedAt
-                        )
+            with(request) {
+                stockSystem.move(sourceId, destinationLocationId, productId, quantity, reason, movedAt)
+                call.respond(
+                    Created,
+                    MoveResponseDTO(
+                        requestId, sourceId, destinationLocationId, productId, quantity, reason, movedAt
                     )
-                }
+                )
             }
         }
     }

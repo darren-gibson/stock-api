@@ -8,7 +8,6 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockLevel
 import org.darren.stock.domain.stockSystem.GetValue.getValue
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.ktor.ExceptionWrapper.runWithExceptionHandling
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -22,22 +21,23 @@ object GetStock {
             val productId = call.parameters["productId"]!!
             val includeChildren = call.parameters["includeChildren"]?.toBoolean() ?: true
 
-            runWithExceptionHandling(call) {
-                locations.ensureValidLocations(locationId)
+            locations.ensureValidLocations(locationId)
 
-                val stockLevel = stockSystem.getValue(locationId, productId, includeChildren)
+            val stockLevel = stockSystem.getValue(locationId, productId, includeChildren)
 
-                with(stockLevel) {
-                    if (includeChildren) {
-                        call.respond(
-                            OK, GetStockResponseDTO(
-                                locationId, productId, quantity, pendingAdjustment, lastUpdated, totalQuantity,
-                                childLocations.map(ChildLocationsDTO::from)
-                            )
+            with(stockLevel) {
+                if (includeChildren) {
+                    call.respond(
+                        OK, GetStockResponseDTO(
+                            locationId, productId, quantity, pendingAdjustment, lastUpdated, totalQuantity,
+                            childLocations.map(ChildLocationsDTO::from)
                         )
-                    } else {
-                        call.respond(OK, GetStockResponseDTO(locationId, productId, quantity, pendingAdjustment, lastUpdated))
-                    }
+                    )
+                } else {
+                    call.respond(
+                        OK,
+                        GetStockResponseDTO(locationId, productId, quantity, pendingAdjustment, lastUpdated)
+                    )
                 }
             }
         }
@@ -57,7 +57,7 @@ object GetStock {
 
     @Serializable
     data class ChildLocationsDTO(
-        val locationId: String, val quantity: Double, val pendingAdjustment: Double = 0.0 ,val totalQuantity: Double?,
+        val locationId: String, val quantity: Double, val pendingAdjustment: Double = 0.0, val totalQuantity: Double?,
         val childLocations: List<ChildLocationsDTO> = emptyList()
     ) {
         companion object {

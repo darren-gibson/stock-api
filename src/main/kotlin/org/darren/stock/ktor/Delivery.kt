@@ -19,15 +19,12 @@ object Delivery {
         post("/locations/{locationId}/deliveries") {
             val stockSystem = inject<StockSystem>(StockSystem::class.java).value
             val locationId = call.parameters["locationId"]!!
+            val request = call.receive<DeliveryRequestDTO>()
+            locations.ensureValidLocations(locationId)
 
-            ExceptionWrapper.runWithExceptionHandling(call, "deliveredAt") {
-                val request = call.receive<DeliveryRequestDTO>()
-                locations.ensureValidLocations(locationId)
-
-                with(request) {
-                    stockSystem.delivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
-                    call.respond(Created)
-                }
+            with(request) {
+                stockSystem.delivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
+                call.respond(Created)
             }
         }
     }

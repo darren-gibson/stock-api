@@ -9,7 +9,6 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockCountReason
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.domain.stockSystem.count
-import org.darren.stock.ktor.ExceptionWrapper.runWithExceptionHandling
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -23,16 +22,14 @@ object StockCount {
             val productId = call.parameters["productId"]!!
 
 
-            runWithExceptionHandling(call, "countedAt") {
-                val request = call.receive<StockCountRequestDTO>()
-                locations.ensureValidLocation(locationId)
-                with(request) {
-                    stockSystem.value.count(locationId, productId, quantity, reason, countedAt)
-                    call.respond(
-                        Created,
-                        StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt)
-                    )
-                }
+            val request = call.receive<StockCountRequestDTO>()
+            locations.ensureValidLocation(locationId)
+            with(request) {
+                stockSystem.value.count(locationId, productId, quantity, reason, countedAt)
+                call.respond(
+                    Created,
+                    StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt)
+                )
             }
         }
     }
