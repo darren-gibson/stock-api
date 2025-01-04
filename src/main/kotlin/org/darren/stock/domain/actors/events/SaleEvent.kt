@@ -12,7 +12,7 @@ class SaleEvent(
     StockPotEvent() {
 
     override suspend fun apply(state: StockState): StockState {
-        val newQuantity = state.quantity - quantity
+        val newQuantity = state.quantity!! - quantity
         if (newQuantity < 0) {
             return state.copy(
                 quantity = 0.0, pendingAdjustment = state.pendingAdjustment + newQuantity, lastUpdated = eventDateTime

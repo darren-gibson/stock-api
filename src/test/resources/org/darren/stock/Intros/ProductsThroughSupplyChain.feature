@@ -91,7 +91,7 @@ flowchart LR
 -----
 
     Background:
-        Given the following locations exist:
+        Given the following tracked locations exist:
             | Location Id       | Parent Location Id | Role                |
             | Castle Donington  |                    | Distribution Centre |
             | Ambient Warehouse | Castle Donington   | Warehouse           |

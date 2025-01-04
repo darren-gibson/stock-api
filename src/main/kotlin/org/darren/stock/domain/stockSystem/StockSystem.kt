@@ -25,6 +25,7 @@ class StockSystem : KoinComponent {
         GlobalScope.stockPotActor(locationId, productId)
 
     // TODO: Need to consider how to handle the case where a stock pot is no longer needed
+    // TODO: Need to reduce to a number of stock pots that are actually needed, what about Stores with child locations of aisles, modules, shelves, etc, the numbers will soon mount up
     fun getAllActiveStockPotsFor(locationIds: Set<String>, productId: String):
             Map<String, SendChannel<StockPotMessages>>{
         val allPossible = locationIds.map { loc -> loc to productId }.toSet()

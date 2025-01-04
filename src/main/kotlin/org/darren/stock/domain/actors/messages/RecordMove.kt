@@ -24,7 +24,7 @@ class RecordMove(
     }
 
     private suspend fun performMove(state: StockState): Reply {
-        if (state.quantity < quantity)
+        if (state.quantity!! < quantity)
             throw InsufficientStockException()
 
         val internalMoveResult = CompletableDeferred<Reply>()

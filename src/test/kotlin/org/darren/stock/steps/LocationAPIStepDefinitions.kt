@@ -16,6 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class LocationAPIStepDefinitions : KoinComponent {
+    private val trackedInventoryRoleName = "TrackedInventoryLocation"
     companion object {
         private val logger = KotlinLogging.logger {}
     }
@@ -30,8 +31,9 @@ class LocationAPIStepDefinitions : KoinComponent {
     private val countOfCallsByLocation = mutableMapOf<String, Int>()
     private val cacheControlByLocation = mutableMapOf<String, String>()
 
+    @Given("the following tracked locations exist:")
     @Given("the following locations exist:")
-    @Given("the following locations are defined in the Location API:")
+    @Given("the following tracked locations are defined in the Location API:")
     fun theFollowingLocationsAreDefinedInTheLocationAPI(locationsToDefine: List<SimpleLocation>) = runBlocking {
         locations.putAll(locationsToDefine.map { it.id to it })
     }
@@ -42,10 +44,8 @@ class LocationAPIStepDefinitions : KoinComponent {
         createLocationForTest(locationId, "Shop")
     }
 
-    private fun createLocationForTest(locationId: String, role: String? = null) {
-        locations[locationId] =
-            if (role == null) SimpleLocation(locationId, "Store")
-            else SimpleLocation(locationId, role)
+    private fun createLocationForTest(locationId: String, role: String) {
+        locations[locationId] = SimpleLocation(locationId, listOf(role, trackedInventoryRoleName))
     }
 
     @Given("{string} does not exist as a store")
@@ -94,7 +94,7 @@ class LocationAPIStepDefinitions : KoinComponent {
         """{
             "id": "${loc.id}",
             "name": "${loc.id}",
-            "roles": ["${loc.role}"],
+            "roles": [${loc.roles.joinToString(separator = ",") { "\"${it}\"" }}],
             "createdAt": "2024-12-15T12:34:56Z"
             ${if (includeChildren) ""","children": [${childLocations(loc)}]""" else ""}
         }"""
@@ -106,10 +106,14 @@ class LocationAPIStepDefinitions : KoinComponent {
 
     @DataTableType
     fun locationEntryTransformer(row: Map<String?, String>): SimpleLocation {
-        return SimpleLocation(row["Location Id"]!!, row["Role"]!!, row["Parent Location Id"])
+        val roles = if(row.containsKey("Roles"))
+            row["Roles"]?.split(",")?.map { it.trim() } ?: emptyList()
+        else listOf(trackedInventoryRoleName)
+
+        return SimpleLocation(row["Location Id"]!!, roles, row["Parent Location Id"])
     }
 
-    data class SimpleLocation(val id: String, val role: String = "Shop", val parent: String? = null)
+    data class SimpleLocation(val id: String, val roles: List<String> = emptyList(), val parent: String? = null)
 
     @Given("{string} is a {string} location")
     fun isALocation(locationId: String, role: String) {
@@ -119,7 +123,7 @@ class LocationAPIStepDefinitions : KoinComponent {
     @And("{string} is a receiving location in the network")
     @And("{string} is a receiving location")
     fun isAValidReceivingLocationInTheNetwork(locationId: String) {
-        theFollowingLocationsAreDefinedInTheLocationAPI(listOf(SimpleLocation(locationId, "Zone")))
+        theFollowingLocationsAreDefinedInTheLocationAPI(listOf(SimpleLocation(locationId, listOf("Zone", trackedInventoryRoleName))))
     }
 
     @And("{string} is moved to {string}")
@@ -130,7 +134,7 @@ class LocationAPIStepDefinitions : KoinComponent {
     @Given("the Location API responds to get location requests with the following cache-control header:")
     fun theLocationAPIRespondsToGetLocationRequestsWithTheFollowingCacheControlHeader(setting: List<CacheControlSetting>) {
         cacheControlByLocation.putAll(setting.map { it.id to it.header })
-        setting.forEach { createLocationForTest(it.id) }
+        setting.forEach { createLocationForTest(it.id, trackedInventoryRoleName) }
     }
 
     @DataTableType

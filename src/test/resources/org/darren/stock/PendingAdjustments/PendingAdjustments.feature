@@ -2,11 +2,12 @@
 Feature: Pending adjustments can be viewed and reconciled
 
   Background:
-    Given the following locations exist:
-      | Location Id | Parent Location Id | Role |
-      | Cambridge   |                    | Shop |
+    Given the following tracked locations exist:
+      | Location Id | Parent Location Id | Name | Roles                          |
+      | Cambridge   |                    | Shop | Shop, TrackedInventoryLocation |
 
-  Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment, even if there is a delivery of more stock following the sale.
+  Scenario: Sales with Zero Stock Trigger Pending Adjustment
+    A sale made when stock is zero creates a pending adjustment, even if a delivery replenishes the stock afterward.
     Given the following are the current stock levels:
       | Location Id | Product | Stock Level |
       | Cambridge   | Beans   | 0           |
@@ -16,8 +17,8 @@ Feature: Pending adjustments can be viewed and reconciled
       | Location Id | Product | Stock Level | Pending Adjustment |
       | Cambridge   | Beans   | 10           | -1                 |
 
-  Scenario: deliveries that occur before sales can resolve pending adjustments
-  events can be received and processed out-of-order by the system and the stock levels will be updated accordingly
+  Scenario: Deliveries Before Sales Fix Pending Adjustments
+      Deliveries made before sales can resolve pending adjustments. The system processes events out of order, ensuring stock levels are updated accordingly.
     Given it's 12:00 on 2024-12-31
     And the following are the current stock levels:
       | Location Id | Product | Stock Level |
@@ -28,8 +29,8 @@ Feature: Pending adjustments can be viewed and reconciled
       | Location Id | Product | Stock Level | Pending Adjustment |
       | Cambridge   | Beans   | 9           | 0                  |
 
-  Scenario: deliveries that occur before sales only resolve applicable pending adjustments
-  events can be received and processed out-of-order by the system and the stock levels will be updated accordingly.  If a delivery that occurred before a sale is received by the system after the sale, then only those pending adjustments will be resolved.  Any pending adjustments that are not resolved by the delivery will remain.
+  Scenario: Out-of-Order Deliveries Resolve Applicable Adjustments
+    Deliveries made before sales only resolve the applicable pending adjustments. The system can process events out of order, and stock levels are updated accordingly. If the system receives a delivery that occurred before a sale but processes it after the sale, only the relevant pending adjustments will be resolved. Any unresolved adjustments will remain.
     Given it's 11:00 on 2024-12-31
     And the following are the current stock levels:
       | Location Id | Product | Stock Level |

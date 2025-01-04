@@ -18,7 +18,7 @@ internal class InternalMoveToEvent(
     StockPotEvent() {
 
     override suspend fun apply(state: StockState) =
-        state.copy(quantity = state.quantity + quantity, lastUpdated = eventDateTime)
+        state.copy(quantity = state.quantity!! + quantity, lastUpdated = eventDateTime)
 
     override fun toString(): String {
         return "InternalMoveToEvent(eventDateTime=$eventDateTime, productId='$productId', quantity=$quantity, from='$from', reason=$reason)"

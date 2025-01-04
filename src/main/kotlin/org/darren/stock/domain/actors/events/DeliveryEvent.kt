@@ -14,7 +14,7 @@ class DeliveryEvent(
     override val eventDateTime: LocalDateTime
 ) : StockPotEvent() {
     override suspend fun apply(state: StockState) =
-        state.copy(quantity = state.quantity + quantity, lastUpdated = eventDateTime)
+        state.copy(quantity = state.quantity!! + quantity, lastUpdated = eventDateTime)
 
     override fun toString(): String {
         return "DeliveryEvent(eventTime=$eventDateTime, quantity=$quantity, supplierId='$supplierId', supplierRef='$supplierRef')"

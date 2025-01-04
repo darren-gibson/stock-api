@@ -107,12 +107,12 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
     The Get Stock Level for Product at Location endpoint provides a dependable method to monitor inventory and ensure operational consistency.
 
   Background:
-    Given the following locations exist:
-      | Location Id      | Parent Location Id | Role               |
-      | DC01             |                    | Distribution Centre|
-      | WH01             | DC01               | Warehouse          |
-      | SU01             | WH01               | Storage Unit       |
-      | WH02             | DC01               | Warehouse          |
+    Given the following tracked locations exist:
+      | Location Id | Parent Location Id | Name                |
+      | DC01        |                    | Distribution Centre |
+      | WH01        | DC01               | Warehouse           |
+      | SU01        | WH01               | Storage Unit        |
+      | WH02        | DC01               | Warehouse           |
 
     And the following are the current stock levels:
       | Location Id | Product    | Stock Level | Pending Adjustment |

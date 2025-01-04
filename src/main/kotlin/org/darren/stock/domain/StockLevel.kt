@@ -7,8 +7,8 @@ data class StockLevel(
     val childLocations: List<StockLevel> = emptyList()
 ) {
     val totalQuantity: Double
-        get() = state.quantity + childLocations.sumOf { it.totalQuantity }
-    val quantity: Double
+        get() = (state.quantity ?: 0.0) + childLocations.sumOf { it.totalQuantity }
+    val quantity: Double?
         get() = state.quantity
     val lastUpdated: LocalDateTime
         get() = state.lastUpdated

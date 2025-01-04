@@ -7,17 +7,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Enable Stock API to respect cache headers provided by the Location API in its response.">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/InvalidValuesException.kt" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Move to ktor 'StatusPages' for Error handling.">
+      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/UntrackedLocations/1. Untracked Locations Into.feature" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/UntrackedLocations/2. Untracked Locations - Get Stock.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/DateSerializer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/DateSerializer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/ExceptionWrapper.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationRoles.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationRoles.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockLevel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockLevel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockState.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/StockState.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/DeliveryEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/DeliveryEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/InternalMoveToEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/InternalMoveToEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/MoveEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/MoveEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/SaleEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/events/SaleEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/RecordMove.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/RecordMove.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/GetStock.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/GetStock.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Sale.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ApiCallStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ApiCallStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros/ProductsThroughSupplyChain.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Intros/ProductsThroughSupplyChain.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/working.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/working.adoc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,11 +77,11 @@
         <option value="Class" />
         <option value="Kotlin File" />
         <option value="JUnit5 Test Class" />
-        <option value="Kotlin Enum" />
         <option value="Kotlin Data Class" />
         <option value="Kotlin Interface" />
         <option value="Kotlin Object" />
         <option value="Kotlin Class" />
+        <option value="Kotlin Enum" />
       </list>
     </option>
   </component>
@@ -107,7 +118,7 @@
     </scriptDefinition>
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -129,6 +140,8 @@
     "Cucumber Java.Feature: 2. LocationAPI.executor": "Run",
     "Cucumber Java.Feature: 2. Movement Contract.executor": "Run",
     "Cucumber Java.Feature: 2. Sale Contract.executor": "Run",
+    "Cucumber Java.Feature: 2. Tracked Locations Contract.executor": "Run",
+    "Cucumber Java.Feature: 3. Retrieve Location Tracking Setting Contract.executor": "Run",
     "Cucumber Java.Feature: 3. Sale.executor": "Run",
     "Cucumber Java.Feature: 4. Sale Error Flows.executor": "Run",
     "Cucumber Java.Feature: AdminOverride.executor": "Run",
@@ -141,6 +154,7 @@
     "Cucumber Java.Feature: Sale (1).executor": "Run",
     "Cucumber Java.Feature: Sale.executor": "Run",
     "Cucumber Java.Feature: Status.executor": "Run",
+    "Cucumber Java.Scenario: \"Override\" as a stock count reason will set the stock level at that location.executor": "Run",
     "Cucumber Java.Scenario: Delivery of multiple products.executor": "Run",
     "Cucumber Java.Scenario: Fail to create a stock count due to invalid location.executor": "Run",
     "Cucumber Java.Scenario: Fail to record a delivery due to invalid values.executor": "Run",
@@ -156,6 +170,7 @@
     "Cucumber Java.Scenario: Successfully record a delivery with multiple products.executor": "Run",
     "Cucumber Java.Scenario: Successfully record a product sale and reduce stock level.executor": "Run",
     "Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location.executor": "Run",
+    "Cucumber Java.Scenario: Successfully retrieve the stock level of a product at an untracked location.executor": "Run",
     "Cucumber Java.Scenario: The sale of a product in a location where the current stock is zero results in a pending adjustment.executor": "Run",
     "Gradle.AsciiDoctorHelperKtTest.executor": "Run",
     "Gradle.Build simple-stock.executor": "Run",
@@ -237,34 +252,14 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTestClass">
-    <configuration name="Feature: 2. LocationAPI" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Architecture/2. LocationAPI.feature" />
-      <option name="GLUE" value="org.darren.stock.steps" />
-      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
-      <module name="stock-api.test" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: 2. LocationAPI" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.cucumber.core.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Scenario: Successfully record a delivery with multiple products" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: 2. Delivery Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
       <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Successfully record a delivery with multiple products$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully record a delivery with multiple products$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Successfully record a delivery with multiple products" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
+      <option name="SUGGESTED_NAME" value="Feature: 2. Delivery Contract" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -276,15 +271,54 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Successfully retrieve the stock level of a product at a location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: 3. Retrieve Location Tracking Setting Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/UntrackedLocations/3. Retrieve Location Tracking Setting Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Successfully retrieve the stock level of a product at a location$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully retrieve the stock level of a product at a location$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Successfully retrieve the stock level of a product at a location" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
+      <option name="SUGGESTED_NAME" value="Feature: 3. Retrieve Location Tracking Setting Contract" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scenario: Successfully retrieve the stock level of a product at an untracked location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/UntrackedLocations/2. Untracked Locations - Get Stock.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^Successfully retrieve the stock level of a product at an untracked location$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully retrieve the stock level of a product at an untracked location$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Successfully retrieve the stock level of a product at an untracked location" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Counts/AdminOverride.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^\&quot;Override\&quot; as a stock count reason will set the stock level at that location$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^\&quot;Override\&quot; as a stock count reason will set the stock level at that location$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -320,27 +354,20 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="ApplicationKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.darren.stock.ktor.ApplicationKt" />
-      <module name="stock-api.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <list>
-      <item itemvalue="Cucumber Java.Feature: 2. LocationAPI" />
-      <item itemvalue="Cucumber Java.Scenario: Successfully record a delivery with multiple products" />
-      <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
+      <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
+      <item itemvalue="Cucumber Java.Feature: 3. Retrieve Location Tracking Setting Contract" />
+      <item itemvalue="Cucumber Java.Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
+      <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at an untracked location" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
-      <item itemvalue="Kotlin.ApplicationKt" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
-        <item itemvalue="Cucumber Java.Scenario: Successfully record a delivery with multiple products" />
-        <item itemvalue="Cucumber Java.Feature: 2. LocationAPI" />
-        <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at a location" />
-        <item itemvalue="Kotlin.ApplicationKt" />
+        <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at an untracked location" />
+        <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
+        <item itemvalue="Cucumber Java.Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
+        <item itemvalue="Cucumber Java.Feature: 3. Retrieve Location Tracking Setting Contract" />
       </list>
     </recent_temporary>
   </component>
@@ -352,14 +379,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Implement Location Not Found when adding a count to an invalid location">
-      <option name="closed" value="true" />
-      <created>1733669918089</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1733669918089</updated>
     </task>
     <task id="LOCAL-00026" summary="update step definitions">
       <option name="closed" value="true" />
@@ -745,7 +764,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735808950972</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Move to ktor 'StatusPages' for Error handling.">
+      <option name="closed" value="true" />
+      <created>1735834110338</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1735834110338</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -797,7 +824,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Continue refactor and improve docs" />
     <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.0.21&quot;" />
     <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.1&quot;.  Get tests working with Location API dependencies." />
     <MESSAGE value="refactored to more &quot;type&quot; to roles." />
@@ -822,7 +848,8 @@
     <MESSAGE value="Make the Sale Uri consistent with /locations/ and remove the /stores/" />
     <MESSAGE value="Enable StockPots to start and load state from the repository on Startup" />
     <MESSAGE value="Enable Stock API to respect cache headers provided by the Location API in its response." />
-    <option name="LAST_COMMIT_MESSAGE" value="Enable Stock API to respect cache headers provided by the Location API in its response." />
+    <MESSAGE value="Move to ktor 'StatusPages' for Error handling." />
+    <option name="LAST_COMMIT_MESSAGE" value="Move to ktor 'StatusPages' for Error handling." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -835,6 +862,43 @@
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt</url>
           <line>74</line>
           <option name="timeStamp" value="131" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt</url>
+          <line>19</line>
+          <option name="timeStamp" value="133" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt</url>
+          <line>112</line>
+          <option name="timeStamp" value="135" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <condition expression="&quot;Cucumber+&quot;!=null" />
+          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/DeliveryStepDefinitions.kt</url>
+          <line>81</line>
+          <option name="timeStamp" value="137" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <condition expression="&quot;Cucumber+&quot;!=null" />
+          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/SaleStepDefinitions.kt</url>
+          <line>23</line>
+          <option name="timeStamp" value="138" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
+          <url>file://$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature</url>
+          <line>14</line>
+          <option name="timeStamp" value="136" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
+          <url>file://$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/3. Sale.feature</url>
+          <line>8</line>
+          <option name="timeStamp" value="139" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
+          <url>file://$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/3. Sale.feature</url>
+          <line>15</line>
+          <option name="timeStamp" value="140" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

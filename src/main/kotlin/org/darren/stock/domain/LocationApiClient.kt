@@ -61,5 +61,7 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
     data class LocationDTO(val id: String, val roles: Set<String>, val children: List<LocationDTO> = emptyList()) {
         val isShop
             get() = roles.contains(LocationRoles.Shop.name)
+        val isTracked
+            get() = roles.contains(LocationRoles.TrackedInventoryLocation.name)
     }
 }

@@ -47,7 +47,7 @@ object GetStock {
     private data class GetStockResponseDTO(
         val locationId: String,
         val productId: String,
-        val quantity: Double,
+        val quantity: Double? = null,
         val pendingAdjustment: Double = 0.0,
         @Serializable(with = DateSerializer::class)
         val lastUpdated: LocalDateTime,
@@ -57,7 +57,7 @@ object GetStock {
 
     @Serializable
     data class ChildLocationsDTO(
-        val locationId: String, val quantity: Double, val pendingAdjustment: Double = 0.0, val totalQuantity: Double?,
+        val locationId: String, val quantity: Double? = null, val pendingAdjustment: Double = 0.0, val totalQuantity: Double?,
         val childLocations: List<ChildLocationsDTO> = emptyList()
     ) {
         companion object {

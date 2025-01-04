@@ -16,7 +16,7 @@ class MoveEvent(
 ) : StockPotEvent() {
 
     override suspend fun apply(state: StockState) =
-        state.copy(quantity = state.quantity - quantity, lastUpdated = eventDateTime)
+        state.copy(quantity = state.quantity!! - quantity, lastUpdated = eventDateTime)
 
     override fun toString(): String {
         return "MoveEvent(eventDateTime=$eventDateTime, quantity=$quantity, to=$to, reason=$reason)"

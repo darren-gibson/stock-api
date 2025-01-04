@@ -55,4 +55,16 @@ class ApiCallStepDefinitions : KoinComponent {
         response = client.get(url)
         return@runBlocking response
     }
+
+    @When("I send a PUT request to {string} with the following payload:")
+    fun iSendAPUTRequestToWithTheFollowingPayload(url: String, payload: String) = runBlocking {
+        response = sendPutRequest(url, payload.removeAsciiDocs())
+    }
+
+    private suspend fun sendPutRequest(url: String, payload: String): HttpResponse {
+        return client.post(url) {
+            contentType(ContentType.Application.Json)
+            setBody(payload)
+        }
+    }
 }
