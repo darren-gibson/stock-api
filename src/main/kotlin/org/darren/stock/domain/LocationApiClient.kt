@@ -64,6 +64,11 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
         throw LocationNotFoundException(locationId)
     }
 
+    suspend fun ensureLocationsAreTracked(vararg locations: String) = locations.forEach {
+        val location =        getLocation(it)
+        if (!location.isTracked) throw LocationNotTrackedException(it)
+    }
+
     @Serializable
     data class LocationDTO(val id: String, val roles: Set<String>, val children: List<LocationDTO> = emptyList()) {
         val isShop

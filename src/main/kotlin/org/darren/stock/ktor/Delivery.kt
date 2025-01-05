@@ -1,12 +1,10 @@
 package org.darren.stock.ktor
 
-import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.ProductQuantity
 import org.darren.stock.domain.stockSystem.Delivery.delivery
 import org.darren.stock.domain.stockSystem.StockSystem
@@ -15,27 +13,14 @@ import java.time.LocalDateTime
 
 object Delivery {
     fun Routing.delivery() {
-        val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-
         post("/locations/{locationId}/deliveries") {
             val stockSystem = inject<StockSystem>(StockSystem::class.java).value
             val locationId = call.parameters["locationId"]!!
             val request = call.receive<DeliveryRequestDTO>()
-            val path = locations.getPath(locationId).reversed()
 
             with(request) {
-                if(path.first().isTracked) {
-                    stockSystem.delivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
-                    call.respond(Created)
-                } else {
-                    try {
-                        val firstTrackedParent = path.first { it.isTracked }
-                        call.response.headers.append(HttpHeaders.Location, "/locations/${firstTrackedParent.id}/deliveries")
-                        call.respond(HttpStatusCode.SeeOther, ErrorDTO("LocationNotTracked"))
-                    } catch (e: NoSuchElementException) {
-                        call.respond(HttpStatusCode.BadRequest, ErrorDTO("LocationNotTracked"))
-                    }
-                }
+                stockSystem.delivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
+                call.respond(Created)
             }
         }
     }

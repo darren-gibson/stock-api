@@ -2,6 +2,7 @@ package org.darren.stock.ktor
 
 import io.ktor.client.engine.*
 import io.ktor.client.engine.java.*
+import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -10,6 +11,7 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -27,6 +29,7 @@ import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.fileProperties
+import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 fun main(args: Array<String>) {
@@ -72,25 +75,39 @@ fun Application.module() {
 
 private fun StatusPagesConfig.handleExceptions() {
     exception<Throwable> { call, cause ->
-        if (cause is LocationNotFoundException)
-            call.respond(NotFound, ErrorDTO("LocationNotFound"))
-        else if (cause is OperationNotSupportedException)
-            call.respond(Conflict, ErrorDTO("LocationNotSupported"))
-        else if (cause is BadRequestException) {
-            val missingFields = getMissingFields(cause)
-            if (missingFields != null) {
-                call.respond(BadRequest, MissingFieldsDTO(missingFields))
-            } else {
-                val invalidValues = getInvalidValues(cause)
-                if (invalidValues != null) {
-                    call.respond(BadRequest, InvalidValuesDTO(invalidValues))
+
+        when (cause) {
+            is LocationNotFoundException -> call.respond(NotFound, ErrorDTO("LocationNotFound"))
+            is LocationNotTrackedException -> respondWithRedirectToTrackedLocation(call, cause.locationId)
+            is OperationNotSupportedException -> call.respond(Conflict, ErrorDTO("LocationNotSupported"))
+            is BadRequestException -> {
+                val missingFields = getMissingFields(cause)
+                if (missingFields != null) {
+                    call.respond(BadRequest, MissingFieldsDTO(missingFields))
                 } else {
-                    throw cause
+                    val invalidValues = getInvalidValues(cause)
+                    if (invalidValues != null) {
+                        call.respond(BadRequest, InvalidValuesDTO(invalidValues))
+                    } else {
+                        throw cause
+                    }
                 }
             }
-        } else {
-            throw cause
+            else -> throw cause
         }
+    }
+}
+
+private suspend fun respondWithRedirectToTrackedLocation(call: ApplicationCall, locationId: String) {
+    val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+    try {
+        val path = locations.getPath(locationId).reversed()
+        val firstTrackedParent = path.first { it.isTracked }
+        val newLocation = call.request.path().replace("/$locationId/", "/${firstTrackedParent.id}/")
+        call.response.headers.append(HttpHeaders.Location, newLocation)
+        call.respond(HttpStatusCode.SeeOther, ErrorDTO("LocationNotTracked"))
+    } catch (e: NoSuchElementException) {
+        call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
     }
 }
 

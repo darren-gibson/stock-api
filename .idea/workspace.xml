@@ -7,17 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Introduce Untracked Locations, add the behaviour for a Get Stock endpoint">
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Enable support for Untracked locations in the Movement endpoint.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/LocationApiClient.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Delivery.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ApiCallStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ApiCallStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/Deliveries/2. Delivery Contract.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/UntrackedLocations/2. Untracked Locations - Get Stock.feature" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/org/darren/stock/working.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/org/darren/stock/working.adoc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,6 +145,8 @@
     "Cucumber Java.Scenario: Fail to record a product sale against a location that's not a shop.executor": "Debug",
     "Cucumber Java.Scenario: Fail to record a product sale due to an invalid location.executor": "Run",
     "Cucumber Java.Scenario: Fail to record a product sale with an invalid soldAt format.executor": "Run",
+    "Cucumber Java.Scenario: Fail to record a stock movement with an untracked destination location and no tracked parent.executor": "Run",
+    "Cucumber Java.Scenario: Fail to record a stock movement with an untracked source location.executor": "Run",
     "Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations.executor": "Run",
     "Cucumber Java.Scenario: Sale by each.executor": "Run",
     "Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure.executor": "Debug",
@@ -260,14 +256,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Feature: 2. Get Stock Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: 2. Movement Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/GetStock/2. Get Stock Contract.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/2. Movement Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: 2. Get Stock Contract" />
+      <option name="SUGGESTED_NAME" value="Feature: 2. Movement Contract" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -279,15 +275,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Successfully retrieve the stock level of a product at an untracked location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Scenario: Fail to record a stock movement with an untracked destination location and no tracked parent" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/UntrackedLocations/2. Untracked Locations - Get Stock.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/2. Movement Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Successfully retrieve the stock level of a product at an untracked location$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Successfully retrieve the stock level of a product at an untracked location$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Successfully retrieve the stock level of a product at an untracked location" />
+      <option name="NAME_FILTER" value="^Fail to record a stock movement with an untracked destination location and no tracked parent$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Fail to record a stock movement with an untracked destination location and no tracked parent$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Fail to record a stock movement with an untracked destination location and no tracked parent" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -299,15 +295,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Scenario: Fail to record a stock movement with an untracked source location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Counts/AdminOverride.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/2. Movement Contract.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^\&quot;Override\&quot; as a stock count reason will set the stock level at that location$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^\&quot;Override\&quot; as a stock count reason will set the stock level at that location$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
+      <option name="NAME_FILTER" value="^Fail to record a stock movement with an untracked source location$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Fail to record a stock movement with an untracked source location$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Fail to record a stock movement with an untracked source location" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -345,18 +341,18 @@
     </configuration>
     <list>
       <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
-      <item itemvalue="Cucumber Java.Feature: 2. Get Stock Contract" />
-      <item itemvalue="Cucumber Java.Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
-      <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at an untracked location" />
+      <item itemvalue="Cucumber Java.Scenario: Fail to record a stock movement with an untracked destination location and no tracked parent" />
+      <item itemvalue="Cucumber Java.Scenario: Fail to record a stock movement with an untracked source location" />
+      <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
+        <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
+        <item itemvalue="Cucumber Java.Scenario: Fail to record a stock movement with an untracked destination location and no tracked parent" />
+        <item itemvalue="Cucumber Java.Scenario: Fail to record a stock movement with an untracked source location" />
         <item itemvalue="Cucumber Java.Feature: 2. Delivery Contract" />
-        <item itemvalue="Cucumber Java.Feature: 2. Get Stock Contract" />
-        <item itemvalue="Cucumber Java.Scenario: Successfully retrieve the stock level of a product at an untracked location" />
-        <item itemvalue="Cucumber Java.Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
       </list>
     </recent_temporary>
   </component>
@@ -368,22 +364,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00027" summary="Add Sale API endpoint">
-      <option name="closed" value="true" />
-      <created>1733679023310</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1733679023310</updated>
-    </task>
-    <task id="LOCAL-00028" summary="Add Sale API endpoint">
-      <option name="closed" value="true" />
-      <created>1733679063810</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1733679063810</updated>
     </task>
     <task id="LOCAL-00029" summary="Add Sale API endpoint">
       <option name="closed" value="true" />
@@ -761,7 +741,23 @@
       <option name="project" value="LOCAL" />
       <updated>1735997274327</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="Add support for tracked locations in Deliveries and refactor the testing for GetStock">
+      <option name="closed" value="true" />
+      <created>1736077666685</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1736077666685</updated>
+    </task>
+    <task id="LOCAL-00077" summary="Enable support for Untracked locations in the Movement endpoint.">
+      <option name="closed" value="true" />
+      <created>1736083426633</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1736083426633</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -813,8 +809,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Upgrade dependencies and shift to Kotlin &quot;2.1&quot;.  Get tests working with Location API dependencies." />
-    <MESSAGE value="refactored to more &quot;type&quot; to roles." />
     <MESSAGE value="Before removal of Tracked/Untracked StockPot actors" />
     <MESSAGE value="Removed Untracked Stock Pots" />
     <MESSAGE value="Refactor to remove the switch statement for the Stock Pot Actor" />
@@ -838,7 +832,9 @@
     <MESSAGE value="Enable Stock API to respect cache headers provided by the Location API in its response." />
     <MESSAGE value="Move to ktor 'StatusPages' for Error handling." />
     <MESSAGE value="Introduce Untracked Locations, add the behaviour for a Get Stock endpoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="Introduce Untracked Locations, add the behaviour for a Get Stock endpoint" />
+    <MESSAGE value="Add support for tracked locations in Deliveries and refactor the testing for GetStock" />
+    <MESSAGE value="Enable support for Untracked locations in the Movement endpoint." />
+    <option name="LAST_COMMIT_MESSAGE" value="Enable support for Untracked locations in the Movement endpoint." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -848,36 +844,23 @@
           <option name="timeStamp" value="37" />
         </breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt</url>
-          <line>74</line>
-          <option name="timeStamp" value="131" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt</url>
-          <line>19</line>
-          <option name="timeStamp" value="133" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/LocationAPIStepDefinitions.kt</url>
-          <line>137</line>
-          <option name="timeStamp" value="135" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <condition expression="&quot;Cucumber+&quot;!=null" />
-          <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/DeliveryStepDefinitions.kt</url>
-          <line>81</line>
-          <option name="timeStamp" value="137" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
           <condition expression="&quot;Cucumber+&quot;!=null" />
           <url>file://$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/SaleStepDefinitions.kt</url>
           <line>23</line>
           <option name="timeStamp" value="138" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
-          <url>file://$PROJECT_DIR$/src/test/resources/org/darren/stock/PendingAdjustments/PendingAdjustments.feature</url>
-          <line>14</line>
-          <option name="timeStamp" value="136" />
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt</url>
+          <line>104</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="146" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt</url>
+          <line>23</line>
+          <option name="timeStamp" value="147" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="tzatziki.gherkin.step">
           <url>file://$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/3. Sale.feature</url>

@@ -3,7 +3,9 @@ Feature: Contract: Stock Movement Endpoint
 
   === Create Stock Movement Transaction Endpoint Specification
 
-  The Create Stock Movement Transaction endpoint enables users to log the transfer of stock between locations. This endpoint is essential for maintaining real-time accuracy in inventory tracking and ensuring seamless operational workflows. The endpoint supports detailed documentation of each transaction, capturing critical data points for transparency and traceability.
+  The Create Stock Movement Transaction endpoint enables users to log the transfer of stock between tracked locations. This endpoint is essential for maintaining real-time accuracy in inventory tracking and ensuring seamless operational workflows. The endpoint supports detailed documentation of each transaction, capturing critical data points for transparency and traceability.
+
+  Stock movements can only occur between **tracked locations**. An attempt to record a stock movement involving an untracked location will result in an error. If the untracked location has a tracked parent, the API will redirect to the nearest tracked parent. If no tracked parent exists, the request will fail.
 
   [cols="1,3", options="header"]
   |===
@@ -24,14 +26,14 @@ Feature: Contract: Stock Movement Endpoint
   |===
   | Parameter              | Description                                                        | Required | Example
 
-  | `sourceLocationId`     | The identifier for the source location.                            | Yes      | `"warehouse1"`
-  | `destinationLocationId`| The identifier for the destination location.                      | Yes      | `"store3"`
-  | `quantity`             | The number of items being moved (as a double).                    | Yes      | `50.5`
-  | `productId`            | The unique identifier for the product being moved.                | Yes      | `"product123"`
-  | `requestId`            | A unique identifier for the request.                              | Yes      | `"req-12345"`
-  | `Authentication Token` | The API token used for authentication.                            | Yes      | `Bearer abc123xyz`
-  | `reason`               | The reason for the stock movement.                                | Optional | `"replenishment"`
-  | `movedAt`              | The timestamp when the stock movement occurred.                   | Yes      | `"2024-12-26T15:35:00Z"`
+  | `sourceLocationId`     | The identifier for the source tracked location.                   | Yes      | `"warehouse1"`
+  | `destinationLocationId`| The identifier for the destination tracked location.             | Yes      | `"store3"`
+  | `quantity`             | The number of items being moved (as a double).                   | Yes      | `50.5`
+  | `productId`            | The unique identifier for the product being moved.               | Yes      | `"product123"`
+  | `requestId`            | A unique identifier for the request.                             | Yes      | `"req-12345"`
+  | `Authentication Token` | The API token used for authentication.                           | Yes      | `Bearer abc123xyz`
+  | `reason`               | The reason for the stock movement.                               | Optional | `"replenishment"`
+  | `movedAt`              | The timestamp when the stock movement occurred.                  | Yes      | `"2024-12-26T15:35:00Z"`
   |===
 
   ==== REST Endpoint Definition
@@ -85,25 +87,27 @@ Feature: Contract: Stock Movement Endpoint
   | Code              | Description
 
   | `201 Created`     | The stock movement transaction was successfully created.
+  | `303 See Other`   | Redirect to the nearest tracked parent location for an untracked source or destination location.
   | `400 Bad Request` | Invalid request data or missing required fields.
   | `401 Unauthorized`| Authentication token is missing or invalid.
   | `403 Forbidden`   | User does not have permission to create stock movements.
+  | `404 Not Found`   | Either the source or destination location does not exist.
   | `409 Conflict`    | A transaction with the same parameters already exists.
   | `500 Internal Server Error` | An unexpected error occurred on the server.
   |===
 
   ==== Notes
 
+  - **Tracked Locations Only:** Stock movements are restricted to tracked locations. Untracked locations will result in redirection (if a tracked parent exists) or failure.
   - **Authentication Requirement:** A valid API token with sufficient permissions is mandatory to use this endpoint.
   - **Reason Field:** The `reason` parameter is optional but provides context for the stock movement and supports reporting.
-  - **Precision in Quantity:** The `quantity` parameter is a double to support fractional stock movements where applicable.
-
-  The Create Stock Movement Transaction endpoint offers a reliable and detailed way to log inventory transfers, enabling enhanced traceability and operational efficiency.
 
   Background:
-    Given "warehouse1" is a Distribution Centre
-    And "store3" is a store
-    And it's 15:35 on 2024-12-26
+    Given the following locations exist:
+      | Location Id | Parent Location Id | Roles                    |
+      | warehouse1  |                    | TrackedInventoryLocation |
+      | store3      |                    | TrackedInventoryLocation |
+      | untracked1  | warehouse1         |                          |
 
   Scenario: Successfully record a stock movement transaction
     This is a "happy path" test to ensure that the stock movement endpoint accepts a valid JSON request and records the transaction correctly.
@@ -274,3 +278,58 @@ Feature: Contract: Stock Movement Endpoint
 #      -----
 #      """
 
+
+
+  Scenario: Fail to record a stock movement with an untracked source location
+    When I send a POST request to "/locations/untracked1/product123/movements" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "destinationLocationId": "store3",
+          "quantity": 20.0,
+          "requestId": "req-54321",
+          "reason": "replenishment",
+          "movedAt": "2024-12-26T15:35:00Z"
+      }
+      -----
+      """
+    Then the API should respond with status code 303
+    And the response headers should contain:
+      """asciidoc
+      Location: /locations/warehouse1/product123/movements
+      """
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "status": "LocationNotTracked"
+      }
+      -----
+      """
+
+  Scenario: Fail to record a stock movement with an untracked destination location
+    When I send a POST request to "/locations/store3/product123/movements" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "destinationLocationId": "untracked1",
+          "quantity": 20.0,
+          "requestId": "req-67890",
+          "reason": "replenishment",
+          "movedAt": "2024-12-26T15:35:00Z"
+      }
+      -----
+      """
+    Then the API should respond with status code 400
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "status": "LocationNotTracked"
+      }
+      -----
+      """
