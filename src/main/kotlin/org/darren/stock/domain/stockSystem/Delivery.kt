@@ -19,8 +19,6 @@ object Delivery {
         }
         deferredList.awaitAll()
         // TODO: What happens if the delivery fails?
-
-        // else -> throw OperationNotSupportedException("Untracked location $locationId cannot accept deliveries.")
     }
 
     private suspend fun delivery(

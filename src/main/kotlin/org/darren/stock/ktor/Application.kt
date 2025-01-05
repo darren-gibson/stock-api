@@ -4,7 +4,6 @@ import io.ktor.client.engine.*
 import io.ktor.client.engine.java.*
 import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
-import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -79,7 +78,6 @@ private fun StatusPagesConfig.handleExceptions() {
         when (cause) {
             is LocationNotFoundException -> call.respond(NotFound, ErrorDTO("LocationNotFound"))
             is LocationNotTrackedException -> respondWithRedirectToTrackedLocation(call, cause.locationId)
-            is OperationNotSupportedException -> call.respond(Conflict, ErrorDTO("LocationNotSupported"))
             is BadRequestException -> {
                 val missingFields = getMissingFields(cause)
                 if (missingFields != null) {

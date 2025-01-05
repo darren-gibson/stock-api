@@ -46,10 +46,6 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
     private fun getHierarchyUri(depth: Int?, locationId: String) =
         "$baseUrl/locations/$locationId/children${if (depth != null) "?depth=$depth" else "" }"
 
-    suspend fun isShop(locationId: String): Boolean {
-        return getLocation(locationId).isShop
-    }
-
     private suspend fun getLocation(locationId: String): LocationDTO {
         val response = wrapHttpCallWithLogging(logger) { client.get("${baseUrl}/locations/$locationId") }
         if (response.status.isSuccess())
@@ -71,8 +67,6 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
 
     @Serializable
     data class LocationDTO(val id: String, val roles: Set<String>, val children: List<LocationDTO> = emptyList()) {
-        val isShop
-            get() = roles.contains(LocationRoles.Shop.name)
         val isTracked
             get() = roles.contains(LocationRoles.TrackedInventoryLocation.name)
     }

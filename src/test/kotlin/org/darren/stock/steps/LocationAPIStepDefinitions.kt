@@ -142,7 +142,7 @@ class LocationAPIStepDefinitions : KoinComponent {
 
     @Given("{string} is a {string} location")
     fun isALocation(locationId: String, role: String) {
-        createLocationForTest(locationId, role)
+        locations[locationId] = SimpleLocation(locationId, listOf(role))
     }
 
     @And("{string} is a receiving location")

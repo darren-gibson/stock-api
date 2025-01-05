@@ -6,7 +6,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.LocationNotTrackedException
 import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.stockSystem.Move.move

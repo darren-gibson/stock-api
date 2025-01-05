@@ -4,6 +4,8 @@ Feature: Sale Endpoint: Contract
   *Purpose*
   The Sale Endpoint must behave according to the contract described in the specification. These tests exercise the API and are transparent about the inputs/outputs of the API to ensure that it behaves according to the specification. If any of these tests fail, then the contract must have changed either the request/response structure or the underlying behaviour i.e., a breaking change.
 
+  Sales can only be recorded at **tracked locations**. An attempt to record a sale at an untracked location will result in an error. The API may redirect the user to the nearest tracked parent location if available or fail outright if no such parent exists.
+
   *Request*
 
   [cols="1,1,1,1,4,2", options="header"]
@@ -30,134 +32,140 @@ Feature: Sale Endpoint: Contract
   | soldAt         | string   | Body       | The timestamp of when the sale occurred, in ISO 8601 format.  | 2024-12-07T12:00:00Z
   |===
 
-.*OpenAPI Specification*, Click here.
-[%collapsible]
-  ====
-  [source, yml]
-  -----
-  openapi: 3.0.3
-  info:
-    title: Stock API
-    description: API to manage stock levels, including the recording of product sales.
-    version: 1.0.0
-  paths:
-    /locations/{locationId}/products/{productId}/sales:
-      post:
-        summary: Record a sale of a product at a specific location
-        description: Records the sale of a product at a given location and updates the stock level accordingly.
-        operationId: recordSale
-        parameters:
-          - name: locationId
-            in: path
-            required: true
-            description: The unique identifier of the location where the sale occurred.
-            schema:
-              type: string
-              example: Store-001
-          - name: productId
-            in: path
-            required: true
-            description: The unique identifier of the product being sold.
-            schema:
-              type: string
-              example: Product-123
-        requestBody:
-          required: true
-          description: Details of the sale to be recorded.
-          content:
-            application/json:
+  *OpenAPI Specification*, Click here.
+  [%collapsible]
+    ====
+    [source, yml]
+    -----
+    openapi: 3.0.3
+    info:
+      title: Stock API
+      description: API to manage stock levels, including the recording of product sales.
+      version: 1.0.0
+    paths:
+      /locations/{locationId}/products/{productId}/sales:
+        post:
+          summary: Record a sale of a product at a specific location
+          description: Records the sale of a product at a given location and updates the stock level accordingly.
+          operationId: recordSale
+          parameters:
+            - name: locationId
+              in: path
+              required: true
+              description: The unique identifier of the location where the sale occurred.
               schema:
-                type: object
-                required:
-                  - requestId
-                  - quantity
-                  - soldAt
-                properties:
-                  requestId:
-                    type: string
-                    description: A unique identifier for the sale request to ensure idempotency.
-                    example: sale-001-12345
-                  quantity:
-                    type: number
-                    description: The quantity of the product being sold.
-                    minimum: 0.0001
-                    example: 5.00
-                  soldAt:
-                    type: string
-                    format: date-time
-                    description: The timestamp of when the sale occurred.
-                    example: "2024-12-07T12:00:00Z"
-        responses:
-          '201':
-            description: Sale recorded successfully.
+                type: string
+                example: Store-001
+            - name: productId
+              in: path
+              required: true
+              description: The unique identifier of the product being sold.
+              schema:
+                type: string
+                example: Product-123
+          requestBody:
+            required: true
+            description: Details of the sale to be recorded.
             content:
               application/json:
                 schema:
                   type: object
+                  required:
+                    - requestId
+                    - quantity
+                    - soldAt
                   properties:
                     requestId:
                       type: string
+                      description: A unique identifier for the sale request to ensure idempotency.
                       example: sale-001-12345
-                    locationId:
-                      type: string
-                      example: Store-001
-                    productId:
-                      type: string
-                      example: Product-123
-                    quantitySold:
+                    quantity:
                       type: number
-                      example: 5.0
+                      description: The quantity of the product being sold.
+                      minimum: 0.0001
+                      example: 5.00
                     soldAt:
                       type: string
                       format: date-time
+                      description: The timestamp of when the sale occurred.
                       example: "2024-12-07T12:00:00Z"
-          '400':
-            description: Invalid request or insufficient stock.
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      enum: [InvalidRequest, InsufficientStock]
-                      example: InsufficientStock
-          '404':
-            description: Product or location not found.
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      enum: [LocationNotFound, ProductNotFound]
-                      example: LocationNotFound
-          '409':
-            description: Sale at this Location is not supported.
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      enum: [LocationNotSupported]
-                      example: LocationNotSupported
-        security:
-          - bearerAuth: []
-  components:
-    securitySchemes:
-      bearerAuth:
-        type: http
-        scheme: bearer
-        bearerFormat: JWT
-  -----
-====
+          responses:
+            '201':
+              description: Sale recorded successfully.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      requestId:
+                        type: string
+                        example: sale-001-12345
+                      locationId:
+                        type: string
+                        example: Store-001
+                      productId:
+                        type: string
+                        example: Product-123
+                      quantitySold:
+                        type: number
+                        example: 5.0
+                      soldAt:
+                        type: string
+                        format: date-time
+                        example: "2024-12-07T12:00:00Z"
+            '400':
+              description: Invalid request or insufficient stock.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [InvalidRequest, InsufficientStock]
+                        example: InsufficientStock
+            '404':
+              description: Product or location not found.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [LocationNotFound, ProductNotFound]
+                        example: LocationNotFound
+            '409':
+              description: Sale at this Location is not supported.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [LocationNotTracked]
+                        example: LocationNotTracked
+          security:
+            - bearerAuth: []
+    components:
+      securitySchemes:
+        bearerAuth:
+          type: http
+          scheme: bearer
+          bearerFormat: JWT
+    -----
+  ====
 
   Background:
 #    Given the API is authenticated with a valid bearer token
-  And it's 12:00 on 2024-12-07
+    And it's 12:00 on 2024-12-07
+    And the following locations exist:
+      | Location Id | Parent Location Id | Roles                    |
+      | Store-001   |                    | TrackedInventoryLocation |
+      | Store-002   |                    | TrackedInventoryLocation |
+      | Untracked-1 | Store-001          |                          |
+      | Untracked-2 |                    |                          |
 
   Scenario: Successfully record a product sale and reduce stock level
     This is a "happy path" test to ensure that the Sale endpoint accepts a valid JSON request and reduces the stock as a result.
@@ -181,7 +189,7 @@ Feature: Sale Endpoint: Contract
       -----
       {
         "requestId": "abc123-e89b-12d3-a456-426614174000",
-        "location": "Store-001",
+        "locationId": "Store-001",
         "productId": "SKU12345",
         "quantitySold": 5.0,
         "soldAt": "2024-12-07T12:00:00" (1)
@@ -212,31 +220,6 @@ Feature: Sale Endpoint: Contract
       -----
       {
         "status": "LocationNotFound"
-      }
-      -----
-      """
-
-  Scenario: Fail to record a product sale against a location that's not a shop
-  This test ensures that the Sale endpoint returns a proper error response when the specified location is not a shop.
-    Given "Store-001" is a "Warehouse" location
-    When I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
-      """asciidoc
-      [source, json]
-      -----
-      {
-          "requestId": "abc123-e89b-12d3-a456-426614174009",
-          "quantity": 5,
-          "soldAt": "2024-12-07T12:00:00Z"
-      }
-      -----
-      """
-    Then the API should respond with status code 409
-    And the response body should contain:
-      """asciidoc
-      [source, json]
-      -----
-      {
-        "status": "LocationNotSupported"
       }
       -----
       """
@@ -351,3 +334,52 @@ Feature: Sale Endpoint: Contract
 #          "message": "Missing or invalid requestId"
 #      }
 #      """
+  Scenario: Fail to record a product sale at an untracked location with a tracked parent
+    When I send a POST request to "/locations/Untracked-1/products/SKU12345/sales" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "abc123-e89b-12d3-a456-426614174001",
+          "quantity": 5,
+          "soldAt": "2024-12-07T12:00:00Z"
+      }
+      -----
+      """
+    Then the API should respond with status code 303
+    And the response headers should contain:
+      """asciidoc
+      Location: /locations/Store-001/products/SKU12345/sales
+      """
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+        "status": "LocationNotTracked"
+      }
+      -----
+      """
+
+  Scenario: Fail to record a product sale at an untracked location with no tracked parent
+    When I send a POST request to "/locations/Untracked-2/products/SKU12345/sales" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "abc123-e89b-12d3-a456-426614174002",
+          "quantity": 5,
+          "soldAt": "2024-12-07T12:00:00Z"
+      }
+      -----
+      """
+    Then the API should respond with status code 400
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+        "status": "LocationNotTracked"
+      }
+      -----
+      """

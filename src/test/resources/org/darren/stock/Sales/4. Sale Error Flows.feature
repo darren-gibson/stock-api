@@ -10,6 +10,6 @@ Feature: Sale: Exception flows
     Then the sale of "Beans" in "<location>" will result in a HTTP Status of <status> and error "<code>"
 
     Examples:
-      | location | type      | status | code                 |
-      | store 1  | Warehouse | 409    | LocationNotSupported |
-      | store 2  | Shop      | 201    |                      |
+      | location | type                     | status | code                 |
+      | store 1  | Untracked                | 400    | LocationNotTracked |
+      | store 2  | TrackedInventoryLocation | 201    |                      |
