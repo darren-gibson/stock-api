@@ -1,9 +1,13 @@
 @section-Delivery @asciidoc @order-1
 Feature: Contract: Record Delivery Endpoint
-
     === Record Delivery Endpoint Specification
 
     The Record Delivery Endpoint enables the accurate logging of product deliveries from external suppliers into a location within the network. This functionality ensures seamless integration of incoming inventory into the system, supporting real-time stock updates and maintaining operational efficiency.
+
+    The endpoint supports both tracked and untracked locations:
+
+    - **Tracked Locations:** Deliveries are recorded directly at the specified location, updating its stock levels.
+    - **Untracked Locations:** Deliveries cannot be recorded at untracked locations. An attempt to do so will result in a `303 See Other` response, redirecting to the nearest tracked parent location if available, or failing with an error if no such location exists.
 
     [cols="1,3", options="header"]
     |===
@@ -78,6 +82,7 @@ Feature: Contract: Record Delivery Endpoint
     | Code              | Description
 
     | `201 Created`     | Delivery successfully recorded.
+    | `303 See Other`   | Delivery cannot be recorded at an untracked location. Redirects to the nearest tracked parent location.
     | `400 Bad Request` | Invalid request data or missing required fields.
     | `401 Unauthorized`| Authentication token is missing or invalid.
     | `403 Forbidden`   | User does not have permission to access this functionality.
@@ -87,6 +92,7 @@ Feature: Contract: Record Delivery Endpoint
 
     ==== Notes
 
+    - **Untracked Location Behavior:** Deliveries cannot be recorded directly at untracked locations. The API will respond with a `303 See Other` status, including a `Location` header to indicate the nearest tracked parent location.
     - **Idempotency Requirement:** The `requestId` ensures that duplicate submissions of the same request are handled gracefully.
     - **Authentication Requirement:** A valid API token with sufficient permissions is mandatory to use this endpoint.
     - **Supplier Verification:** The `supplierId` must correspond to a registered external supplier.
@@ -96,7 +102,16 @@ Feature: Contract: Record Delivery Endpoint
 
   Background:
     Given "supplier123" is a registered supplier
-    And "warehouse1-receiving" is a receiving location in the network
+    And the following locations exist:
+      | Location Id          | Parent Location Id | Name                | Roles                    |
+      | DC01                 |                    | Distribution Centre |                          |
+      | WH01                 | DC01               | Warehouse           | TrackedInventoryLocation |
+      | WH02                 | DC01               | Warehouse           | TrackedInventoryLocation |
+      | DC02                 |                    | Distribution Centre |                          |
+      | WH03                 | DC02               | Warehouse           | TrackedInventoryLocation |
+      | DC03                 |                    | Distribution Centre |                          |
+      | warehouse1-receiving | WH01               | Receiving           | TrackedInventoryLocation |
+      | warehouse1-untracked | WH01               | Untracked Zone      |                          |
 
   Scenario: Successfully record a delivery with multiple products
     Given "warehouse1-receiving" is expecting the following deliveries from "supplier123":
@@ -129,6 +144,40 @@ Feature: Contract: Record Delivery Endpoint
     Then the API should respond with status code 201
     And the stock level of "product456" in "warehouse1-receiving" should be updated to 100
     And the stock level of "product789" in "warehouse1-receiving" should be updated to 50
+
+  Scenario: Fail to record a delivery at an untracked location
+    When I send a POST request to "/locations/warehouse1-untracked/deliveries" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "requestId": "req-1122334455",
+          "supplierId": "supplier123",
+          "supplierRef": "supplier-untracked-order",
+          "deliveredAt": "2024-12-26T15:35:00Z",
+          "products": [
+              {
+                  "productId": "product456",
+                  "quantity": 100
+              }
+          ]
+      }
+      -----
+      """
+    Then the API should respond with status code 303
+    And the response headers should contain:
+      """asciidoc
+      Location: /locations/WH01/deliveries
+      """
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "status": "LocationNotTracked"
+      }
+      -----
+      """
 
   Scenario: Fail to record a delivery due to invalid location
     Given "invalidLocation" does not exist as a location
@@ -213,6 +262,36 @@ Feature: Contract: Record Delivery Endpoint
       }
       -----
       """
+
+  Scenario: Fail to record a delivery at an untracked location with no tracked parent
+  When I send a POST request to "/locations/DC03/deliveries" with the following payload:
+    """asciidoc
+    [source, json]
+    -----
+    {
+        "requestId": "req-9988776655",
+        "supplierId": "supplier123",
+        "supplierRef": "supplier-no-parent-order",
+        "deliveredAt": "2024-12-26T15:35:00Z",
+        "products": [
+            {
+                "productId": "product456",
+                "quantity": 100
+            }
+        ]
+    }
+    -----
+    """
+  Then the API should respond with status code 400
+  And the response body should contain:
+    """asciidoc
+    [source, json]
+    -----
+    {
+        "status": "LocationNotTracked"
+    }
+    -----
+    """
 
 #  Scenario: Fail to record a delivery due to invalid values
 #    When I send a POST request to "/locations/warehouse1-receiving/deliveries" with the following payload:

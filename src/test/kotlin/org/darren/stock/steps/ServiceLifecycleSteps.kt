@@ -65,12 +65,9 @@ class ServiceLifecycleSteps : KoinComponent {
             externalServices {
                 hosts(locationHost) {
                     routing {
-                        get("/locations/{id}") {
-                            getLocationByIdResponder(call)
-                        }
-                        get("/locations/{id}/children") {
-                            getChildrenByIdResponder(call)
-                        }
+                        get("/locations/{id}") { getLocationByIdResponder(call) }
+                        get("/locations/{id}/children") { getChildrenByIdResponder(call) }
+                        get("/locations/{id}/path") { getPathResponder(call) }
                     }
                 }
             }
@@ -82,6 +79,9 @@ class ServiceLifecycleSteps : KoinComponent {
 
     var getChildrenByIdResponder: suspend (call: RoutingCall) -> Unit =
         { logger.warn { "getChildrenByIdResponder not set" } }
+
+    var getPathResponder: suspend (call: RoutingCall) -> Unit =
+        { logger.warn { "getPathResponder not set" } }
 
 
     @Given("the service is running")

@@ -1,5 +1,6 @@
 package org.darren.stock.ktor
 
+import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -20,11 +21,21 @@ object Delivery {
             val stockSystem = inject<StockSystem>(StockSystem::class.java).value
             val locationId = call.parameters["locationId"]!!
             val request = call.receive<DeliveryRequestDTO>()
-            locations.ensureValidLocations(locationId)
+            val path = locations.getPath(locationId).reversed()
 
             with(request) {
-                stockSystem.delivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
-                call.respond(Created)
+                if(path.first().isTracked) {
+                    stockSystem.delivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
+                    call.respond(Created)
+                } else {
+                    try {
+                        val firstTrackedParent = path.first { it.isTracked }
+                        call.response.headers.append(HttpHeaders.Location, "/locations/${firstTrackedParent.id}/deliveries")
+                        call.respond(HttpStatusCode.SeeOther, ErrorDTO("LocationNotTracked"))
+                    } catch (e: NoSuchElementException) {
+                        call.respond(HttpStatusCode.BadRequest, ErrorDTO("LocationNotTracked"))
+                    }
+                }
             }
         }
     }

@@ -17,6 +17,7 @@ import kotlin.test.assertTrue
 
 class LocationAPIStepDefinitions : KoinComponent {
     private val trackedInventoryRoleName = "TrackedInventoryLocation"
+
     companion object {
         private val logger = KotlinLogging.logger {}
     }
@@ -25,6 +26,7 @@ class LocationAPIStepDefinitions : KoinComponent {
         val serviceHelper by inject<ServiceLifecycleSteps>()
         serviceHelper.getLocationByIdResponder = this@LocationAPIStepDefinitions::mockGetLocationByIdApi
         serviceHelper.getChildrenByIdResponder = this@LocationAPIStepDefinitions::mockGetChildrenByIdApi
+        serviceHelper.getPathResponder = this@LocationAPIStepDefinitions::mockGetPathApi
     }
 
     private val locations = mutableMapOf<String, SimpleLocation>()
@@ -56,14 +58,30 @@ class LocationAPIStepDefinitions : KoinComponent {
         locations.remove(locationId)
     }
 
-    suspend fun mockGetLocationByIdApi(call: RoutingCall) {
+    private suspend fun mockGetLocationByIdApi(call: RoutingCall) {
         val locationId = call.pathParameters["id"]!!
         countOfCallsByLocation[locationId] = countOfCallsByLocation.getOrDefault(locationId, 0) + 1
         respondToGetChildrenByIdCall(call)
     }
 
-    suspend fun mockGetChildrenByIdApi(call: RoutingCall) {
+    private suspend fun mockGetChildrenByIdApi(call: RoutingCall) {
         respondToGetChildrenByIdCall(call)
+    }
+
+    private suspend fun mockGetPathApi(call: RoutingCall) {
+        val locationId = call.pathParameters["id"]!!
+        logger.debug { "test called with route=${call.route} params=${call.pathParameters}" }
+        val location = locations[locationId]
+        if (location != null) {
+            call.response.cacheControl(getCacheControlForLocation(locationId))
+
+            val path = generateSequence(locations[locationId]) { locations[it.parent] }.toList().reversed().toSet()
+            val bodyText = "[" + path.joinToString(",") { toMinimumLocation(it) } + "]"
+
+            logger.debug { "Returning $bodyText, with cache=${getCacheControlForLocation(locationId)}" }
+            call.respondText(bodyText, ContentType.Application.Json)
+        } else
+            call.respond(HttpStatusCode.NotFound)
     }
 
     private suspend fun respondToGetChildrenByIdCall(call: RoutingCall) {
@@ -99,6 +117,13 @@ class LocationAPIStepDefinitions : KoinComponent {
             ${if (includeChildren) ""","children": [${childLocations(loc)}]""" else ""}
         }"""
 
+    private fun toMinimumLocation(loc: SimpleLocation) =
+        """{
+            "id": "${loc.id}",
+            "name": "${loc.id}",
+            "roles": [${loc.roles.joinToString(separator = ",") { "\"${it}\"" }}]
+        }"""
+
     private fun childLocations(loc: SimpleLocation): String {
         return locations.filter { it.value.parent == loc.id }
             .map { toLocation(it.value) }.joinToString(", ")
@@ -106,7 +131,7 @@ class LocationAPIStepDefinitions : KoinComponent {
 
     @DataTableType
     fun locationEntryTransformer(row: Map<String?, String>): SimpleLocation {
-        val roles = if(row.containsKey("Roles"))
+        val roles = if (row.containsKey("Roles"))
             row["Roles"]?.split(",")?.map { it.trim() } ?: emptyList()
         else listOf(trackedInventoryRoleName)
 
@@ -120,10 +145,16 @@ class LocationAPIStepDefinitions : KoinComponent {
         createLocationForTest(locationId, role)
     }
 
-    @And("{string} is a receiving location in the network")
     @And("{string} is a receiving location")
     fun isAValidReceivingLocationInTheNetwork(locationId: String) {
-        theFollowingLocationsAreDefinedInTheLocationAPI(listOf(SimpleLocation(locationId, listOf("Zone", trackedInventoryRoleName))))
+        theFollowingLocationsAreDefinedInTheLocationAPI(
+            listOf(
+                SimpleLocation(
+                    locationId,
+                    listOf("Zone", trackedInventoryRoleName)
+                )
+            )
+        )
     }
 
     @And("{string} is moved to {string}")

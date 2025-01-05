@@ -1,59 +1,142 @@
-The Untracked Child Locations feature represents areas within a broader inventory location hierarchy where stock can be placed but not individually tracked for movements. While these child locations do not record the movement of inventory within them, they are crucial for several operational and logistical purposes.
+// suppress inspection "AsciiDocAttributeShouldBeDefined" for whole file
+=== Get Stock Level for Product at Location Endpoint Specification
 
-The objective of this feature is to provide structured metadata about potential stock placements, support inventory management processes, and improve the overall efficiency of stock-related operations.
+The Get Stock Level for Product at Location endpoint provides real-time visibility into the inventory of products in locations. This functionality is essential for maintaining accurate inventory data and supporting operational decisions.
 
-The Untracked Child Locations feature ensures that:
+The endpoint supports both tracked and untracked locations:
 
-* Possible locations for products within a parent location are clearly identified.
-* Stock assertions (e.g., "no stock in this location" or "low stock") can be captured at the child location level.
-* Stock counting processes are enhanced by identifying locations for verification.
-* The capacity of each location to hold stock is documented.
+- **Tracked Locations:** Stock levels are directly associated with the location, the response can optionally include the the aggregated view of all tracked child locations.
+- **Untracked Locations:** Untracked locations do not maintain their own `quantity` therefore the result is the aggregated view of all tracked child locations.
 
-=== Characteristics of Untracked Child Locations
+The response includes a `pendingAdjustment` field, representing any known discrepancies between the recorded stock and actual stock for tracked locations. This field is omitted for untracked locations.
 
-Untracked child locations serve as logical sub-divisions of a parent location. Common examples include areas like shelves, aisles, and display units within a retail store or zones within a warehouse. The following aspects are associated with these locations:
+==== Key Points
 
-* *Parent-Child Relationship*: Child locations are hierarchically linked to a parent location.
-* *Capacity Management*: The storage capacity for each location is defined.
-* *Stock Assertions*: Observations about stock levels can be recorded even without movement tracking.
-* *Inventory Counting*: Locations can be included in stocktake processes.
+- **Aggregated Stock:** the `totalQuantity` represents the sum of all tracked child locations' `quantity`.
+- **Quantity and Untracked Locations:** For untracked locations, the `quantity` and `pendingAdjustment` fields are omitted as stock is not maintained at these locations.
+- **Child Location Details:** For both tracked and untracked locations, the response optionally includes stock details for child locations.
+- **Pending Adjustment:** The `pendingAdjustment` field is included only for tracked locations and does not affect `totalQuantity`.
 
-=== Importance of Untracked Child Locations
-
-Untracked child locations add value to inventory management by:
-
-* Enhancing visibility of stock distribution within a parent location.
-* Supporting operational tasks like replenishment planning and capacity assessment.
-* Providing structured data for stock counting and verification processes.
-
-=== Use Cases for Untracked Child Locations
-
-The following table outlines common scenarios where untracked child locations are applied:
-
-[cols="3,7", options="header"]
+[cols="1,3", options="header"]
 |===
-| Use Case Category           | Description
-| Product Discovery           a| * Indicating potential locations where products may be found.
-| Inventory Assertions        a| * Recording observations such as "no stock" or "low stock" at specific child locations.
-| Stock take Support          a| * Identifying locations to be included in inventory counting processes.
-| Capacity Planning           a| * Documenting the maximum stock each child location can hold to support replenishment and allocation planning.
+| Attribute        | Description
+
+| `endpoint`       | `/locations/{locationId}/products/{productId}`
+| `method`         | `GET`
+| `description`    | Retrieves the current stock level for a specific product at a given location, including child locations by default.
+| `authentication` | Requires a valid API token with appropriate permissions.
+| `response format`| JSON
 |===
 
-=== Key Elements of Untracked Child Locations
+==== Input Parameters
 
-Untracked child locations include the following details:
+The Get Stock Level for Product at Location endpoint accepts the following input parameters:
 
-* *Name and Description*: A unique identifier and description for the child location.
-* *Parent Location*: The higher-level location that the child location belongs to.
-* *Capacity*: The maximum amount of stock the location can hold.
-* *Assertions*: Any statements or observations about the stock level in the location.
+[cols="1,4,1,2", options="header"]
+|===
+| Parameter              | Description                                                       | Required | Example
 
-=== Purpose
+| `locationId`           | The identifier for the location.                                  | Yes      | `"DC01"`
+| `productId`            | The unique identifier for the product.                            | Yes      | `"product123"`
+| `includeChildren`      | A flag to specify whether to include stock levels from child locations. Defaults to `true`. | No | `false`
+| `Authentication Token` | The API token used for authentication.                            | Yes      | `Bearer abc123xyz`
+|===
 
-The Untracked Child Locations feature supports the following objectives:
+==== REST Endpoint Definition
 
-* Enhancing inventory visibility within untracked areas of the supply chain.
-* Improving accuracy in stock counting and verification processes.
-* Facilitating operational planning and replenishment decisions.
+**Endpoint:**
+`GET /locations/{locationId}/products/{productId}`
 
-This functionality empowers organisations to manage inventory more effectively by recognising and utilising the full range of available storage and display areas.
+[source, http]
+.Request to retrieve stock level
+-----
+GET /locations/DC01/products/product123?includeChildren=true HTTP/1.1
+Host: api.example.com
+Authorization: Bearer abc123xyz
+Accept: application/json
+-----
+
+==== Example Response
+
+[source, http]
+.Successful response for a tracked location
+-----
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "locationId": "DC01",
+  "productId": "product123",
+  "quantity": 150.5,
+  "pendingAdjustment": -5.0,
+  "totalQuantity": 261.0,
+  "lastUpdated": "2024-12-26T15:35:00Z",
+  "childLocations": [
+    {
+      "locationId": "WH01",
+      "quantity": 50.0,
+      "pendingAdjustment": -3.0,
+      "totalQuantity": 80.0,
+      "childLocations": [
+        {
+          "locationId": "SU01",
+          "quantity": 30.0,
+          "totalQuantity": 30.0
+        }
+      ]
+    },
+    {
+      "locationId": "WH02",
+      "quantity": 30.5,
+      "totalQuantity": 30.5
+    }
+  ]
+}
+-----
+
+[source, http]
+.Successful response for an untracked location
+-----
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "locationId": "DC02",
+  "productId": "product123",
+  "totalQuantity": 180.0,
+  "lastUpdated": "2024-12-26T15:35:00Z",
+  "childLocations": [
+    {
+      "locationId": "WH03",
+      "quantity": 80.0,
+      "pendingAdjustment": -2.0,
+      "totalQuantity": 80.0
+    },
+    {
+      "locationId": "WH04",
+      "quantity": 100.0,
+      "totalQuantity": 100.0
+    }
+  ]
+}
+-----
+
+==== Response Codes
+
+[cols="1,3", options="header"]
+|===
+| Code              | Description
+
+| `200 OK`          | Stock level successfully retrieved.
+| `400 Bad Request` | Invalid request data or missing required fields.
+| `401 Unauthorized`| Authentication token is missing or invalid.
+| `403 Forbidden`   | User does not have permission to access this data.
+| `404 Not Found`   | The specified location or product was not found.
+| `500 Internal Server Error` | An unexpected error occurred on the server.
+|===
+
+==== Notes
+
+- **Untracked Location Behavior:** Untracked locations do not maintain a `quantity` field. Instead, `totalQuantity` represents the aggregate stock across all tracked child locations.
+- **Tracked Location Behavior:** Tracked locations include both `quantity` and `totalQuantity`, with `pendingAdjustment` for stock discrepancies.
+- **Empty Child Locations for Untracked Locations:** If no tracked child locations exist, `totalQuantity` is `0`, and `childLocations` is an empty array.

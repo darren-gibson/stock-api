@@ -57,6 +57,13 @@ class LocationApiClient(private val baseUrl: String) : KoinComponent {
         throw LocationNotFoundException(locationId)
     }
 
+    suspend fun getPath(locationId: String): Set<LocationDTO> {
+        val response = wrapHttpCallWithLogging(logger) { client.get("${baseUrl}/locations/$locationId/path") }
+        if (response.status.isSuccess())
+            return response.body<Set<LocationDTO>>()
+        throw LocationNotFoundException(locationId)
+    }
+
     @Serializable
     data class LocationDTO(val id: String, val roles: Set<String>, val children: List<LocationDTO> = emptyList()) {
         val isShop

@@ -12,8 +12,10 @@ import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
 import org.darren.stock.steps.helpers.removeAsciiDocs
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.test.assertContains
 
 class ApiCallStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
@@ -39,17 +41,6 @@ class ApiCallStepDefinitions : KoinComponent {
         assertEquals(expectedStatusCode, response.status.value)
     }
 
-    @And("the response body should contain:")
-    fun theResponseBodyShouldContain(expectedResult: String) = runBlocking {
-        val actualBody = response.bodyAsText()
-
-        assertThat(actualBody, jsonEquals(expectedResult.removeAsciiDocs().ignoreTimestamps()))
-    }
-
-    private fun String.ignoreTimestamps(): String {
-        return this.replace("<timestamp>", "\${json-unit.ignore}")
-    }
-
     @When("I send a GET request to {string}")
     fun iSendAGETRequestTo(url: String): HttpResponse = runBlocking {
         response = client.get(url)
@@ -66,5 +57,29 @@ class ApiCallStepDefinitions : KoinComponent {
             contentType(ContentType.Application.Json)
             setBody(payload)
         }
+    }
+
+    @And("the response headers should contain:")
+    fun theResponseHeadersShouldContain(expectedHeaders: String) {
+        expectedHeaders.split("\n").forEach { line ->
+            val parts = line.split(":").map { it.trim() }
+            val expectedHeader = parts[0]
+            val expectedValue = parts[1]
+
+            assertTrue(response.headers.contains(expectedHeader), "Missing expected header: $expectedHeader")
+            val actualValue = response.headers[expectedHeader]
+            assertEquals(expectedValue, actualValue)
+        }
+    }
+
+    @And("the response body should contain:")
+    fun theResponseBodyShouldContain(expectedResult: String) = runBlocking {
+        val actualBody = response.bodyAsText()
+
+        assertThat(actualBody, jsonEquals(expectedResult.removeAsciiDocs().ignoreTimestamps()))
+    }
+
+    private fun String.ignoreTimestamps(): String {
+        return this.replace("<timestamp>", "\${json-unit.ignore}")
     }
 }
