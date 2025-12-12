@@ -91,8 +91,8 @@ class ServiceLifecycleSteps : KoinComponent {
     }
 
     @After
-    fun shutdownTestServerAfterScenario() {
-        if (this::testApp.isInitialized)
+    fun shutdownTestServerAfterScenario() = runBlocking {
+        if (this@ServiceLifecycleSteps::testApp.isInitialized)
             testApp.stop()
         stopKoin()
     }

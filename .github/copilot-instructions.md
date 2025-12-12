@@ -5,8 +5,8 @@ These instructions are intended to keep newly generated code consistent with the
 ## Tech + defaults
 
 - Language: Kotlin (Kotlin style: `kotlin.code.style=official`).
-- Server: Ktor `3.0.x` (Netty engine) with `ContentNegotiation` + `kotlinx.serialization` JSON.
-- DI: Koin `4.x`.
+- Server: Ktor (Netty engine) with `ContentNegotiation` + `kotlinx.serialization` JSON.
+- DI: Koin.
 - Tests: JUnit 5 + Cucumber (BDD style step definitions + suite runner).
 - Logging: logback + `kotlin-logging`.
 
@@ -71,7 +71,7 @@ Follow the existing pattern in the local file; do not mix styles within the same
 - Server JSON config uses `Json { decodeEnumsCaseInsensitive = true }`.
 - Client JSON config uses `Json { ignoreUnknownKeys = true; coerceInputValues = true; explicitNulls = false }`.
 - Standardize on `kotlinx.serialization` for all new request/response DTOs and JSON handling.
-- Do not add new Jackson-based serialization code.
+- Jackson is available as a test dependency (for json-unit assertions) but should not be used in production code.
 - If you add new enums used in JSON, ensure unknown values are handled safely (see `JsonSerializerTest`).
 
 ## Logging conventions
@@ -127,7 +127,6 @@ When unsure about domain behavior, ask for:
 These are not required for new code generation, but are worth considering:
 
 - Add automated formatting/linting (e.g., `ktlint` or `spotless`) and/or static analysis (`detekt`) to enforce the existing style consistently.
-- Consider removing `io.ktor:ktor-serialization-jackson` if it remains unused (keep `kotlinx.serialization` only).
 - Remove duplicate `tasks.test { useJUnitPlatform() }` block in `build.gradle.kts`.
 - Consider extracting Koin modules from `main()` into dedicated files for clearer composition/testing.
 - Address concurrency TODOs in `StockSystem` (thread safety + lifecycle of stock pots) and remove `GlobalScope` usage if feasible.

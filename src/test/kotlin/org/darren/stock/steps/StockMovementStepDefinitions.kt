@@ -31,8 +31,9 @@ class StockMovementStepDefinitions : KoinComponent {
         }
 
     @Then("the move request should fail with an InsufficientStock exception")
-    fun theMoveRequestShouldFailWithAnInsufficientStockException() {
-        assertInstanceOf<InsufficientStockException>(lastException)
+    fun theMoveRequestShouldFailWithAnInsufficientStockException() = runBlocking {
+        apiCallStepDefinitions.theAPIShouldRespondWithStatusCode(400)
+        apiCallStepDefinitions.theResponseBodyShouldContain("""{"status":"InsufficientStock"}""")
     }
 
     @DataTableType
@@ -60,7 +61,7 @@ class StockMovementStepDefinitions : KoinComponent {
                                   "movedAt": "$movedAt"
                               }"""
 
-            response = apiCallStepDefinitions.sendPostRequest(url, payload)
+            apiCallStepDefinitions.iSendAPOSTRequestToWithTheFollowingPayload(url, payload)
         } catch (e: Exception) {
             lastException = e
         }

@@ -1,7 +1,7 @@
 package org.darren.stock.ktor
 
 import io.ktor.client.engine.*
-import io.ktor.client.engine.java.*
+import io.ktor.client.engine.cio.*
 import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -35,7 +35,7 @@ fun main(args: Array<String>) {
     startKoin {
         fileProperties()
         modules(
-            module { single<HttpClientEngine> { Java.create() } },
+            module { single<HttpClientEngine> { CIO.create() } },
             module { single { LocationApiClient(getProperty("LOCATION_API")) } },
             module { single<StockSystem> { StockSystem() } },
             module { single<StockEventRepository> { InMemoryStockEventRepository() } },
@@ -78,6 +78,7 @@ private fun StatusPagesConfig.handleExceptions() {
         when (cause) {
             is LocationNotFoundException -> call.respond(NotFound, ErrorDTO("LocationNotFound"))
             is LocationNotTrackedException -> respondWithRedirectToTrackedLocation(call, cause.locationId)
+            is InsufficientStockException -> call.respond(BadRequest, ErrorDTO("InsufficientStock"))
             is BadRequestException -> {
                 val missingFields = getMissingFields(cause)
                 if (missingFields != null) {

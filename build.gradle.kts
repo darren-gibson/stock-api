@@ -2,8 +2,8 @@
 
 plugins {
     kotlin("jvm") version "2.1.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.0"
-    application
+    kotlin("plugin.serialization") version "2.1.0"
+    id("io.ktor.plugin") version "3.3.3"
 }
 
 group = "org.darren"
@@ -14,33 +14,36 @@ repositories {
 }
 
 dependencies {
-    val ktor_version = "3.0.2"
-    val koin_version = "4.0.0"
+    implementation("io.ktor:ktor-server-core-jvm:3.3.3")
+    implementation("io.ktor:ktor-server-netty-jvm:3.3.3")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:3.3.3")
+    implementation("io.ktor:ktor-server-status-pages:3.3.3")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:3.3.3")
+    implementation("io.ktor:ktor-client-core:3.3.3")
+    implementation("io.ktor:ktor-client-cio:3.3.3")
+    implementation("io.ktor:ktor-client-content-negotiation:3.3.3")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-    implementation("io.cucumber:cucumber-java:7.20.1")
-    implementation("ch.qos.logback:logback-classic:1.5.12")
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
-    implementation("io.ktor:ktor-server-status-pages:$ktor_version")
-    implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-config-yaml:$ktor_version")
-    implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
-    implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-    implementation("io.ktor:ktor-client:$ktor_version")
-    implementation("io.ktor:ktor-client-java:$ktor_version")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    implementation(project.dependencies.platform("io.insert-koin:koin-bom:$koin_version"))
-    implementation("io.insert-koin:koin-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
-    testImplementation(kotlin("test"))
-    testImplementation("io.ktor:ktor-server-test-host-jvm:$ktor_version")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.20.1")
-    testImplementation("org.junit.platform:junit-platform-suite:1.11.3")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
+    implementation("io.insert-koin:koin-core:4.1.1")
+    implementation("io.insert-koin:koin-ktor:4.1.1")
+
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.11")
+    implementation("ch.qos.logback:logback-classic:1.5.16")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.4")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.4")
+    testImplementation("io.cucumber:cucumber-java:7.21.0")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.21.0")
+    testImplementation("org.junit.platform:junit-platform-suite:1.11.4")
+    testImplementation("io.ktor:ktor-server-test-host-jvm:3.3.3")
+    testImplementation("io.ktor:ktor-client-mock:3.3.3")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.1.0")
+    testImplementation("io.insert-koin:koin-test:4.1.1")
+    testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
     testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
 }
 
 

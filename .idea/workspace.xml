@@ -7,9 +7,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Enable support for Untracked locations on the Sale API">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add copilot instructions">
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,6 +180,8 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "android.gradle.sync.needed": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "master",
@@ -185,7 +191,7 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.54137933",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.keymap"
+    "settings.editor.selected.configurable": "com.github.copilot.settings.general.GeneralConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -365,14 +371,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Refactor again to move the StockSystem facade to use extension methods.">
-      <option name="closed" value="true" />
-      <created>1733751207741</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1733751207741</updated>
     </task>
     <task id="LOCAL-00033" summary="Add structured support for cukedoctor to produce documentation as we go.  Start to create better documentation on features.">
       <option name="closed" value="true" />
@@ -758,7 +756,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736085798661</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="Add copilot instructions">
+      <option name="closed" value="true" />
+      <created>1765545276353</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1765545276354</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -810,7 +816,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Removed Untracked Stock Pots" />
     <MESSAGE value="Refactor to remove the switch statement for the Stock Pot Actor" />
     <MESSAGE value="Simplify to request / response with StockPotActor" />
     <MESSAGE value="more refactoring" />
@@ -835,7 +840,8 @@
     <MESSAGE value="Add support for tracked locations in Deliveries and refactor the testing for GetStock" />
     <MESSAGE value="Enable support for Untracked locations in the Movement endpoint." />
     <MESSAGE value="Enable support for Untracked locations on the Sale API" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enable support for Untracked locations on the Sale API" />
+    <MESSAGE value="Add copilot instructions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add copilot instructions" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
