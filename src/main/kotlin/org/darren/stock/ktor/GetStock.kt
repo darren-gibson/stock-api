@@ -6,13 +6,13 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockLevel
-import org.darren.stock.domain.stockSystem.GetValue.getValue
+import org.darren.stock.domain.stockSystem.GetValue.retrieveValue
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object GetStock {
-    fun Routing.getStock() {
+    fun Routing.getStockEndpoint() {
         get("/locations/{locationId}/products/{productId}") {
             val locations by inject<LocationApiClient>(LocationApiClient::class.java)
             val stockSystem by inject<StockSystem>(StockSystem::class.java)
@@ -22,7 +22,7 @@ object GetStock {
 
             locations.ensureValidLocations(locationId)
 
-            val stockLevel = stockSystem.getValue(locationId, productId, includeChildren)
+            val stockLevel = stockSystem.retrieveValue(locationId, productId, includeChildren)
 
             with(stockLevel) {
                 if (includeChildren) {

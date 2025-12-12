@@ -6,7 +6,7 @@ import org.darren.stock.domain.actors.messages.RecordSale
 import java.time.LocalDateTime
 
 object Sale {
-    suspend fun StockSystem.sale(
+    suspend fun StockSystem.recordSale(
         locationId: String,
         productId: String,
         quantity: Double,

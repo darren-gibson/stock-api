@@ -15,5 +15,6 @@ class RecordDelivery(
 ) : StockPotMessages(result) {
     override suspend fun validate(state: StockState) = DeliveryEvent(quantity, supplierId, supplierRef, eventTime)
 
-    override fun toString(): String = "RecordDelivery(eventTime=$eventTime, quantity=$quantity, supplierId='$supplierId', supplierRef='$supplierRef')"
+    override fun toString(): String =
+        "RecordDelivery(eventTime=$eventTime, quantity=$quantity, supplierId='$supplierId', supplierRef='$supplierRef')"
 }

@@ -13,7 +13,7 @@ import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object StockCount {
-    fun Routing.stockCount() {
+    fun Routing.stockCountEndpoint() {
         post("/locations/{locationId}/products/{productId}/counts") {
             val locations by inject<LocationApiClient>(LocationApiClient::class.java)
             val stockSystem by inject<StockSystem>(StockSystem::class.java)

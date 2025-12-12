@@ -1,5 +1,6 @@
 package org.darren.stock.ktor.exception
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
@@ -48,19 +49,22 @@ object LocationNotFoundHandler : ExceptionHandler {
  * Handles LocationNotTrackedException by redirecting to the first tracked parent location.
  */
 object LocationNotTrackedHandler : ExceptionHandler {
+    private val logger = KotlinLogging.logger {}
+
     override suspend fun handle(
         call: ApplicationCall,
         cause: Throwable,
     ): Boolean {
         if (cause is LocationNotTrackedException) {
             val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-            try {
-                val path = locations.getPath(cause.locationId).reversed()
-                val firstTrackedParent = path.first { it.isTracked }
+            val path = locations.getPath(cause.locationId).reversed()
+            val firstTrackedParent = path.firstOrNull { it.isTracked }
+            if (firstTrackedParent != null) {
                 val newLocation = call.request.path().replace("/${cause.locationId}/", "/${firstTrackedParent.id}/")
                 call.response.headers.append(HttpHeaders.Location, newLocation)
                 call.respond(HttpStatusCode.SeeOther, ErrorDTO("LocationNotTracked"))
-            } catch (e: NoSuchElementException) {
+            } else {
+                logger.warn { "Location ${cause.locationId} has no tracked parent, returning 400" }
                 call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
             }
             return true

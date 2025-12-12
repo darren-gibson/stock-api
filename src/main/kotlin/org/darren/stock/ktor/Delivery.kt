@@ -6,20 +6,20 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.ProductQuantity
-import org.darren.stock.domain.stockSystem.Delivery.delivery
+import org.darren.stock.domain.stockSystem.Delivery.recordDelivery
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Delivery {
-    fun Routing.delivery() {
+    fun Routing.deliveryEndpoint() {
         post("/locations/{locationId}/deliveries") {
             val stockSystem by inject<StockSystem>(StockSystem::class.java)
             val locationId = call.parameters["locationId"]!!
             val request = call.receive<DeliveryRequestDTO>()
 
             with(request) {
-                stockSystem.delivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
+                stockSystem.recordDelivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
                 call.respond(Created)
             }
         }

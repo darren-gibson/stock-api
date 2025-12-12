@@ -81,8 +81,16 @@ class GetStockLevelStepDefinitions : KoinComponent {
         runBlocking {
             expectedStockLevels.forEach { expected ->
                 val actual = getStockLevel(expected.location, expected.product)
-                assertEquals(expected.quantity, actual.quantity, "Stock level for ${expected.product} in ${expected.location} does not match")
-                assertEquals(expected.pendingAdjustment, actual.pendingAdjustment, "Pending adjustment for ${expected.product} in ${expected.location} does not match")
+                assertEquals(
+                    expected.quantity,
+                    actual.quantity,
+                    "Stock level for ${expected.product} in ${expected.location} does not match",
+                )
+                assertEquals(
+                    expected.pendingAdjustment,
+                    actual.pendingAdjustment,
+                    "Pending adjustment for ${expected.product} in ${expected.location} does not match",
+                )
             }
         }
 

@@ -15,7 +15,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 object GetValue : KoinComponent {
-    suspend fun StockSystem.getValue(
+    suspend fun StockSystem.retrieveValue(
         locationId: String,
         productId: String,
         includeChildren: Boolean,

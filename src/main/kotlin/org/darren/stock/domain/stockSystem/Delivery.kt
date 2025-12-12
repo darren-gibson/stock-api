@@ -10,7 +10,7 @@ import org.darren.stock.domain.actors.messages.StockPotMessages
 import java.time.LocalDateTime
 
 object Delivery {
-    suspend fun StockSystem.delivery(
+    suspend fun StockSystem.recordDelivery(
         locationId: String,
         supplierId: String,
         supplierRef: String,
@@ -21,13 +21,13 @@ object Delivery {
         val deferredList =
             products.map {
                 val stockPot = getStockPot(locationId, it.productId)
-                delivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate)
+                processDelivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate)
             }
         deferredList.awaitAll()
         // TODO: What happens if the delivery fails?
     }
 
-    private suspend fun delivery(
+    private suspend fun processDelivery(
         stockPot: SendChannel<StockPotMessages>,
         quantity: Double,
         supplierId: String,

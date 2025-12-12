@@ -8,12 +8,12 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.darren.stock.config.KoinModules
-import org.darren.stock.ktor.Delivery.delivery
-import org.darren.stock.ktor.GetStock.getStock
-import org.darren.stock.ktor.Move.move
-import org.darren.stock.ktor.Sale.sale
+import org.darren.stock.ktor.Delivery.deliveryEndpoint
+import org.darren.stock.ktor.GetStock.getStockEndpoint
+import org.darren.stock.ktor.Move.moveEndpoint
+import org.darren.stock.ktor.Sale.saleEndpoint
 import org.darren.stock.ktor.Status.statusEndpoint
-import org.darren.stock.ktor.StockCount.stockCount
+import org.darren.stock.ktor.StockCount.stockCountEndpoint
 import org.darren.stock.ktor.exception.ExceptionHandlerChain
 import org.koin.core.context.startKoin
 import org.koin.fileProperties
@@ -40,12 +40,12 @@ fun Application.module() {
         handleExceptions()
     }
     routing {
-        move()
+        moveEndpoint()
         statusEndpoint()
-        stockCount()
-        sale()
-        delivery()
-        getStock()
+        stockCountEndpoint()
+        saleEndpoint()
+        deliveryEndpoint()
+        getStockEndpoint()
     }
 }
 

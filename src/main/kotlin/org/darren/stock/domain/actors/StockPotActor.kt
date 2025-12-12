@@ -32,7 +32,7 @@ class StockPotActor(
         private val logger = KotlinLogging.logger {}
 
         @OptIn(ObsoleteCoroutinesApi::class)
-        fun CoroutineScope.stockPotActor(
+        fun CoroutineScope.createStockPotActor(
             locationId: String,
             productId: String,
         ): SendChannel<StockPotMessages> =

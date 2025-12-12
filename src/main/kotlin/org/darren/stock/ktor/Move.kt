@@ -8,13 +8,14 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationNotTrackedException
 import org.darren.stock.domain.MovementReason
-import org.darren.stock.domain.stockSystem.Move.move
+import org.darren.stock.domain.stockSystem.Move.recordMovement
+import org.darren.stock.domain.stockSystem.MoveCommand
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Move {
-    fun Routing.move() {
+    fun Routing.moveEndpoint() {
         post("/locations/{sourceLocationId}/{productId}/movements") {
             val stockSystem by inject<StockSystem>(StockSystem::class.java)
             val sourceId = call.parameters["sourceLocationId"]!!
@@ -24,7 +25,16 @@ object Move {
 
             try {
                 with(request) {
-                    stockSystem.move(sourceId, destinationLocationId, productId, quantity, reason, movedAt)
+                    val command =
+                        MoveCommand(
+                            fromLocationId = sourceId,
+                            toLocationId = destinationLocationId,
+                            productId = productId,
+                            quantity = quantity,
+                            reason = reason,
+                            movedAt = movedAt,
+                        )
+                    stockSystem.recordMovement(command)
                     call.respond(
                         Created,
                         MoveResponseDTO(

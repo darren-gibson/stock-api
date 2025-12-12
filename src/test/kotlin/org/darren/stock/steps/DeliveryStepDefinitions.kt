@@ -21,24 +21,29 @@ class DeliveryStepDefinitions : KoinComponent {
     private val dateTimeProvider: TestDateTimeProvider by inject()
 
     @Given("{string} is due to be delivered by {string} to {string} with a quantity of {double}")
+    @Suppress("UnusedParameter")
     fun isDueToBeDeliveredByToWithAQuantityOf(
         productId: String,
         supplierId: String,
         locationIs: String,
         quantity: Double,
     ) {
+        // Placeholder: Future implementation will track expected deliveries
     }
 
     @Given("{string} is expecting the following deliveries from {string}:")
+    @Suppress("UnusedParameter")
     fun isExpectingTheFollowingDeliveriesFrom(
         locationId: String,
         supplierId: String,
         productQuantities: List<ProductQuantity>,
     ) {
+        // Placeholder: Future implementation will track expected deliveries by supplier
     }
 
     @DataTableType
-    fun productQuantityTransformer(row: Map<String?, String>): ProductQuantity = ProductQuantity(row["Product ID"]!!, row["Quantity"]!!.toDouble())
+    fun productQuantityTransformer(row: Map<String?, String>): ProductQuantity =
+        ProductQuantity(row["Product ID"]!!, row["Quantity"]!!.toDouble())
 
     data class ProductQuantity(
         val productId: String,

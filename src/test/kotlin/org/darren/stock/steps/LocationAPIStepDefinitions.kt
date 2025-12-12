@@ -192,7 +192,8 @@ class LocationAPIStepDefinitions : KoinComponent {
     }
 
     @DataTableType
-    fun cacheControlSettingTransformer(row: Map<String?, String>): CacheControlSetting = CacheControlSetting(row["Location Id"]!!, row["Cache-Control"]!!)
+    fun cacheControlSettingTransformer(row: Map<String?, String>): CacheControlSetting =
+        CacheControlSetting(row["Location Id"]!!, row["Cache-Control"]!!)
 
     data class CacheControlSetting(
         val id: String,

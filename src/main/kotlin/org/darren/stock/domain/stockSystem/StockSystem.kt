@@ -1,18 +1,20 @@
 package org.darren.stock.domain.stockSystem
 
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.SendChannel
 import org.darren.stock.domain.LocationApiClient
-import org.darren.stock.domain.actors.StockPotActor.Companion.stockPotActor
+import org.darren.stock.domain.actors.StockPotActor.Companion.createStockPotActor
 import org.darren.stock.domain.actors.messages.StockPotMessages
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.util.concurrent.ConcurrentHashMap
 
-// TODO: This needs to be thread safe
 class StockSystem : KoinComponent {
     val locations by inject<LocationApiClient>()
-    private val stockPots = mutableMapOf<Pair<String, String>, SendChannel<StockPotMessages>>()
+    private val stockPots = ConcurrentHashMap<Pair<String, String>, SendChannel<StockPotMessages>>()
+    private val actorScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     fun getStockPot(
         locationId: String,
@@ -22,14 +24,14 @@ class StockSystem : KoinComponent {
             createStockPotActor(locationId, productId)
         }
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun createStockPotActor(
         locationId: String,
         productId: String,
-    ) = GlobalScope.stockPotActor(locationId, productId)
+    ) = actorScope.createStockPotActor(locationId, productId)
 
     // TODO: Need to consider how to handle the case where a stock pot is no longer needed
-    // TODO: Need to reduce to a number of stock pots that are actually needed, what about Stores with child locations of aisles, modules, shelves, etc, the numbers will soon mount up
+    // TODO: Need to reduce to a number of stock pots that are actually needed.
+    // What about Stores with child locations of aisles, modules, shelves, etc? The numbers will soon mount up.
     fun getAllActiveStockPotsFor(
         locationIds: Set<String>,
         productId: String,

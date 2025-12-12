@@ -15,5 +15,6 @@ class DeliveryEvent(
 ) : StockPotEvent() {
     override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! + quantity, lastUpdated = eventDateTime)
 
-    override fun toString(): String = "DeliveryEvent(eventTime=$eventDateTime, quantity=$quantity, supplierId='$supplierId', supplierRef='$supplierRef')"
+    override fun toString(): String =
+        "DeliveryEvent(eventTime=$eventDateTime, quantity=$quantity, supplierId='$supplierId', supplierRef='$supplierRef')"
 }
