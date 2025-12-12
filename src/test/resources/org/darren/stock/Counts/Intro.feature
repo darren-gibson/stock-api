@@ -1,5 +1,4 @@
-@section-Counts
-@asciidoc
+@section-Counts @asciidoc @order-2
 Feature: Count Endpoint
   *Purpose*
   The Count endpoint is designed to record a stock count adjustment for a specific product at a given location. By recording these adjustments, the endpoint ensures that stock levels reflect the most accurate and up-to-date inventory position. This is essential for reconciling discrepancies, supporting operational accuracy, and maintaining trust in inventory data.

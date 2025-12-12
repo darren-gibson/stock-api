@@ -1,4 +1,4 @@
-@asciidoc @section-PendingAdjustments
+@section-PendingAdjustments @asciidoc @order-1
 Feature: Pending adjustments can be viewed and reconciled
 
   Background:

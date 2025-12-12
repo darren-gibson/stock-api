@@ -52,7 +52,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
-/** Copies files from "build/distributions" to "demo" directory */
+/** Generates living documentation from Cucumber test results */
 tasks.register<Exec>("cukedoctor") {
     commandLine(
         "java",
@@ -66,8 +66,9 @@ tasks.register<Exec>("cukedoctor") {
         "left",
         "-o",
         "build/docs/stock-api",
+        "-p",
+        "build/test-results",
     )
-    project
 }
 
 tasks.named("test") { finalizedBy("cukedoctor") }

@@ -1,4 +1,4 @@
-@section-StockLevel @asciidoc
+@section-StockLevel @asciidoc @order-0
 Feature: Get Stock Level for Product at Location Endpoint
 
     The **Get Stock Level for Product at Location** endpoint provides precise, real-time information on the inventory levels of specific products at designated locations. This capability is essential for businesses to manage inventory efficiently, optimise operations, and make informed decisions based on accurate stock data.

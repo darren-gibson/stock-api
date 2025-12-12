@@ -1,6 +1,5 @@
-@section-Movement
-@asciidoc
-  Feature: Movement Endpoint
+@section-Movement @asciidoc @order-1
+Feature: Movement Endpoint
 
     The Stock Movement Transaction feature enables the transfer of inventory between tracked locations within the system. This process is crucial for maintaining accurate stock levels and ensuring operational efficiency across the organisation. Stock movements are meticulously documented to reflect real-time changes in inventory, providing complete visibility and traceability.
 

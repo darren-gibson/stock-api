@@ -1,4 +1,4 @@
-@section-Counts @asciidoc
+@section-Counts @asciidoc @order-1
 Feature: Override stock count record for Product in a Location
 
   *Why Override a Stock Figure for a Location?*

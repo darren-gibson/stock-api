@@ -1,3 +1,4 @@
+@section-Status @asciidoc @order-1
 Feature: Service Health Check
   As a user of the service
   I want to verify the health status of the service

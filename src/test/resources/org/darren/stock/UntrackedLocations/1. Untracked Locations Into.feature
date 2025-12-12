@@ -1,5 +1,4 @@
-@section-TrackedAndUntrackedLocations @asciidoc
-
+@section-TrackedAndUntrackedLocations @asciidoc @order-1
 Feature: Tracked and Untracked Locations
 
   The Tracked and Untracked Locations feature defines how inventory is managed across various areas within an inventory location hierarchy. Locations can be designated as either tracked or untracked based on their role in the inventory system and operational needs.

@@ -1,5 +1,4 @@
-@section-Sales
-@asciidoc
+@section-Sales @asciidoc @order-0
 Feature: Sale Endpoint
     *Purpose*
     The Sale endpoint is designed to record the sale of a product at a tracked location. By recording each sale, the endpoint ensures that stock levels are accurately updated in real-time, reflecting the reduction in inventory due to the sale. This is critical for maintaining up-to-date stock levels, enabling effective inventory management, and supporting other business functions such as replenishment, reporting, and analytics.

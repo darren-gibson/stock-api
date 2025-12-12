@@ -1,4 +1,4 @@
-@section-Architecture @asciidoc
+@section-Architecture @asciidoc @order-1
 Feature: Architecture Overview - Location API
   ==== Overview
   The Stock API utilises the Location API to maintain all location-related data. This includes the definition of new locations, retrieval of location details, and the assignment of roles to locations. The Location API is designed to support a hierarchical structure of locations, enabling businesses to map their physical, virtual, and logical locations accurately within the system.

@@ -1,6 +1,5 @@
-@section-Delivery
-@asciidoc
-  Feature: Delivery Endpoint
+@section-Delivery @asciidoc @order-0
+Feature: Delivery Endpoint
 
     The Delivery Endpoint feature enables the recording of product deliveries from external suppliers into the network. This process is critical for integrating inbound inventory into the system, maintaining accurate stock levels, and ensuring efficient supply chain operations. Deliveries are thoroughly documented to provide real-time updates and complete traceability of incoming stock.
 
