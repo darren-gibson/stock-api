@@ -137,10 +137,9 @@ Feature: Contract: Stock Movement Endpoint
           "quantity": 50.5,
           "productId": "product123",
           "reason": "replenishment",
-          "movedAt": "2024-12-26T15:35:00" (1)
+          "movedAt": "2024-12-26T15:35:00"
       }
       -----
-      <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
       """
     And the stock level of "product123" in "warehouse1" should be updated to 50.0
 

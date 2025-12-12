@@ -154,8 +154,7 @@ Feature: Sale Endpoint: Contract
           type: http
           scheme: bearer
           bearerFormat: JWT
-    -----
-  ====
+    ====
 
   Background:
 #    Given the API is authenticated with a valid bearer token
@@ -192,10 +191,9 @@ Feature: Sale Endpoint: Contract
         "locationId": "Store-001",
         "productId": "SKU12345",
         "quantitySold": 5.0,
-        "soldAt": "2024-12-07T12:00:00" (1)
+        "soldAt": "2024-12-07T12:00:00"
       }
       -----
-      <1> timestamp in the ISO8601 format, e.g: 2024-12-11T09:16:29.577617
       """
     And the stock level of "SKU12345" in "Store-001" should be updated to 45
 

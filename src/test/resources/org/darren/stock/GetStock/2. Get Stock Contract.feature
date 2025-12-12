@@ -201,7 +201,6 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           ]
       }
       -----
-      <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
       """
 
   Scenario: Retrieve the stock level only for the specific location without child locations
@@ -220,7 +219,6 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           "lastUpdated": "<timestamp>"
       }
       -----
-      <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
       """
 
 #  Scenario: Fail to retrieve stock level due to invalid product
@@ -282,7 +280,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           "locationId": "DC02",
           "productId": "product123",
           "totalQuantity": 180.0,
-          "lastUpdated": "<timestamp>", (1)
+          "lastUpdated": "<timestamp>",
           "childLocations": [
             {
               "locationId": "WH03",
@@ -298,7 +296,6 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           ]
       }
       -----
-      <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
       """
 
   Scenario: Retrieve stock level for an untracked location with no child tracked locations
@@ -313,10 +310,9 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
           "locationId": "DC03",
           "productId": "product123",
           "totalQuantity": 0.0,
-          "lastUpdated": "<timestamp>" (1)
+          "lastUpdated": "<timestamp>"
       }
       -----
-      <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
       """
 
   Scenario: Retrieve stock level for an untracked location without children
@@ -330,8 +326,7 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
       {
           "locationId": "DC03",
           "productId": "product123",
-          "lastUpdated": "<timestamp>" (1)
+          "lastUpdated": "<timestamp>"
       }
       -----
-      <1> timestamp in the ISO8601 format, e.g., 2024-12-26T15:35:00.123Z
       """

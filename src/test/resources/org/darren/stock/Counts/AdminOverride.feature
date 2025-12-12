@@ -47,10 +47,9 @@ Feature: Override stock count record for Product in a Location
         "productId": "SKU12345",
         "quantity": 100.0,
         "reason": "AdminOverride",
-        "countedAt": "2024-12-11T09:16:29.577617" (1)
+        "countedAt": "2024-12-11T09:16:29.577617"
       }
       -----
-      <1> timestamp in the ISO8601 format, e.g: 2024-12-11T09:16:29.577617
       """
     And the current stock level of "SKU12345" in "Warehouse-01" will equal 100
 
