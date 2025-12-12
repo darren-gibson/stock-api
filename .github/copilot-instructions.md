@@ -107,6 +107,7 @@ When adding a feature/endpoints:
 - **Spotless with ktlint**: Automated code formatting enforcing official Kotlin style (`./gradlew spotlessApply` to format, `./gradlew spotlessCheck` to verify)
 - **Detekt**: Static code analysis for quality checks (`./gradlew detekt`)
 - Both tools are configured in `build.gradle.kts` with project-specific rules in `detekt.yml`
+- **Always run `./gradlew spotlessApply` after making code changes** to ensure consistent formatting
 
 ## Ask before changing (important)
 
