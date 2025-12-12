@@ -13,10 +13,9 @@ import java.time.LocalDateTime
 
 object GetStock {
     fun Routing.getStock() {
-        val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-
         get("/locations/{locationId}/products/{productId}") {
-            val stockSystem = inject<StockSystem>(StockSystem::class.java).value
+            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+            val stockSystem by inject<StockSystem>(StockSystem::class.java)
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!
             val includeChildren = call.parameters["includeChildren"]?.toBoolean() ?: true

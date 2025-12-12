@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 object Move {
     fun Routing.move() {
         post("/locations/{sourceLocationId}/{productId}/movements") {
-            val stockSystem = inject<StockSystem>(StockSystem::class.java).value
+            val stockSystem by inject<StockSystem>(StockSystem::class.java)
             val sourceId = call.parameters["sourceLocationId"]!!
             val productId = call.parameters["productId"]!!
 

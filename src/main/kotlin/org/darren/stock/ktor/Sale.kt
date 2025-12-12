@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 object Sale {
     fun Routing.sale() {
         post("/locations/{locationId}/products/{productId}/sales") {
-            val stockSystem = inject<StockSystem>(StockSystem::class.java).value
+            val stockSystem by inject<StockSystem>(StockSystem::class.java)
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!
             val request = call.receive<SaleRequestDTO>()

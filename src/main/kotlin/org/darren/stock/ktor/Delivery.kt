@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 object Delivery {
     fun Routing.delivery() {
         post("/locations/{locationId}/deliveries") {
-            val stockSystem = inject<StockSystem>(StockSystem::class.java).value
+            val stockSystem by inject<StockSystem>(StockSystem::class.java)
             val locationId = call.parameters["locationId"]!!
             val request = call.receive<DeliveryRequestDTO>()
 

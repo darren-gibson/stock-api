@@ -14,17 +14,16 @@ import java.time.LocalDateTime
 
 object StockCount {
     fun Routing.stockCount() {
-        val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-
         post("/locations/{locationId}/products/{productId}/counts") {
-            val stockSystem = inject<StockSystem>(StockSystem::class.java)
+            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+            val stockSystem by inject<StockSystem>(StockSystem::class.java)
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!
 
             val request = call.receive<StockCountRequestDTO>()
             locations.ensureValidLocation(locationId)
             with(request) {
-                stockSystem.value.count(locationId, productId, quantity, reason, countedAt)
+                stockSystem.count(locationId, productId, quantity, reason, countedAt)
                 call.respond(
                     Created,
                     StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt),
