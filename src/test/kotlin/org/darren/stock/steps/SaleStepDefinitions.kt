@@ -20,7 +20,11 @@ class SaleStepDefinitions : KoinComponent {
     private val dateTimeProvider: TestDateTimeProvider by inject()
 
     @When("there is a sale of {quantity} of {string} in the {string} store")
-    fun thereIsASaleOfProductInStore(quantity: Double, productId: String, locationId: String) = runBlocking {
+    fun thereIsASaleOfProductInStore(
+        quantity: Double,
+        productId: String,
+        locationId: String,
+    ) = runBlocking {
         response = performSale(locationId, productId, quantity)
         assertTrue(response.status.isSuccess(), "Failed to create sale: ${response.status} ${response.bodyAsText()}")
     }
@@ -28,7 +32,7 @@ class SaleStepDefinitions : KoinComponent {
     private fun performSale(
         locationId: String,
         productId: String,
-        quantity: Double
+        quantity: Double,
     ) = runBlocking {
         val url = "/locations/$locationId/products/$productId/sales"
         val requestId = UUID.randomUUID().toString()
@@ -40,7 +44,10 @@ class SaleStepDefinitions : KoinComponent {
 
     @Then("the sale of {string} in {string} will result in a HTTP Status of {} and error {string}")
     fun theSaleOfProductInLocationWillResultIn(
-        productId: String, locationId: String, status: Int, expectedError: String
+        productId: String,
+        locationId: String,
+        status: Int,
+        expectedError: String,
     ) = runBlocking {
         val expectedStatus = HttpStatusCode.fromValue(status)
         val response = performSale(locationId, productId, 1.0)

@@ -5,8 +5,9 @@ fun String.removeAsciiDocs(): String {
     val regexToRemoveFootnotes = Regex(" \\(\\d+\\)\$", setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.MULTILINE))
     val result = regexToExtractContent.matchEntire(this)
 
-    return if(result == null)
+    return if (result == null) {
         this
-    else
+    } else {
         result.groups[1]!!.value.replace(regexToRemoveFootnotes, "")
+    }
 }

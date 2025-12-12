@@ -17,7 +17,10 @@ import org.koin.core.component.inject
 
 typealias Reply = Result<StockState>
 
-class StockPotActor(locationId: String, productId: String) : KoinComponent {
+class StockPotActor(
+    locationId: String,
+    productId: String,
+) : KoinComponent {
     private var currentState = StockState(Location(locationId), productId)
     private val repository: StockEventRepository by inject()
 
@@ -29,28 +32,33 @@ class StockPotActor(locationId: String, productId: String) : KoinComponent {
         private val logger = KotlinLogging.logger {}
 
         @OptIn(ObsoleteCoroutinesApi::class)
-        fun CoroutineScope.stockPotActor(locationId: String, productId: String):
-                SendChannel<StockPotMessages> = actor {
-            logger.debug { "Creating StockPotActor location=$locationId, product=$productId" }
+        fun CoroutineScope.stockPotActor(
+            locationId: String,
+            productId: String,
+        ): SendChannel<StockPotMessages> =
+            actor {
+                logger.debug { "Creating StockPotActor location=$locationId, product=$productId" }
 
-            with(StockPotActor(locationId, productId)) {
-                for (msg in channel) onReceive(msg)
+                with(StockPotActor(locationId, productId)) {
+                    for (msg in channel) onReceive(msg)
+                }
             }
-        }
     }
 
     private suspend fun onReceive(message: StockPotMessages) {
         logger.debug { "$this, MSG=$message" }
 
-        message.result.complete(Reply.runCatching {
-            val stockPotEvent = message.validate(currentState)
-            if(stockPotEvent !is NullStockPotEvent) {
-                persistEvent(stockPotEvent)
-                applyOrRecreateStateIfOutOfOrderEvent(stockPotEvent)
-            }
-            else
-                applyEvent(stockPotEvent)
-        })
+        message.result.complete(
+            Reply.runCatching {
+                val stockPotEvent = message.validate(currentState)
+                if (stockPotEvent !is NullStockPotEvent) {
+                    persistEvent(stockPotEvent)
+                    applyOrRecreateStateIfOutOfOrderEvent(stockPotEvent)
+                } else {
+                    applyEvent(stockPotEvent)
+                }
+            },
+        )
 
         logger.debug { this }
     }
@@ -59,9 +67,9 @@ class StockPotActor(locationId: String, productId: String) : KoinComponent {
         if (stockPotEvent.eventDateTime.isBefore(currentState.lastUpdated)) {
             logger.debug { "${stockPotEvent.eventDateTime} is before current state: ${currentState.lastUpdated}" }
             recreateState()
-        }
-        else
+        } else {
             applyEvent(stockPotEvent)
+        }
 
     private suspend fun recreateState(): StockState {
         currentState = StockState(currentState.location, currentState.productId)
@@ -79,7 +87,5 @@ class StockPotActor(locationId: String, productId: String) : KoinComponent {
         return currentState
     }
 
-    override fun toString(): String {
-        return "StockPotActor(state='$currentState')"
-    }
+    override fun toString(): String = "StockPotActor(state='$currentState')"
 }

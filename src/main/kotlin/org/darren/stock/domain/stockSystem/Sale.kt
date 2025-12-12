@@ -6,7 +6,12 @@ import org.darren.stock.domain.actors.messages.RecordSale
 import java.time.LocalDateTime
 
 object Sale {
-    suspend fun StockSystem.sale(locationId: String, productId: String, quantity: Double, eventTime: LocalDateTime) {
+    suspend fun StockSystem.sale(
+        locationId: String,
+        productId: String,
+        quantity: Double,
+        eventTime: LocalDateTime,
+    ) {
         locations.ensureLocationsAreTracked(locationId)
         val stockPot = getStockPot(locationId, productId)
         val result = CompletableDeferred<Reply>()

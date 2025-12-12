@@ -4,7 +4,10 @@ import io.github.oshai.kotlinlogging.KLogger
 import io.ktor.client.statement.*
 
 object LoggingHelper {
-    suspend fun wrapHttpCallWithLogging(logger: KLogger, block: suspend () -> HttpResponse): HttpResponse {
+    suspend fun wrapHttpCallWithLogging(
+        logger: KLogger,
+        block: suspend () -> HttpResponse,
+    ): HttpResponse {
         try {
             val response = block()
 

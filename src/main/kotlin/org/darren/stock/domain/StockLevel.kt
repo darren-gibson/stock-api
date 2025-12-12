@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class StockLevel(
     val state: StockState,
-    val childLocations: List<StockLevel> = emptyList()
+    val childLocations: List<StockLevel> = emptyList(),
 ) {
     val totalQuantity: Double
         get() = (state.quantity ?: 0.0) + childLocations.sumOf { it.totalQuantity }

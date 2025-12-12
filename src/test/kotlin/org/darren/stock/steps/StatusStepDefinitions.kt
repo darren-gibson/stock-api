@@ -18,22 +18,24 @@ class StatusStepDefinitions : KoinComponent {
     private val client: HttpClient by inject()
 
     @When("I send a GET request to the {string} endpoint")
-    fun iSendAGETRequestToTheEndpoint(endpoint: String) = runBlocking {
-        response = client.request(endpoint)
-    }
+    fun iSendAGETRequestToTheEndpoint(endpoint: String) =
+        runBlocking {
+            response = client.request(endpoint)
+        }
 
     @Then("the response status code should be {int}")
     fun theResponseStatusCodeShouldBe(expectedStatusCode: Int) {
         assertEquals(
             expectedStatusCode,
             response.status.value,
-            "Expected status code does not match the actual status code"
+            "Expected status code does not match the actual status code",
         )
     }
 
     @And("the response body should indicate the service is healthy")
-    fun theResponseBodyShouldIndicateTheServiceIsHealthy() = runBlocking {
-        val responseBody: String = response.body()
-        assertTrue(responseBody.contains("Healthy"), "Response body does not indicate the service is healthy, body=$responseBody")
-    }
+    fun theResponseBodyShouldIndicateTheServiceIsHealthy() =
+        runBlocking {
+            val responseBody: String = response.body()
+            assertTrue(responseBody.contains("Healthy"), "Response body does not indicate the service is healthy, body=$responseBody")
+        }
 }

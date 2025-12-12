@@ -11,11 +11,9 @@ class RecordDelivery(
     val supplierId: String,
     val supplierRef: String,
     private val eventTime: LocalDateTime,
-    result: CompletableDeferred<Reply>
+    result: CompletableDeferred<Reply>,
 ) : StockPotMessages(result) {
     override suspend fun validate(state: StockState) = DeliveryEvent(quantity, supplierId, supplierRef, eventTime)
 
-    override fun toString(): String {
-        return "RecordDelivery(eventTime=$eventTime, quantity=$quantity, supplierId='$supplierId', supplierRef='$supplierRef')"
-    }
+    override fun toString(): String = "RecordDelivery(eventTime=$eventTime, quantity=$quantity, supplierId='$supplierId', supplierRef='$supplierRef')"
 }

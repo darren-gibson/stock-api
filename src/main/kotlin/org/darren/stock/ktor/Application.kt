@@ -45,19 +45,21 @@ fun main(args: Array<String>) {
                         override fun now() = LocalDateTime.now()
                     }
                 }
-            }
+            },
         )
     }
-    io.ktor.server.netty.EngineMain.main(args)
+    io.ktor.server.netty.EngineMain
+        .main(args)
 }
-
 
 @OptIn(ExperimentalSerializationApi::class)
 fun Application.module() {
     install(ContentNegotiation) {
-        json(Json {
-            decodeEnumsCaseInsensitive = true
-        })
+        json(
+            Json {
+                decodeEnumsCaseInsensitive = true
+            },
+        )
     }
     install(StatusPages) {
         handleExceptions()
@@ -97,7 +99,10 @@ private fun StatusPagesConfig.handleExceptions() {
     }
 }
 
-private suspend fun respondWithRedirectToTrackedLocation(call: ApplicationCall, locationId: String) {
+private suspend fun respondWithRedirectToTrackedLocation(
+    call: ApplicationCall,
+    locationId: String,
+) {
     val locations by inject<LocationApiClient>(LocationApiClient::class.java)
     try {
         val path = locations.getPath(locationId).reversed()
@@ -113,14 +118,16 @@ private suspend fun respondWithRedirectToTrackedLocation(call: ApplicationCall, 
 @OptIn(ExperimentalSerializationApi::class)
 private fun getMissingFields(cause: Throwable): List<String>? {
     if (cause is MissingFieldException) return cause.missingFields
-    if (cause.cause != null)
+    if (cause.cause != null) {
         return getMissingFields(cause.cause!!)
+    }
     return null
 }
 
 fun getInvalidValues(cause: Throwable): List<String>? {
     if (cause is InvalidValuesException) return cause.fields
-    if (cause.cause != null)
+    if (cause.cause != null) {
         return getInvalidValues(cause.cause!!)
+    }
     return null
 }

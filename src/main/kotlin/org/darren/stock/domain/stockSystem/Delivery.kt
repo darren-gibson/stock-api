@@ -11,12 +11,18 @@ import java.time.LocalDateTime
 
 object Delivery {
     suspend fun StockSystem.delivery(
-        locationId: String, supplierId: String, supplierRef: String, deliveryDate: LocalDateTime, products: List<ProductQuantity>) {
+        locationId: String,
+        supplierId: String,
+        supplierRef: String,
+        deliveryDate: LocalDateTime,
+        products: List<ProductQuantity>,
+    ) {
         locations.ensureLocationsAreTracked(locationId)
-        val deferredList = products.map {
-            val stockPot = getStockPot(locationId, it.productId)
-            delivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate)
-        }
+        val deferredList =
+            products.map {
+                val stockPot = getStockPot(locationId, it.productId)
+                delivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate)
+            }
         deferredList.awaitAll()
         // TODO: What happens if the delivery fails?
     }
@@ -26,7 +32,7 @@ object Delivery {
         quantity: Double,
         supplierId: String,
         supplierRef: String,
-        deliveryDate: LocalDateTime
+        deliveryDate: LocalDateTime,
     ): CompletableDeferred<Reply> {
         val result = CompletableDeferred<Reply>()
         stockPot.send(RecordDelivery(quantity, supplierId, supplierRef, deliveryDate, result))

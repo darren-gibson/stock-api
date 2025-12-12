@@ -10,7 +10,8 @@ class CucumberHelper {
     fun quantity(value: String): Double = value.toDouble()
 
     @ParameterType("(\\d\\d:\\d\\d) on (\\d{4}-\\d\\d-\\d\\d)")
-    fun dateTime(time: String, date: String): LocalDateTime {
-        return LocalDateTime.parse("${date}T$time", ISO_LOCAL_DATE_TIME)
-    }
+    fun dateTime(
+        time: String,
+        date: String,
+    ): LocalDateTime = LocalDateTime.parse("${date}T$time", ISO_LOCAL_DATE_TIME)
 }

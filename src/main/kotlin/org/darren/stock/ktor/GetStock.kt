@@ -28,15 +28,21 @@ object GetStock {
             with(stockLevel) {
                 if (includeChildren) {
                     call.respond(
-                        OK, GetStockResponseDTO(
-                            locationId, productId, quantity, pendingAdjustment, lastUpdated, totalQuantity,
-                            childLocations.map(ChildLocationsDTO::from)
-                        )
+                        OK,
+                        GetStockResponseDTO(
+                            locationId,
+                            productId,
+                            quantity,
+                            pendingAdjustment,
+                            lastUpdated,
+                            totalQuantity,
+                            childLocations.map(ChildLocationsDTO::from),
+                        ),
                     )
                 } else {
                     call.respond(
                         OK,
-                        GetStockResponseDTO(locationId, productId, quantity, pendingAdjustment, lastUpdated)
+                        GetStockResponseDTO(locationId, productId, quantity, pendingAdjustment, lastUpdated),
                     )
                 }
             }
@@ -52,20 +58,26 @@ object GetStock {
         @Serializable(with = DateSerializer::class)
         val lastUpdated: LocalDateTime,
         val totalQuantity: Double? = null,
-        val childLocations: List<ChildLocationsDTO> = emptyList()
+        val childLocations: List<ChildLocationsDTO> = emptyList(),
     )
 
     @Serializable
     data class ChildLocationsDTO(
-        val locationId: String, val quantity: Double? = null, val pendingAdjustment: Double = 0.0, val totalQuantity: Double?,
-        val childLocations: List<ChildLocationsDTO> = emptyList()
+        val locationId: String,
+        val quantity: Double? = null,
+        val pendingAdjustment: Double = 0.0,
+        val totalQuantity: Double?,
+        val childLocations: List<ChildLocationsDTO> = emptyList(),
     ) {
         companion object {
             fun from(stockLevel: StockLevel): ChildLocationsDTO {
                 with(stockLevel) {
                     return ChildLocationsDTO(
-                        locationId, quantity, pendingAdjustment, totalQuantity,
-                        childLocations.map(ChildLocationsDTO::from)
+                        locationId,
+                        quantity,
+                        pendingAdjustment,
+                        totalQuantity,
+                        childLocations.map(ChildLocationsDTO::from),
                     )
                 }
             }

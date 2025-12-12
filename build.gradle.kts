@@ -65,7 +65,7 @@ tasks.register<Exec>("cukedoctor") {
         "-toc",
         "left",
         "-o",
-        "build/docs/stock-api"
+        "build/docs/stock-api",
     )
     project
 }
@@ -86,8 +86,11 @@ spotless {
         targetExclude("build/**/*.kt")
         ktlint("1.5.0").editorConfigOverride(
             mapOf(
-                "ktlint_code_style" to "official"
-            )
+                "ktlint_code_style" to "ktlint_official",
+                "ktlint_standard_no-wildcard-imports" to "disabled",
+                "ktlint_standard_filename" to "disabled",
+                "ktlint_standard_max-line-length" to "disabled",
+            ),
         )
     }
     kotlinGradle {

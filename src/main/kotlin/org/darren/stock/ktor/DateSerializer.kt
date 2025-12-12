@@ -15,7 +15,10 @@ import kotlin.reflect.full.memberProperties
 object DateSerializer : KSerializer<LocalDateTime> {
     private val formatter = DateTimeFormatter.ISO_DATE_TIME
 
-    override fun serialize(encoder: Encoder, value: LocalDateTime) {
+    override fun serialize(
+        encoder: Encoder,
+        value: LocalDateTime,
+    ) {
         encoder.encodeString(value.format(formatter))
     }
 
@@ -32,7 +35,12 @@ object DateSerializer : KSerializer<LocalDateTime> {
     private fun Decoder.collectDebugPath(): String {
         try {
             val reader = (this::class as KClass<Any>).memberProperties.first { it.name == "lexer" }.getter(this)!!
-            return (reader::class as KClass<Any>).memberProperties.first { it.name == "path" }.getter(reader).toString().removePrefix("$.")
+            return (reader::class as KClass<Any>)
+                .memberProperties
+                .first { it.name == "path" }
+                .getter(reader)
+                .toString()
+                .removePrefix("$.")
         } catch (e: Exception) {
             return "Unknown"
         }

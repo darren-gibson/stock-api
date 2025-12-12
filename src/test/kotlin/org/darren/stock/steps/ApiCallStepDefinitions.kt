@@ -21,19 +21,24 @@ class ApiCallStepDefinitions : KoinComponent {
     private val client: HttpClient by inject()
 
     @When("I send a POST request to {string} with the following payload:")
-    fun iSendAPOSTRequestToWithTheFollowingPayload(url: String, payload: String) = runBlocking {
+    fun iSendAPOSTRequestToWithTheFollowingPayload(
+        url: String,
+        payload: String,
+    ) = runBlocking {
         response = sendPostRequest(url, payload.removeAsciiDocs())
     }
 
-    suspend fun sendPostRequest(url: String, payload: String): HttpResponse {
-        return client.post(url) {
+    suspend fun sendPostRequest(
+        url: String,
+        payload: String,
+    ): HttpResponse =
+        client.post(url) {
             contentType(ContentType.Application.Json)
             setBody(payload)
             //            headers {
             //                append(HttpHeaders.Authorization, "Bearer YOUR_ACCESS_TOKEN")
             //            }
         }
-    }
 
     @Then("the API should respond with status code {int}")
     fun theAPIShouldRespondWithStatusCode(expectedStatusCode: Int) {
@@ -41,22 +46,28 @@ class ApiCallStepDefinitions : KoinComponent {
     }
 
     @When("I send a GET request to {string}")
-    fun iSendAGETRequestTo(url: String): HttpResponse = runBlocking {
-        response = client.get(url)
-        return@runBlocking response
-    }
+    fun iSendAGETRequestTo(url: String): HttpResponse =
+        runBlocking {
+            response = client.get(url)
+            return@runBlocking response
+        }
 
     @When("I send a PUT request to {string} with the following payload:")
-    fun iSendAPUTRequestToWithTheFollowingPayload(url: String, payload: String) = runBlocking {
+    fun iSendAPUTRequestToWithTheFollowingPayload(
+        url: String,
+        payload: String,
+    ) = runBlocking {
         response = sendPutRequest(url, payload.removeAsciiDocs())
     }
 
-    private suspend fun sendPutRequest(url: String, payload: String): HttpResponse {
-        return client.post(url) {
+    private suspend fun sendPutRequest(
+        url: String,
+        payload: String,
+    ): HttpResponse =
+        client.post(url) {
             contentType(ContentType.Application.Json)
             setBody(payload)
         }
-    }
 
     @And("the response headers should contain:")
     fun theResponseHeadersShouldContain(expectedHeaders: String) {
@@ -72,13 +83,12 @@ class ApiCallStepDefinitions : KoinComponent {
     }
 
     @And("the response body should contain:")
-    fun theResponseBodyShouldContain(expectedResult: String) = runBlocking {
-        val actualBody = response.bodyAsText()
+    fun theResponseBodyShouldContain(expectedResult: String) =
+        runBlocking {
+            val actualBody = response.bodyAsText()
 
-        assertThat(actualBody, jsonEquals(expectedResult.removeAsciiDocs().ignoreTimestamps()))
-    }
+            assertThat(actualBody, jsonEquals(expectedResult.removeAsciiDocs().ignoreTimestamps()))
+        }
 
-    private fun String.ignoreTimestamps(): String {
-        return this.replace("<timestamp>", "\${json-unit.ignore}")
-    }
+    private fun String.ignoreTimestamps(): String = this.replace("<timestamp>", "\${json-unit.ignore}")
 }

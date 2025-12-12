@@ -6,7 +6,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
 
-class DateTimeHelperStepDefinitions: KoinComponent {
+class DateTimeHelperStepDefinitions : KoinComponent {
     private val dateTimeProvider: TestDateTimeProvider by inject()
 
     @Given("it's {dateTime}")

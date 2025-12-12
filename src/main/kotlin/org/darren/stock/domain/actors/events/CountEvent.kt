@@ -11,12 +11,9 @@ class CountEvent(
     @Serializable(with = DateSerializer::class)
     override val eventDateTime: LocalDateTime,
     val quantity: Double,
-    val reason: StockCountReason
-) :
-    StockPotEvent() {
+    val reason: StockCountReason,
+) : StockPotEvent() {
     override suspend fun apply(state: StockState) = state.copy(quantity = quantity, lastUpdated = eventDateTime)
 
-    override fun toString(): String {
-        return "CountEvent(eventTime=$eventDateTime, quantity=$quantity, reason=$reason)"
-    }
+    override fun toString(): String = "CountEvent(eventTime=$eventDateTime, quantity=$quantity, reason=$reason)"
 }

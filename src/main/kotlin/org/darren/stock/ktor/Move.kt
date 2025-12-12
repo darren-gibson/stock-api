@@ -26,16 +26,24 @@ object Move {
                 with(request) {
                     stockSystem.move(sourceId, destinationLocationId, productId, quantity, reason, movedAt)
                     call.respond(
-                        Created, MoveResponseDTO(
-                            requestId, sourceId, destinationLocationId, productId, quantity, reason, movedAt
-                        )
+                        Created,
+                        MoveResponseDTO(
+                            requestId,
+                            sourceId,
+                            destinationLocationId,
+                            productId,
+                            quantity,
+                            reason,
+                            movedAt,
+                        ),
                     )
                 }
             } catch (e: LocationNotTrackedException) {
-                if (e.locationId == request.destinationLocationId)
+                if (e.locationId == request.destinationLocationId) {
                     call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
-                else
+                } else {
                     throw e
+                }
             }
         }
     }
@@ -47,7 +55,7 @@ object Move {
         val quantity: Double,
         val reason: MovementReason,
         @Serializable(with = DateSerializer::class)
-        val movedAt: LocalDateTime
+        val movedAt: LocalDateTime,
     )
 
     @Serializable
@@ -59,6 +67,6 @@ object Move {
         val quantity: Double,
         val reason: MovementReason,
         @Serializable(with = DateSerializer::class)
-        val movedAt: LocalDateTime
+        val movedAt: LocalDateTime,
     )
 }

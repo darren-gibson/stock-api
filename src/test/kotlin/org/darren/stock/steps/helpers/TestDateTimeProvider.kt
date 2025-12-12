@@ -14,5 +14,6 @@ class TestDateTimeProvider : DateTimeProvider {
     }
 
     fun nowAsString() = asString(now())
+
     fun asString(dateTime: LocalDateTime): String = DateTimeFormatter.ISO_DATE_TIME.format(dateTime)
 }

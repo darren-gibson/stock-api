@@ -15,17 +15,22 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 object GetValue : KoinComponent {
-    suspend fun StockSystem.getValue(locationId: String, productId: String, includeChildren: Boolean): StockLevel {
+    suspend fun StockSystem.getValue(
+        locationId: String,
+        productId: String,
+        includeChildren: Boolean,
+    ): StockLevel {
         val locationApi by inject<LocationApiClient>()
         val allLocations = locationApi.getLocationsHierarchy(locationId, if (includeChildren) null else 1)
 
         val stockPots = getAllStockPotAndAllChildrenForLocation(allLocations, productId)
 
-        val stockCountByLocation = stockPots.entries.associate { sp ->
-            val completable = CompletableDeferred<Reply>()
-            sp.value.send(GetValue(completable))
-            sp.key to completable
-        }
+        val stockCountByLocation =
+            stockPots.entries.associate { sp ->
+                val completable = CompletableDeferred<Reply>()
+                sp.value.send(GetValue(completable))
+                sp.key to completable
+            }
 
         stockCountByLocation.values.awaitAll()
 
@@ -33,31 +38,39 @@ object GetValue : KoinComponent {
     }
 
     private suspend fun convertToStockLevel(
-        location: LocationDTO, productId: String, stockCountByLocation: Map<String, CompletableDeferred<Reply>>
+        location: LocationDTO,
+        productId: String,
+        stockCountByLocation: Map<String, CompletableDeferred<Reply>>,
     ): StockLevel {
-        val state = stockCountByLocation[location.id]?.await()?.getOrThrow() ?: StockState(
-            Location(location.id),
-            productId,
-            null
-        )
+        val state =
+            stockCountByLocation[location.id]?.await()?.getOrThrow() ?: StockState(
+                Location(location.id),
+                productId,
+                null,
+            )
 
-        return StockLevel(state, location.children.map {
-            convertToStockLevel(it, productId, stockCountByLocation)
-        })
+        return StockLevel(
+            state,
+            location.children.map {
+                convertToStockLevel(it, productId, stockCountByLocation)
+            },
+        )
     }
 
     private fun StockSystem.getAllStockPotAndAllChildrenForLocation(
         allLocations: LocationDTO,
-        productId: String
+        productId: String,
     ): Map<String, SendChannel<StockPotMessages>> {
         val locationSet = getTrackedLocationIds(allLocations).toSet()
 
         return getAllActiveStockPotsFor(locationSet, productId)
     }
 
-    private fun getTrackedLocationIds(location: LocationDTO): Sequence<String> = sequence {
-        if (location.isTracked)
-            yield(location.id)
-        yieldAll(location.children.flatMap(::getTrackedLocationIds))
-    }
+    private fun getTrackedLocationIds(location: LocationDTO): Sequence<String> =
+        sequence {
+            if (location.isTracked) {
+                yield(location.id)
+            }
+            yieldAll(location.children.flatMap(::getTrackedLocationIds))
+        }
 }

@@ -8,7 +8,12 @@ import java.time.LocalDateTime
 
 object Move {
     suspend fun StockSystem.move(
-        from: String, to: String, product: String, quantity: Double, reason: MovementReason, movedAt: LocalDateTime
+        from: String,
+        to: String,
+        product: String,
+        quantity: Double,
+        reason: MovementReason,
+        movedAt: LocalDateTime,
     ) {
         locations.ensureLocationsAreTracked(from, to)
         val fromPot = getStockPot(from, product)

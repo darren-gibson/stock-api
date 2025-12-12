@@ -32,34 +32,38 @@ class ServiceLifecycleSteps : KoinComponent {
     }
 
     @Before
-    fun beforeAllScenarios() = runBlocking {
-        testApp = buildKtorTestApp()
-        val client = testApp.createClient {
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                })
+    fun beforeAllScenarios() =
+        runBlocking {
+            testApp = buildKtorTestApp()
+            val client =
+                testApp.createClient {
+                    install(ContentNegotiation) {
+                        json(
+                            Json {
+                                ignoreUnknownKeys = true
+                            },
+                        )
+                    }
+                }
+
+            startKoin {
+                modules(
+                    module { single { client } },
+                    module { single<StockEventRepository> { InMemoryStockEventRepository() } },
+                    module { single { LocationApiClient(locationHost) } },
+                    module { single<StockSystem> { StockSystem() } },
+                    module { single { testApp.client.engine } },
+                    module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
+                    module { single { ApiCallStepDefinitions() } },
+                    module { single { TestDateTimeProvider() } },
+                    module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
+                )
             }
+            testApp.start()
         }
 
-        startKoin {
-            modules(
-                module { single { client } },
-                module { single<StockEventRepository> { InMemoryStockEventRepository() } },
-                module { single { LocationApiClient(locationHost) } },
-                module { single<StockSystem> { StockSystem() } },
-                module { single { testApp.client.engine } },
-                module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
-                module { single { ApiCallStepDefinitions() } },
-                module { single { TestDateTimeProvider() } },
-                module { single<DateTimeProvider> { get<TestDateTimeProvider>() } }
-            )
-        }
-        testApp.start()
-    }
-
-    private fun buildKtorTestApp(): TestApplication {
-        return TestApplication {
+    private fun buildKtorTestApp(): TestApplication =
+        TestApplication {
             application { module() }
 
             externalServices {
@@ -72,7 +76,6 @@ class ServiceLifecycleSteps : KoinComponent {
                 }
             }
         }
-    }
 
     var getLocationByIdResponder: suspend (call: RoutingCall) -> Unit =
         { logger.warn { "getLocationByIdResponder not set" } }
@@ -83,17 +86,19 @@ class ServiceLifecycleSteps : KoinComponent {
     var getPathResponder: suspend (call: RoutingCall) -> Unit =
         { logger.warn { "getPathResponder not set" } }
 
-
     @Given("the service is running")
-    fun theServiceIsRunning() = runBlocking {
-        assertTrue(this@ServiceLifecycleSteps::testApp.isInitialized)
-        testApp.start()
-    }
+    fun theServiceIsRunning() =
+        runBlocking {
+            assertTrue(this@ServiceLifecycleSteps::testApp.isInitialized)
+            testApp.start()
+        }
 
     @After
-    fun shutdownTestServerAfterScenario() = runBlocking {
-        if (this@ServiceLifecycleSteps::testApp.isInitialized)
-            testApp.stop()
-        stopKoin()
-    }
+    fun shutdownTestServerAfterScenario() =
+        runBlocking {
+            if (this@ServiceLifecycleSteps::testApp.isInitialized) {
+                testApp.stop()
+            }
+            stopKoin()
+        }
 }

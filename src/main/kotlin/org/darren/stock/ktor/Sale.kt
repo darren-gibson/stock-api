@@ -27,8 +27,9 @@ object Sale {
 
     @Serializable
     private data class SaleRequestDTO(
-        val requestId: String, val quantity: Double,
-        @Serializable(with = DateSerializer::class) val soldAt: LocalDateTime
+        val requestId: String,
+        val quantity: Double,
+        @Serializable(with = DateSerializer::class) val soldAt: LocalDateTime,
     )
 
     @Serializable
@@ -38,6 +39,6 @@ object Sale {
         val productId: String,
         val quantitySold: Double,
         @Serializable(with = DateSerializer::class)
-        val soldAt: LocalDateTime
+        val soldAt: LocalDateTime,
     )
 }

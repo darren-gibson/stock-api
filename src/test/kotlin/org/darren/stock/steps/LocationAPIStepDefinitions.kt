@@ -36,17 +36,22 @@ class LocationAPIStepDefinitions : KoinComponent {
     @Given("the following tracked locations exist:")
     @Given("the following locations exist:")
     @Given("the following tracked locations are defined in the Location API:")
-    fun theFollowingLocationsAreDefinedInTheLocationAPI(locationsToDefine: List<SimpleLocation>) = runBlocking {
-        locations.putAll(locationsToDefine.map { it.id to it })
-    }
+    fun theFollowingLocationsAreDefinedInTheLocationAPI(locationsToDefine: List<SimpleLocation>) =
+        runBlocking {
+            locations.putAll(locationsToDefine.map { it.id to it })
+        }
 
     @Given("{string} is a store")
     @Given("{string} is a Distribution Centre")
-    fun is_a_store(locationId: String): Unit = runBlocking {
-        createLocationForTest(locationId, "Shop")
-    }
+    fun is_a_store(locationId: String): Unit =
+        runBlocking {
+            createLocationForTest(locationId, "Shop")
+        }
 
-    private fun createLocationForTest(locationId: String, role: String) {
+    private fun createLocationForTest(
+        locationId: String,
+        role: String,
+    ) {
         locations[locationId] = SimpleLocation(locationId, listOf(role, trackedInventoryRoleName))
     }
 
@@ -80,8 +85,9 @@ class LocationAPIStepDefinitions : KoinComponent {
 
             logger.debug { "Returning $bodyText, with cache=${getCacheControlForLocation(locationId)}" }
             call.respondText(bodyText, ContentType.Application.Json)
-        } else
+        } else {
             call.respond(HttpStatusCode.NotFound)
+        }
     }
 
     private suspend fun respondToGetChildrenByIdCall(call: RoutingCall) {
@@ -93,8 +99,9 @@ class LocationAPIStepDefinitions : KoinComponent {
             val bodyText = toLocation(location, !call.queryParameters.contains("depth"))
             logger.debug { "Returning $bodyText, with cache=${getCacheControlForLocation(locationId)}" }
             call.respondText(bodyText, ContentType.Application.Json)
-        } else
+        } else {
             call.respond(HttpStatusCode.NotFound)
+        }
     }
 
     private fun getCacheControlForLocation(locationId: String): CacheControl {
@@ -108,8 +115,10 @@ class LocationAPIStepDefinitions : KoinComponent {
         }
     }
 
-    private fun toLocation(loc: SimpleLocation, includeChildren: Boolean = true) =
-        """{
+    private fun toLocation(
+        loc: SimpleLocation,
+        includeChildren: Boolean = true,
+    ) = """{
             "id": "${loc.id}",
             "name": "${loc.id}",
             "roles": [${loc.roles.joinToString(separator = ",") { "\"${it}\"" }}],
@@ -124,24 +133,35 @@ class LocationAPIStepDefinitions : KoinComponent {
             "roles": [${loc.roles.joinToString(separator = ",") { "\"${it}\"" }}]
         }"""
 
-    private fun childLocations(loc: SimpleLocation): String {
-        return locations.filter { it.value.parent == loc.id }
-            .map { toLocation(it.value) }.joinToString(", ")
-    }
+    private fun childLocations(loc: SimpleLocation): String =
+        locations
+            .filter { it.value.parent == loc.id }
+            .map { toLocation(it.value) }
+            .joinToString(", ")
 
     @DataTableType
     fun locationEntryTransformer(row: Map<String?, String>): SimpleLocation {
-        val roles = if (row.containsKey("Roles"))
-            row["Roles"]?.split(",")?.map { it.trim() } ?: emptyList()
-        else listOf(trackedInventoryRoleName)
+        val roles =
+            if (row.containsKey("Roles")) {
+                row["Roles"]?.split(",")?.map { it.trim() } ?: emptyList()
+            } else {
+                listOf(trackedInventoryRoleName)
+            }
 
         return SimpleLocation(row["Location Id"]!!, roles, row["Parent Location Id"])
     }
 
-    data class SimpleLocation(val id: String, val roles: List<String> = emptyList(), val parent: String? = null)
+    data class SimpleLocation(
+        val id: String,
+        val roles: List<String> = emptyList(),
+        val parent: String? = null,
+    )
 
     @Given("{string} is a {string} location")
-    fun isALocation(locationId: String, role: String) {
+    fun isALocation(
+        locationId: String,
+        role: String,
+    ) {
         locations[locationId] = SimpleLocation(locationId, listOf(role))
     }
 
@@ -151,14 +171,17 @@ class LocationAPIStepDefinitions : KoinComponent {
             listOf(
                 SimpleLocation(
                     locationId,
-                    listOf("Zone", trackedInventoryRoleName)
-                )
-            )
+                    listOf("Zone", trackedInventoryRoleName),
+                ),
+            ),
         )
     }
 
     @And("{string} is moved to {string}")
-    fun isMovedTo(locationId: String, newParentLocationId: String) {
+    fun isMovedTo(
+        locationId: String,
+        newParentLocationId: String,
+    ) {
         locations[locationId] = locations[locationId]!!.copy(parent = newParentLocationId)
     }
 
@@ -169,11 +192,12 @@ class LocationAPIStepDefinitions : KoinComponent {
     }
 
     @DataTableType
-    fun cacheControlSettingTransformer(row: Map<String?, String>): CacheControlSetting {
-        return CacheControlSetting(row["Location Id"]!!, row["Cache-Control"]!!)
-    }
+    fun cacheControlSettingTransformer(row: Map<String?, String>): CacheControlSetting = CacheControlSetting(row["Location Id"]!!, row["Cache-Control"]!!)
 
-    data class CacheControlSetting(val id: String, val header: String)
+    data class CacheControlSetting(
+        val id: String,
+        val header: String,
+    )
 
     @Then("the Location API should have been called no more than once for {string}")
     fun theLocationAPIShouldHaveBeenCalledNoMoreThanOnceFor(locationId: String) {

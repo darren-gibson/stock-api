@@ -14,20 +14,26 @@ class StockSystem : KoinComponent {
     val locations by inject<LocationApiClient>()
     private val stockPots = mutableMapOf<Pair<String, String>, SendChannel<StockPotMessages>>()
 
-    fun getStockPot(locationId: String, productId: String): SendChannel<StockPotMessages> {
-        return stockPots.getOrPut(locationId to productId) {
+    fun getStockPot(
+        locationId: String,
+        productId: String,
+    ): SendChannel<StockPotMessages> =
+        stockPots.getOrPut(locationId to productId) {
             createStockPotActor(locationId, productId)
         }
-    }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun createStockPotActor(locationId: String, productId: String) =
-        GlobalScope.stockPotActor(locationId, productId)
+    fun createStockPotActor(
+        locationId: String,
+        productId: String,
+    ) = GlobalScope.stockPotActor(locationId, productId)
 
     // TODO: Need to consider how to handle the case where a stock pot is no longer needed
     // TODO: Need to reduce to a number of stock pots that are actually needed, what about Stores with child locations of aisles, modules, shelves, etc, the numbers will soon mount up
-    fun getAllActiveStockPotsFor(locationIds: Set<String>, productId: String):
-            Map<String, SendChannel<StockPotMessages>>{
+    fun getAllActiveStockPotsFor(
+        locationIds: Set<String>,
+        productId: String,
+    ): Map<String, SendChannel<StockPotMessages>> {
         val allPossible = locationIds.map { loc -> loc to productId }.toSet()
         val toCreate = allPossible - stockPots.keys
 

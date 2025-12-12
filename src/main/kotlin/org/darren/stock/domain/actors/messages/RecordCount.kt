@@ -11,13 +11,9 @@ class RecordCount(
     private val eventTime: LocalDateTime,
     val quantity: Double,
     val reason: StockCountReason,
-    result: CompletableDeferred<Reply>
-) :
-    StockPotMessages(result) {
-
+    result: CompletableDeferred<Reply>,
+) : StockPotMessages(result) {
     override suspend fun validate(state: StockState) = CountEvent(eventTime, quantity, reason)
 
-    override fun toString(): String {
-        return "RecordCount(eventTime=$eventTime, quantity=$quantity, reason=$reason)"
-    }
+    override fun toString(): String = "RecordCount(eventTime=$eventTime, quantity=$quantity, reason=$reason)"
 }

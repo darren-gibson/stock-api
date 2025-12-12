@@ -13,10 +13,13 @@ object Status {
     }
 
     @Serializable
-    private data class StatusDTO(val status: StatusCode) {
+    private data class StatusDTO(
+        val status: StatusCode,
+    ) {
         enum class StatusCode {
-            Healthy
+            Healthy,
         }
+
         companion object {
             fun healthy() = StatusDTO(StatusCode.Healthy)
         }

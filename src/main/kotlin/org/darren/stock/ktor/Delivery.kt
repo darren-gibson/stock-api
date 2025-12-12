@@ -36,9 +36,10 @@ object Delivery {
     )
 
     @Serializable
-    data class ProductDTO(val productId: String, val quantity: Double)
+    data class ProductDTO(
+        val productId: String,
+        val quantity: Double,
+    )
 
-    private fun List<ProductDTO>.productQuantity(): List<ProductQuantity> {
-        return this.map { ProductQuantity(it.productId, it.quantity) }
-    }
+    private fun List<ProductDTO>.productQuantity(): List<ProductQuantity> = this.map { ProductQuantity(it.productId, it.quantity) }
 }

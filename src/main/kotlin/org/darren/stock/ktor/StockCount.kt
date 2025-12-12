@@ -21,14 +21,13 @@ object StockCount {
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!
 
-
             val request = call.receive<StockCountRequestDTO>()
             locations.ensureValidLocation(locationId)
             with(request) {
                 stockSystem.value.count(locationId, productId, quantity, reason, countedAt)
                 call.respond(
                     Created,
-                    StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt)
+                    StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt),
                 )
             }
         }
@@ -39,7 +38,7 @@ object StockCount {
         val requestId: String,
         val reason: StockCountReason,
         val quantity: Double,
-        @Serializable(with = DateSerializer::class) val countedAt: LocalDateTime
+        @Serializable(with = DateSerializer::class) val countedAt: LocalDateTime,
     )
 
     @Serializable
@@ -50,6 +49,6 @@ object StockCount {
         val quantity: Double,
         val reason: StockCountReason,
         @Serializable(with = DateSerializer::class)
-        val countedAt: LocalDateTime
+        val countedAt: LocalDateTime,
     )
 }

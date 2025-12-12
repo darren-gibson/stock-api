@@ -7,5 +7,5 @@ data class StockState(
     val productId: String,
     val quantity: Double? = 0.0,
     val pendingAdjustment: Double = 0.0,
-    val lastUpdated: LocalDateTime = LocalDateTime.MIN
+    val lastUpdated: LocalDateTime = LocalDateTime.MIN,
 )

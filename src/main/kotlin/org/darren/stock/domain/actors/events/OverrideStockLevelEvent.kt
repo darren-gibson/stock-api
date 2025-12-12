@@ -7,11 +7,10 @@ import java.time.LocalDateTime
 
 @Serializable
 class OverrideStockLevelEvent(
-    val quantity: Double, val pendingAdjustment: Double,
+    val quantity: Double,
+    val pendingAdjustment: Double,
     @Serializable(with = DateSerializer::class)
-    override val eventDateTime: LocalDateTime
+    override val eventDateTime: LocalDateTime,
 ) : StockPotEvent() {
-    override suspend fun apply(state: StockState): StockState {
-        return state.copy(quantity = quantity, pendingAdjustment = pendingAdjustment)
-    }
+    override suspend fun apply(state: StockState): StockState = state.copy(quantity = quantity, pendingAdjustment = pendingAdjustment)
 }

@@ -7,7 +7,11 @@ import org.darren.stock.domain.actors.messages.RecordCount
 import java.time.LocalDateTime
 
 suspend fun StockSystem.count(
-    location: String, product: String, quantity: Double, reason: StockCountReason, eventTime: LocalDateTime
+    location: String,
+    product: String,
+    quantity: Double,
+    reason: StockCountReason,
+    eventTime: LocalDateTime,
 ) {
     val stockPot = getStockPot(location, product)
     val result = CompletableDeferred<Reply>()
