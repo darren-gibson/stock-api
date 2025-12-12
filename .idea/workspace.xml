@@ -8,10 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Enable support for Untracked locations on the Sale API">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/Location.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/Location.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,6 +165,7 @@
     "Gradle.RunSuiteTestClass.executor": "Run",
     "Gradle.Tests in 'com.darren.stock'.executor": "Run",
     "Gradle.Tests in 'org.darren.stock'.executor": "Run",
+    "Gradle.Tests in 'stock-api.test'.executor": "Run",
     "Gradle.simple-stock [buildFromAvro].executor": "Run",
     "Gradle.simple-stock [run].executor": "Run",
     "Gradle.simple-stock [testClasses].executor": "Run",
@@ -236,7 +235,7 @@
       <command value="gradle test" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.RunSuiteTestClass">
+  <component name="RunManager" selected="Gradle.Tests in 'stock-api.test'">
     <configuration name="Feature: 2. Movement Contract" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
       <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/2. Movement Contract.feature" />
@@ -295,26 +294,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Fail to record a stock movement with an untracked source location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Move/2. Movement Contract.feature" />
-      <option name="GLUE" value="org.darren.stock.steps" />
-      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
-      <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Fail to record a stock movement with an untracked source location$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Fail to record a stock movement with an untracked source location$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Fail to record a stock movement with an untracked source location" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.cucumber.core.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="RunSuiteTestClass" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -339,20 +318,42 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="Tests in 'stock-api.test'" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Cucumber Java.Feature: 2. Sale Contract" />
       <item itemvalue="Cucumber Java.Scenario: Fail to record a stock movement with an untracked destination location and no tracked parent" />
-      <item itemvalue="Cucumber Java.Scenario: Fail to record a stock movement with an untracked source location" />
       <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
+      <item itemvalue="Gradle.Tests in 'stock-api.test'" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.Tests in 'stock-api.test'" />
         <item itemvalue="Gradle.RunSuiteTestClass" />
         <item itemvalue="Cucumber Java.Feature: 2. Sale Contract" />
         <item itemvalue="Cucumber Java.Feature: 2. Movement Contract" />
         <item itemvalue="Cucumber Java.Scenario: Fail to record a stock movement with an untracked destination location and no tracked parent" />
-        <item itemvalue="Cucumber Java.Scenario: Fail to record a stock movement with an untracked source location" />
       </list>
     </recent_temporary>
   </component>
@@ -364,14 +365,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732349302998</updated>
-    </task>
-    <task id="LOCAL-00031" summary="Refactor again to move the StockSystem facade to use extension methods.">
-      <option name="closed" value="true" />
-      <created>1733751179696</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1733751179696</updated>
     </task>
     <task id="LOCAL-00032" summary="Refactor again to move the StockSystem facade to use extension methods.">
       <option name="closed" value="true" />
@@ -757,7 +750,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736085745619</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="Enable support for Untracked locations on the Sale API">
+      <option name="closed" value="true" />
+      <created>1736085798660</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1736085798661</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -883,5 +884,13 @@
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>
