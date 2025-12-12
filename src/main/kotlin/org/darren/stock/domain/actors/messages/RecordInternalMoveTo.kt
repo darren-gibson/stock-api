@@ -17,6 +17,5 @@ internal class RecordInternalMoveTo(
 ) : StockPotMessages(result) {
     override suspend fun validate(state: StockState) = InternalMoveToEvent(productId, quantity, from, reason, eventTime)
 
-    override fun toString(): String =
-        "RecordInternalMoveTo(eventTime=$eventTime, productId='$productId', quantity=$quantity, from='$from', reason=$reason)"
+    override fun toString(): String = "RecordInternalMoveTo(eventTime=$eventTime, productId='$productId', quantity=$quantity, from='$from', reason=$reason)"
 }

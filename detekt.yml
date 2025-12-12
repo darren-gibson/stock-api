@@ -21,6 +21,7 @@ style:
     excludePackageStatements: true
     excludeImportStatements: true
     excludeCommentStatements: false
+    excludes: ['**/actors/messages/**', '**/actors/events/**', '**/steps/**']
   ForbiddenComment:
     active: false
   MagicNumber:

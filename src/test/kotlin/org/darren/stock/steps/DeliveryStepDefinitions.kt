@@ -42,8 +42,7 @@ class DeliveryStepDefinitions : KoinComponent {
     }
 
     @DataTableType
-    fun productQuantityTransformer(row: Map<String?, String>): ProductQuantity =
-        ProductQuantity(row["Product ID"]!!, row["Quantity"]!!.toDouble())
+    fun productQuantityTransformer(row: Map<String?, String>): ProductQuantity = ProductQuantity(row["Product ID"]!!, row["Quantity"]!!.toDouble())
 
     data class ProductQuantity(
         val productId: String,
