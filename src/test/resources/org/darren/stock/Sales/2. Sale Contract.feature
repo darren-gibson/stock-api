@@ -34,127 +34,128 @@ Feature: Sale Endpoint: Contract
 
   *OpenAPI Specification*, Click here.
   [%collapsible]
-    ====
-    [source, yml]
-    -----
-    openapi: 3.0.3
-    info:
-      title: Stock API
-      description: API to manage stock levels, including the recording of product sales.
-      version: 1.0.0
-    paths:
-      /locations/{locationId}/products/{productId}/sales:
-        post:
-          summary: Record a sale of a product at a specific location
-          description: Records the sale of a product at a given location and updates the stock level accordingly.
-          operationId: recordSale
-          parameters:
-            - name: locationId
-              in: path
-              required: true
-              description: The unique identifier of the location where the sale occurred.
-              schema:
-                type: string
-                example: Store-001
-            - name: productId
-              in: path
-              required: true
-              description: The unique identifier of the product being sold.
-              schema:
-                type: string
-                example: Product-123
-          requestBody:
+  ====
+  [source, yaml]
+  -----
+  openapi: 3.0.3
+  info:
+    title: Stock API
+    description: API to manage stock levels, including the recording of product sales.
+    version: 1.0.0
+  paths:
+    /locations/{locationId}/products/{productId}/sales:
+      post:
+        summary: Record a sale of a product at a specific location
+        description: Records the sale of a product at a given location and updates the stock level accordingly.
+        operationId: recordSale
+        parameters:
+          - name: locationId
+            in: path
             required: true
-            description: Details of the sale to be recorded.
+            description: The unique identifier of the location where the sale occurred.
+            schema:
+              type: string
+              example: Store-001
+          - name: productId
+            in: path
+            required: true
+            description: The unique identifier of the product being sold.
+            schema:
+              type: string
+              example: Product-123
+        requestBody:
+          required: true
+          description: Details of the sale to be recorded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - requestId
+                  - quantity
+                  - soldAt
+                properties:
+                  requestId:
+                    type: string
+                    description: A unique identifier for the sale request to ensure idempotency.
+                    example: sale-001-12345
+                  quantity:
+                    type: number
+                    description: The quantity of the product being sold.
+                    minimum: 0.0001
+                    example: 5.00
+                  soldAt:
+                    type: string
+                    format: date-time
+                    description: The timestamp of when the sale occurred.
+                    example: "2024-12-07T12:00:00Z"
+        responses:
+          '201':
+            description: Sale recorded successfully.
             content:
               application/json:
                 schema:
                   type: object
-                  required:
-                    - requestId
-                    - quantity
-                    - soldAt
                   properties:
                     requestId:
                       type: string
-                      description: A unique identifier for the sale request to ensure idempotency.
                       example: sale-001-12345
-                    quantity:
+                    locationId:
+                      type: string
+                      example: Store-001
+                    productId:
+                      type: string
+                      example: Product-123
+                    quantitySold:
                       type: number
-                      description: The quantity of the product being sold.
-                      minimum: 0.0001
-                      example: 5.00
+                      example: 5.0
                     soldAt:
                       type: string
                       format: date-time
-                      description: The timestamp of when the sale occurred.
                       example: "2024-12-07T12:00:00Z"
-          responses:
-            '201':
-              description: Sale recorded successfully.
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      requestId:
-                        type: string
-                        example: sale-001-12345
-                      locationId:
-                        type: string
-                        example: Store-001
-                      productId:
-                        type: string
-                        example: Product-123
-                      quantitySold:
-                        type: number
-                        example: 5.0
-                      soldAt:
-                        type: string
-                        format: date-time
-                        example: "2024-12-07T12:00:00Z"
-            '400':
-              description: Invalid request or insufficient stock.
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      status:
-                        type: string
-                        enum: [InvalidRequest, InsufficientStock]
-                        example: InsufficientStock
-            '404':
-              description: Product or location not found.
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      status:
-                        type: string
-                        enum: [LocationNotFound, ProductNotFound]
-                        example: LocationNotFound
-            '409':
-              description: Sale at this Location is not supported.
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      status:
-                        type: string
-                        enum: [LocationNotTracked]
-                        example: LocationNotTracked
-          security:
-            - bearerAuth: []
-    components:
-      securitySchemes:
-        bearerAuth:
-          type: http
-          scheme: bearer
-          bearerFormat: JWT
-    ====
+          '400':
+            description: Invalid request or insufficient stock.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      enum: [InvalidRequest, InsufficientStock]
+                      example: InsufficientStock
+          '404':
+            description: Product or location not found.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      enum: [LocationNotFound, ProductNotFound]
+                      example: LocationNotFound
+          '409':
+            description: Sale at this Location is not supported.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      enum: [LocationNotTracked]
+                      example: LocationNotTracked
+        security:
+          - bearerAuth: []
+  components:
+    securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+  -----
+  ====
 
   Background:
 #    Given the API is authenticated with a valid bearer token
