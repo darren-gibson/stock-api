@@ -4,6 +4,8 @@ plugins {
     kotlin("jvm") version "2.2.21"
     kotlin("plugin.serialization") version "2.2.21"
     id("io.ktor.plugin") version "3.3.3"
+    id("com.diffplug.spotless") version "7.0.0.BETA4"
+    id("io.gitlab.arturbosch.detekt") version "1.23.7"
 }
 
 group = "org.darren"
@@ -46,7 +48,6 @@ dependencies {
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
 }
 
-
 tasks.test {
     useJUnitPlatform()
 }
@@ -75,9 +76,32 @@ application {
     mainClass = "org.darren.stock.ktor.ApplicationKt"
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
 kotlin {
     jvmToolchain(23)
+}
+
+spotless {
+    kotlin {
+        target("**/*.kt")
+        targetExclude("build/**/*.kt")
+        ktlint("1.5.0").editorConfigOverride(
+            mapOf(
+                "ktlint_code_style" to "official"
+            )
+        )
+    }
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint("1.5.0")
+    }
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom("$projectDir/detekt.yml")
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    jvmTarget = "21"
 }

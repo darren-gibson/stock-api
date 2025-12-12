@@ -100,7 +100,13 @@ When adding a feature/endpoints:
 
 - Prefer concise, intention-revealing names.
 - Keep DTO fields aligned with JSON field names.
-- Keep files small and focused; avoid “god” endpoint files.
+- Keep files small and focused; avoid "god" endpoint files.
+
+## Code quality tools
+
+- **Spotless with ktlint**: Automated code formatting enforcing official Kotlin style (`./gradlew spotlessApply` to format, `./gradlew spotlessCheck` to verify)
+- **Detekt**: Static code analysis for quality checks (`./gradlew detekt`)
+- Both tools are configured in `build.gradle.kts` with project-specific rules in `detekt.yml`
 
 ## Ask before changing (important)
 
@@ -126,8 +132,8 @@ When unsure about domain behavior, ask for:
 
 These are not required for new code generation, but are worth considering:
 
-- Add automated formatting/linting (e.g., `ktlint` or `spotless`) and/or static analysis (`detekt`) to enforce the existing style consistently.
-- Remove duplicate `tasks.test { useJUnitPlatform() }` block in `build.gradle.kts`.
+- ~~Add automated formatting/linting (e.g., `ktlint` or `spotless`) and/or static analysis (`detekt`) to enforce the existing style consistently.~~ **DONE**: Added Spotless with ktlint and detekt
+- ~~Remove duplicate `tasks.test { useJUnitPlatform() }` block in `build.gradle.kts`.~~ **DONE**
 - Consider extracting Koin modules from `main()` into dedicated files for clearer composition/testing.
 - Address concurrency TODOs in `StockSystem` (thread safety + lifecycle of stock pots) and remove `GlobalScope` usage if feasible.
 - Consider making route path conventions consistent (e.g., `Move` route path segmenting vs other endpoints) if clients allow.
