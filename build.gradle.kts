@@ -1,8 +1,8 @@
 @file:Suppress("LocalVariableName")
 
 plugins {
-    kotlin("jvm") version "2.1.0"
-    kotlin("plugin.serialization") version "2.1.0"
+    kotlin("jvm") version "2.2.21"
+    kotlin("plugin.serialization") version "2.2.21"
     id("io.ktor.plugin") version "3.3.3"
 }
 
@@ -23,27 +23,27 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:3.3.3")
     implementation("io.ktor:ktor-client-content-negotiation:3.3.3")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     implementation("io.insert-koin:koin-core:4.1.1")
     implementation("io.insert-koin:koin-ktor:4.1.1")
 
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.11")
-    implementation("ch.qos.logback:logback-classic:1.5.16")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
+    implementation("ch.qos.logback:logback-classic:1.5.22")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.4")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.4")
-    testImplementation("io.cucumber:cucumber-java:7.21.0")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.21.0")
+    testImplementation("io.cucumber:cucumber-java:7.33.0")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.33.0")
     testImplementation("org.junit.platform:junit-platform-suite:1.11.4")
     testImplementation("io.ktor:ktor-server-test-host-jvm:3.3.3")
     testImplementation("io.ktor:ktor-client-mock:3.3.3")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.1.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.21")
     testImplementation("io.insert-koin:koin-test:4.1.1")
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
     testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
 }
 
 
