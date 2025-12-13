@@ -34,7 +34,7 @@ fun Route.requiresAuth(
         val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
 
         // Authenticate
-        val principal = call.authenticate(jwtConfig) ?: return@intercept finish()
+        if (call.authenticate(jwtConfig) == null) return@intercept finish()
 
         // Authorize
         val locationId = locationParam?.let { call.parameters[it] }
