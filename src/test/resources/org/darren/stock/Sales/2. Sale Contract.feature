@@ -157,9 +157,9 @@ Feature: Sale Endpoint: Contract
   -----
   ====
 
-  Background:
+Background:
 #    Given the API is authenticated with a valid bearer token
-    And it's 12:00 on 2024-12-07
+    Given it's 12:00 on 2024-12-07
     And the following locations exist:
       | Location Id | Parent Location Id | Roles                    |
       | Store-001   |                    | TrackedInventoryLocation |
