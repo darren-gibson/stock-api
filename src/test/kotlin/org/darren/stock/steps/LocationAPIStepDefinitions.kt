@@ -43,6 +43,7 @@ class LocationAPIStepDefinitions : KoinComponent {
 
     @Given("{string} is a store")
     @Given("{string} is a Distribution Centre")
+    @Given("{string} is a tracked location")
     fun is_a_store(locationId: String): Unit =
         runBlocking {
             createLocationForTest(locationId, "Shop")

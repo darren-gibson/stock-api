@@ -14,6 +14,7 @@ import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.auth.JwtConfig
 import org.darren.stock.ktor.module
 import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.darren.stock.steps.helpers.TestDateTimeProvider
@@ -34,6 +35,16 @@ class ServiceLifecycleSteps : KoinComponent {
     @Before
     fun beforeAllScenarios() =
         runBlocking {
+            // Set default System Administrator token for all tests
+            // Individual scenarios can override by calling authentication step definitions
+            val defaultToken =
+                AuthenticationSteps.generateToken(
+                    sub = "test-admin",
+                    name = "Test Administrator",
+                    job = "System Administrator",
+                )
+            TestContext.setAuthorizationToken(defaultToken)
+
             testApp = buildKtorTestApp()
             val client =
                 testApp.createClient {
@@ -57,6 +68,15 @@ class ServiceLifecycleSteps : KoinComponent {
                     module { single { ApiCallStepDefinitions() } },
                     module { single { TestDateTimeProvider() } },
                     module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
+                    module {
+                        single {
+                            JwtConfig(
+                                publicKey = AuthenticationSteps.getPublicKey(),
+                                issuer = "https://identity-provider.example.com",
+                                audience = "stock-api",
+                            )
+                        }
+                    },
                 )
             }
             testApp.start()

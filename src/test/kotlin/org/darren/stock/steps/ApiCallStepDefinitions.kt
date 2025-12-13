@@ -35,9 +35,11 @@ class ApiCallStepDefinitions : KoinComponent {
         client.post(url) {
             contentType(ContentType.Application.Json)
             setBody(payload)
-            //            headers {
-            //                append(HttpHeaders.Authorization, "Bearer YOUR_ACCESS_TOKEN")
-            //            }
+            TestContext.getAuthorizationToken()?.let { token ->
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                }
+            }
         }
 
     @Then("the API should respond with status code {int}")
@@ -47,6 +49,20 @@ class ApiCallStepDefinitions : KoinComponent {
 
     @When("I send a GET request to {string}")
     fun iSendAGETRequestTo(url: String): HttpResponse =
+        runBlocking {
+            response =
+                client.get(url) {
+                    TestContext.getAuthorizationToken()?.let { token ->
+                        headers {
+                            append(HttpHeaders.Authorization, "Bearer $token")
+                        }
+                    }
+                }
+            return@runBlocking response
+        }
+
+    @When("I send a GET request to {string} without authentication")
+    fun iSendAGETRequestToWithoutAuthentication(url: String): HttpResponse =
         runBlocking {
             response = client.get(url)
             return@runBlocking response
@@ -67,6 +83,11 @@ class ApiCallStepDefinitions : KoinComponent {
         client.post(url) {
             contentType(ContentType.Application.Json)
             setBody(payload)
+            TestContext.getAuthorizationToken()?.let { token ->
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                }
+            }
         }
 
     @And("the response headers should contain:")

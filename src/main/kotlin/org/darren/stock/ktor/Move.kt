@@ -11,15 +11,25 @@ import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.stockSystem.Move.recordMovement
 import org.darren.stock.domain.stockSystem.MoveCommand
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.auth.JwtConfig
+import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.authenticate
+import org.darren.stock.ktor.auth.authorize
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Move {
     fun Routing.moveEndpoint() {
         post("/locations/{sourceLocationId}/{productId}/movements") {
-            val stockSystem by inject<StockSystem>(StockSystem::class.java)
+            val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
+            if (call.authenticate(jwtConfig) == null) return@post
+
             val sourceId = call.parameters["sourceLocationId"]!!
             val productId = call.parameters["productId"]!!
+
+            if (!call.authorize(Permission("stock", "movement", "write"), sourceId)) return@post
+
+            val stockSystem by inject<StockSystem>(StockSystem::class.java)
 
             val request = call.receive<MoveRequestDTO>()
 

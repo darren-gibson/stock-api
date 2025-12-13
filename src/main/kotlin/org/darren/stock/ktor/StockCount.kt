@@ -9,16 +9,26 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockCountReason
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.domain.stockSystem.count
+import org.darren.stock.ktor.auth.JwtConfig
+import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.authenticate
+import org.darren.stock.ktor.auth.authorize
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object StockCount {
     fun Routing.stockCountEndpoint() {
         post("/locations/{locationId}/products/{productId}/counts") {
-            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-            val stockSystem by inject<StockSystem>(StockSystem::class.java)
+            val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
+            if (call.authenticate(jwtConfig) == null) return@post
+
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!
+
+            if (!call.authorize(Permission("stock", "count", "write"), locationId)) return@post
+
+            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+            val stockSystem by inject<StockSystem>(StockSystem::class.java)
 
             val request = call.receive<StockCountRequestDTO>()
             locations.ensureValidLocation(locationId)

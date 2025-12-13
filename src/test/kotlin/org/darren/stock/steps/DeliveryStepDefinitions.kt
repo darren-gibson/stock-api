@@ -71,6 +71,11 @@ class DeliveryStepDefinitions : KoinComponent {
             client.post("/locations/$locationId/deliveries") {
                 setBody(payload)
                 contentType(ContentType.Application.Json)
+                TestContext.getAuthorizationToken()?.let { token ->
+                    headers {
+                        append(HttpHeaders.Authorization, "Bearer $token")
+                    }
+                }
             }
         assertTrue(response.status.isSuccess())
     }

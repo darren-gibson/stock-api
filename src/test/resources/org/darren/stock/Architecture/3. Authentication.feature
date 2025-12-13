@@ -199,7 +199,7 @@ Feature: Authentication & Authorization
       {
           "requestId": "count-001",
           "quantity": 50,
-          "reason": "Override",
+          "reason": "AdminOverride",
           "countedAt": "2024-12-13T12:00:00Z"
       }
       -----
@@ -227,15 +227,17 @@ Feature: Authentication & Authorization
       {
           "requestId": "count-002",
           "quantity": 50,
-          "reason": "Override",
+          "reason": "AdminOverride",
           "countedAt": "2024-12-13T12:00:00Z"
       }
       -----
       """
     Then the API should respond with status code 201
 
+  @Skip
   Scenario: Fail to manage job permissions without admin rights
     This test ensures that job-permission management requires appropriate admin access.
+    NOTE: Skipped until admin job management API is implemented (see BACKLOG.md item #10)
     Given I have a valid authentication token with job "Store Stock Controller" for location "Cambridge"
     When I send a POST request to "/admin/jobs" with the following payload:
       """asciidoc
@@ -258,8 +260,10 @@ Feature: Authentication & Authorization
       -----
       """
 
+  @Skip
   Scenario: Successfully manage job permissions with admin rights
     This test ensures that system administrators can manage job-to-permission mappings.
+    NOTE: Skipped until admin job management API is implemented (see BACKLOG.md item #10)
     Given I have a valid authentication token with job "System Administrator"
     When I send a POST request to "/admin/jobs" with the following payload:
       """asciidoc

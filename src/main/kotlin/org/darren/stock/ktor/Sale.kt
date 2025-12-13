@@ -7,15 +7,25 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.stockSystem.Sale.recordSale
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.auth.JwtConfig
+import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.authenticate
+import org.darren.stock.ktor.auth.authorize
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Sale {
     fun Routing.saleEndpoint() {
         post("/locations/{locationId}/products/{productId}/sales") {
-            val stockSystem by inject<StockSystem>(StockSystem::class.java)
+            val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
+            if (call.authenticate(jwtConfig) == null) return@post
+
             val locationId = call.parameters["locationId"]!!
             val productId = call.parameters["productId"]!!
+
+            if (!call.authorize(Permission("stock", "movement", "write"), locationId)) return@post
+
+            val stockSystem by inject<StockSystem>(StockSystem::class.java)
             val request = call.receive<SaleRequestDTO>()
 
             with(request) {
