@@ -2,8 +2,6 @@ package org.darren.stock.steps
 
 import io.cucumber.java.en.Given
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
 import java.security.KeyPair
 import java.time.Instant
 import java.util.*
@@ -18,7 +16,7 @@ import java.util.*
 class AuthenticationSteps {
     companion object {
         // Mock identity provider key pair (RS256)
-        private val keyPair: KeyPair = Keys.keyPairFor(SignatureAlgorithm.RS256)
+        private val keyPair: KeyPair = Jwts.SIG.RS256.keyPair().build()
 
         // Mock identity provider details
         private const val ISSUER = "https://identity-provider.example.com"
@@ -52,8 +50,8 @@ class AuthenticationSteps {
 
             return Jwts
                 .builder()
-                .setClaims(claims)
-                .signWith(keyPair.private, SignatureAlgorithm.RS256)
+                .claims(claims)
+                .signWith(keyPair.private)
                 .compact()
         }
 
