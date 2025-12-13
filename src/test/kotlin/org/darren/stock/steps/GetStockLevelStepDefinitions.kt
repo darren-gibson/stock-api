@@ -71,7 +71,14 @@ class GetStockLevelStepDefinitions : KoinComponent {
         runBlocking {
             val client: HttpClient by inject()
             val url = "/locations/$locationId/products/$productId"
-            response = client.get(url)
+            response =
+                client.get(url) {
+                    TestContext.getAuthorizationToken()?.let { token ->
+                        headers {
+                            append(HttpHeaders.Authorization, "Bearer $token")
+                        }
+                    }
+                }
             return@runBlocking response
         }
 

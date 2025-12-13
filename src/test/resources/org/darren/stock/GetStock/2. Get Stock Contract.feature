@@ -253,21 +253,21 @@ Feature: Contract: Get Stock Level for Product at Location Endpoint
       -----
       """
 
-#  Scenario: Fail to retrieve stock level due to insufficient permissions
-#  This test ensures that the endpoint returns a proper error response when the authentication token lacks necessary permissions.
-#
-#    Given I have an invalid or insufficient API token
-#    When I send a GET request to "/locations/DC01/products/product123"
-#    Then the API should respond with status code 403
-#    And the response body should contain:
-#      """asciidoc
-#      [source, json]
-#      -----
-#      {
-#          "status": "PermissionDenied"
-#      }
-#      -----
-#      """
+  Scenario: Fail to retrieve stock level due to insufficient permissions
+  This test ensures that the endpoint returns a proper error response when the authentication token lacks necessary permissions.
+
+    Given I have an invalid or insufficient API token
+    When I send a GET request to "/locations/DC01/products/product123"
+    Then the API should respond with status code 403
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "status": "PermissionDenied"
+      }
+      -----
+      """
   Scenario: Successfully retrieve the stock level of a product at an untracked location
     This test ensures the endpoint aggregates stock levels for an untracked location with tracked child locations.
     When I send a GET request to "/locations/DC02/products/product123"

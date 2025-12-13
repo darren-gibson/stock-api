@@ -9,25 +9,31 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockCountReason
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.domain.stockSystem.count
+import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.requiresAuth
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object StockCount {
     fun Routing.stockCountEndpoint() {
-        post("/locations/{locationId}/products/{productId}/counts") {
-            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-            val stockSystem by inject<StockSystem>(StockSystem::class.java)
-            val locationId = call.parameters["locationId"]!!
-            val productId = call.parameters["productId"]!!
+        route("/locations/{locationId}/products/{productId}/counts") {
+            requiresAuth(Permission("stock", "count", "write"), "locationId")
 
-            val request = call.receive<StockCountRequestDTO>()
-            locations.ensureValidLocation(locationId)
-            with(request) {
-                stockSystem.count(locationId, productId, quantity, reason, countedAt)
-                call.respond(
-                    Created,
-                    StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt),
-                )
+            post {
+                val locationId = call.parameters["locationId"]!!
+                val productId = call.parameters["productId"]!!
+                val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+                val stockSystem by inject<StockSystem>(StockSystem::class.java)
+
+                val request = call.receive<StockCountRequestDTO>()
+                locations.ensureValidLocation(locationId)
+                with(request) {
+                    stockSystem.count(locationId, productId, quantity, reason, countedAt)
+                    call.respond(
+                        Created,
+                        StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt),
+                    )
+                }
             }
         }
     }

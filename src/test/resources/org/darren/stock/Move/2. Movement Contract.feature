@@ -250,32 +250,32 @@ Feature: Contract: Stock Movement Endpoint
       """
 
 
-#  Scenario: Fail to record a stock movement due to insufficient permissions
-#    This test ensures that the stock movement endpoint returns a proper error response when the authentication token lacks necessary permissions.
-#
-#    Given I have an invalid or insufficient API token
-#    When I send a POST request to "/locations/warehouse1/product123/movements" with the following payload:
-#      """asciidoc
-#      [source, json]
-#      -----
-#      {
-#          "destinationLocationId": "store3",
-#          "quantity": 20.0,
-#          "requestId": "req-12347",
-#          "reason": "redistribution"
-#      }
-#      -----
-#      """
-#    Then the API should respond with status code 403
-#    And the response body should contain:
-#      """asciidoc
-#      [source, json]
-#      -----
-#      {
-#          "status": "PermissionDenied"
-#      }
-#      -----
-#      """
+  Scenario: Fail to record a stock movement due to insufficient permissions
+    This test ensures that the stock movement endpoint returns a proper error response when the authentication token lacks necessary permissions.
+
+    Given I have an invalid or insufficient API token
+    When I send a POST request to "/locations/warehouse1/product123/movements" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "destinationLocationId": "store3",
+          "quantity": 20.0,
+          "requestId": "req-12347",
+          "reason": "redistribution"
+      }
+      -----
+      """
+    Then the API should respond with status code 403
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "status": "PermissionDenied"
+      }
+      -----
+      """
 
 
 

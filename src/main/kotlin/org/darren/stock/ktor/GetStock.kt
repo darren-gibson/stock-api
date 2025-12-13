@@ -8,41 +8,47 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockLevel
 import org.darren.stock.domain.stockSystem.GetValue.retrieveValue
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.requiresAuth
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object GetStock {
     fun Routing.getStockEndpoint() {
-        get("/locations/{locationId}/products/{productId}") {
-            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-            val stockSystem by inject<StockSystem>(StockSystem::class.java)
-            val locationId = call.parameters["locationId"]!!
-            val productId = call.parameters["productId"]!!
-            val includeChildren = call.parameters["includeChildren"]?.toBoolean() ?: true
+        route("/locations/{locationId}/products/{productId}") {
+            requiresAuth(Permission("stock", "level", "read"), "locationId")
 
-            locations.ensureValidLocations(locationId)
+            get {
+                val locationId = call.parameters["locationId"]!!
+                val productId = call.parameters["productId"]!!
+                val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+                val stockSystem by inject<StockSystem>(StockSystem::class.java)
+                val includeChildren = call.parameters["includeChildren"]?.toBoolean() ?: true
 
-            val stockLevel = stockSystem.retrieveValue(locationId, productId, includeChildren)
+                locations.ensureValidLocations(locationId)
 
-            with(stockLevel) {
-                if (includeChildren) {
-                    call.respond(
-                        OK,
-                        GetStockResponseDTO(
-                            locationId,
-                            productId,
-                            quantity,
-                            pendingAdjustment,
-                            lastUpdated,
-                            totalQuantity,
-                            childLocations.map(ChildLocationsDTO::from),
-                        ),
-                    )
-                } else {
-                    call.respond(
-                        OK,
-                        GetStockResponseDTO(locationId, productId, quantity, pendingAdjustment, lastUpdated),
-                    )
+                val stockLevel = stockSystem.retrieveValue(locationId, productId, includeChildren)
+
+                with(stockLevel) {
+                    if (includeChildren) {
+                        call.respond(
+                            OK,
+                            GetStockResponseDTO(
+                                locationId,
+                                productId,
+                                quantity,
+                                pendingAdjustment,
+                                lastUpdated,
+                                totalQuantity,
+                                childLocations.map(ChildLocationsDTO::from),
+                            ),
+                        )
+                    } else {
+                        call.respond(
+                            OK,
+                            GetStockResponseDTO(locationId, productId, quantity, pendingAdjustment, lastUpdated),
+                        )
+                    }
                 }
             }
         }

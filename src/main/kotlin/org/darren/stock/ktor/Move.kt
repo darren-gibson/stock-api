@@ -11,48 +11,54 @@ import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.stockSystem.Move.recordMovement
 import org.darren.stock.domain.stockSystem.MoveCommand
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.requiresAuth
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Move {
     fun Routing.moveEndpoint() {
-        post("/locations/{sourceLocationId}/{productId}/movements") {
-            val stockSystem by inject<StockSystem>(StockSystem::class.java)
-            val sourceId = call.parameters["sourceLocationId"]!!
-            val productId = call.parameters["productId"]!!
+        route("/locations/{sourceLocationId}/{productId}/movements") {
+            requiresAuth(Permission("stock", "movement", "write"), "sourceLocationId")
 
-            val request = call.receive<MoveRequestDTO>()
+            post {
+                val sourceId = call.parameters["sourceLocationId"]!!
+                val productId = call.parameters["productId"]!!
+                val stockSystem by inject<StockSystem>(StockSystem::class.java)
 
-            try {
-                with(request) {
-                    val command =
-                        MoveCommand(
-                            fromLocationId = sourceId,
-                            toLocationId = destinationLocationId,
-                            productId = productId,
-                            quantity = quantity,
-                            reason = reason,
-                            movedAt = movedAt,
+                val request = call.receive<MoveRequestDTO>()
+
+                try {
+                    with(request) {
+                        val command =
+                            MoveCommand(
+                                fromLocationId = sourceId,
+                                toLocationId = destinationLocationId,
+                                productId = productId,
+                                quantity = quantity,
+                                reason = reason,
+                                movedAt = movedAt,
+                            )
+                        stockSystem.recordMovement(command)
+                        call.respond(
+                            Created,
+                            MoveResponseDTO(
+                                requestId,
+                                sourceId,
+                                destinationLocationId,
+                                productId,
+                                quantity,
+                                reason,
+                                movedAt,
+                            ),
                         )
-                    stockSystem.recordMovement(command)
-                    call.respond(
-                        Created,
-                        MoveResponseDTO(
-                            requestId,
-                            sourceId,
-                            destinationLocationId,
-                            productId,
-                            quantity,
-                            reason,
-                            movedAt,
-                        ),
-                    )
-                }
-            } catch (e: LocationNotTrackedException) {
-                if (e.locationId == request.destinationLocationId) {
-                    call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
-                } else {
-                    throw e
+                    }
+                } catch (e: LocationNotTrackedException) {
+                    if (e.locationId == request.destinationLocationId) {
+                        call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
+                    } else {
+                        throw e
+                    }
                 }
             }
         }
