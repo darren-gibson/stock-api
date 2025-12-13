@@ -20,12 +20,17 @@ This document tracks features and improvements that have been identified through
 All API endpoint specifications reference bearer token authentication and permission-based authorization, but no implementation exists.
 
 **Requirements**:
-- Implement bearer token authentication middleware in Ktor
-- Add authentication interceptor to validate tokens on protected endpoints
-- Implement `401 Unauthorized` response when token is missing/invalid
-- Implement `403 Forbidden` response when token lacks required permissions
-- Define permission model for different operations (read, write, admin)
-- Add authentication context to endpoint handlers
+1. **Create/validate feature specifications**:
+   - Uncomment authentication scenarios in test features
+   - Review and finalize authentication contract specifications
+   - Ensure OpenAPI specs are complete and accurate
+   - Define expected request/response formats for auth flows
+2. Implement bearer token authentication middleware in Ktor
+3. Add authentication interceptor to validate tokens on protected endpoints
+4. Implement `401 Unauthorized` response when token is missing/invalid
+5. Implement `403 Forbidden` response when token lacks required permissions
+6. Define permission model for different operations (read, write, admin)
+7. Add authentication context to endpoint handlers
 
 **Evidence**:
 - All endpoint specs show: `Authorization: Bearer abc123xyz`
@@ -54,11 +59,17 @@ All API endpoint specifications reference bearer token authentication and permis
 The `requestId` parameter is documented and captured in Sale, Delivery, and Movement endpoints but duplicate requests are not detected or handled.
 
 **Requirements**:
-- Implement idempotency key tracking (in-memory cache or database)
-- Return existing response for duplicate `requestId` instead of re-processing
-- Define TTL for idempotency keys (e.g., 24 hours)
-- Return appropriate status code for duplicate requests (200 with existing response)
-- Handle race conditions for concurrent duplicate requests
+1. **Create/validate feature specifications**:
+   - Uncomment duplicate request scenarios in test features
+   - Define exact behavior for duplicate `requestId` handling
+   - Specify response format and status code (200 vs 409)
+   - Document idempotency key TTL and storage strategy
+   - Update OpenAPI specs with idempotency behavior
+2. Implement idempotency key tracking (in-memory cache or database)
+3. Return existing response for duplicate `requestId` instead of re-processing
+4. Define TTL for idempotency keys (e.g., 24 hours)
+5. Return appropriate status code for duplicate requests (200 with existing response)
+6. Handle race conditions for concurrent duplicate requests
 
 **Evidence**:
 - Sale Contract feature (line 282-297): Commented scenario for duplicate `requestId`
@@ -89,10 +100,15 @@ The `requestId` parameter is documented and captured in Sale, Delivery, and Move
 Sales can currently be recorded even when insufficient stock exists. The API should validate available quantity before allowing a sale.
 
 **Requirements**:
-- Check `quantity` at location before processing sale
-- Return `400 Bad Request` with `{"status": "InsufficientStock"}` when quantity < sale amount
-- Consider `pendingAdjustment` in validation (optional based on business rules)
-- Leave stock level unchanged when validation fails
+1. **Create/validate feature specifications**:
+   - Uncomment insufficient stock scenario in Sales/2. Sale Contract.feature
+   - Verify exact error response format
+   - Clarify whether `pendingAdjustment` should be considered in validation
+   - Confirm expected status code and error structure
+2. Check `quantity` at location before processing sale
+3. Return `400 Bad Request` with `{"status": "InsufficientStock"}` when quantity < sale amount
+4. Consider `pendingAdjustment` in validation (optional based on business rules)
+5. Leave stock level unchanged when validation fails
 
 **Evidence**:
 - Sale Contract feature (line 299-315): Commented scenario "Fail to record a sale due to insufficient stock"
@@ -115,9 +131,14 @@ Sales can currently be recorded even when insufficient stock exists. The API sho
 Endpoints don't validate that a product exists before performing operations on it.
 
 **Requirements**:
-- Add product existence check before operations
-- Return `404 Not Found` with `{"status": "ProductNotFound"}` for invalid products
-- Implement product registry/catalog (or stub for testing)
+1. **Create/validate feature specifications**:
+   - Uncomment product validation scenario in GetStock/2. Get Stock Contract.feature
+   - Define product registry/catalog requirements (stub vs real implementation)
+   - Specify error response format for invalid products
+   - Review all endpoints that should validate product existence
+2. Add product existence check before operations
+3. Return `404 Not Found` with `{"status": "ProductNotFound"}` for invalid products
+4. Implement product registry/catalog (or stub for testing)
 
 **Evidence**:
 - GetStock Contract feature (line 224-240): Commented scenario "Fail to retrieve stock level due to invalid product"
@@ -142,10 +163,16 @@ Endpoints don't validate that a product exists before performing operations on i
 Delivery endpoint needs enhanced validation for timestamps, quantities, and other input values.
 
 **Requirements**:
-- Validate `deliveredAt` timestamp format and range (not in future)
-- Validate product quantities are positive
-- Validate supplier reference format if provided
-- Return `400 Bad Request` with `invalidValues` array
+1. **Create/validate feature specifications**:
+   - Uncomment/create delivery validation scenario in Deliveries/2. Delivery Contract.feature
+   - Define validation rules for `deliveredAt` (format, range, future dates)
+   - Specify validation rules for product quantities
+   - Document supplier reference format requirements
+   - Confirm error response format with `invalidValues` array
+2. Validate `deliveredAt` timestamp format and range (not in future)
+3. Validate product quantities are positive
+4. Validate supplier reference format if provided
+5. Return `400 Bad Request` with `invalidValues` array
 
 **Evidence**:
 - Delivery Contract feature (line 296): Commented scenario "Fail to record a delivery due to invalid values"
@@ -166,10 +193,16 @@ Delivery endpoint needs enhanced validation for timestamps, quantities, and othe
 Delivery documentation mentions supplier must be registered, but no validation exists.
 
 **Requirements**:
-- Implement supplier registry (in-memory or database)
-- Validate `supplierId` exists before accepting delivery
-- Return appropriate error for unregistered suppliers
-- Add supplier management endpoints (optional)
+1. **Create/validate feature specifications**:
+   - Create scenarios for supplier validation in test features
+   - Define supplier registry data structure (in-memory vs database)
+   - Specify error response for unregistered suppliers
+   - Document whether supplier management endpoints are needed
+   - Update Delivery contract documentation with supplier validation details
+2. Implement supplier registry (in-memory or database)
+3. Validate `supplierId` exists before accepting delivery
+4. Return appropriate error for unregistered suppliers
+5. Add supplier management endpoints (optional)
 
 **Evidence**:
 - Delivery Contract documentation: "The `supplierId` must correspond to a registered external supplier"
@@ -197,9 +230,13 @@ Different scenarios show different error response formats. Need to standardize o
 - ❌ `{"status": "error", "message": "..."}` - Old pattern in commented scenarios
 
 **Requirements**:
-- Document error response standards in copilot-instructions.md
-- Update all commented scenarios to use consistent format
-- Ensure new endpoints follow pattern
+1. **Create/validate feature specifications**:
+   - Review all error responses in feature files
+   - Update commented scenarios to use consistent error format
+   - Document error response standards in `.github/copilot-instructions.md`
+   - Create examples of each error type for reference
+2. Ensure new endpoints follow documented pattern
+3. Update existing commented scenarios to match standard format
 
 **Files to Review**:
 - All commented scenarios with error responses
@@ -217,15 +254,20 @@ Different scenarios show different error response formats. Need to standardize o
 No README.md or getting-started guide exists. Living documentation is generated but lacks overview.
 
 **Requirements**:
-- Create README.md with:
-  - Project overview
-  - Prerequisites (Kotlin, JVM version)
-  - Build instructions
-  - Running the server
-  - Running tests
-  - API overview
-- Add architecture documentation
-- Document development workflow
+1. **Create documentation structure and outlines**:
+   - Plan README.md sections and content structure
+   - Identify key architectural concepts to document
+   - Determine development workflow steps to document
+   - Review existing living documentation for content to reference
+2. Create README.md with:
+   - Project overview
+   - Prerequisites (Kotlin, JVM version)
+   - Build instructions
+   - Running the server
+   - Running tests
+   - API overview
+3. Add architecture documentation
+4. Document development workflow
 
 **Files to Create**:
 - `README.md`
@@ -247,9 +289,13 @@ One commented scenario shows validation when requestId is missing entirely.
 **Note**: This may already be handled by existing `MissingFieldsDTO` logic. Needs verification.
 
 **Action Required**:
-- Verify existing behavior
-- Uncomment scenario and confirm test passes
-- If not passing, implement missing validation
+1. **Review and validate feature specification**:
+   - Uncomment scenario in Sale Contract feature (line 319-333)
+   - Verify if existing `MissingFieldsDTO` logic handles this case
+   - Run tests to confirm current behavior
+   - If passing: document and close item
+   - If failing: create proper specification then implement
+2. If not passing, implement missing validation
 
 ---
 
@@ -270,12 +316,22 @@ One commented scenario shows validation when requestId is missing entirely.
 ### Testing Strategy
 
 For each feature:
-1. Uncomment relevant test scenarios
-2. Run tests to confirm they fail appropriately
-3. Implement feature
-4. Run tests to confirm they pass
-5. Run full test suite to ensure no regressions
-6. Commit with reference to backlog item
+1. **Specification Phase**:
+   - Uncomment or create relevant test scenarios
+   - Review scenario steps for completeness and clarity
+   - Validate expected request/response formats
+   - Ensure OpenAPI specs match scenario expectations
+   - Get specification review/approval if needed
+2. **Implementation Phase**:
+   - Run tests to confirm they fail appropriately (Red)
+   - Implement feature following specifications
+   - Run tests to confirm they pass (Green)
+   - Refactor if needed while keeping tests green
+3. **Verification Phase**:
+   - Run full test suite to ensure no regressions
+   - Verify error handling and edge cases
+   - Check code quality with Detekt and Spotless
+   - Commit with reference to backlog item
 
 ### Documentation Updates
 
