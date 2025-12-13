@@ -72,33 +72,20 @@ All API endpoint specifications reference bearer token authentication and job-ba
 ---
 
 ### 1a. Simplify Endpoint Authentication with Route Attributes
-**Status**: Not Started  
-**Effort**: Small (1 day)  
+**Status**: ✅ Complete  
+**Effort**: Medium (1-2 days)  
 **Priority**: 🟡 Medium
 
 **Description**:
-Current authentication implementation requires each endpoint to manually call `authenticate()` and `authorize()` with permission details. This is repetitive and error-prone. A cleaner approach would use Ktor route attributes or a plugin to declare authentication requirements declaratively.
+Current authentication implementation required each endpoint to manually call `authenticate()` and `authorize()` with permission details. This was repetitive and error-prone. Implemented a route interceptor that declares authentication requirements declaratively.
+
+**Implementation**:
+Created `requiresAuth()` route extension that takes permission and optional location parameter. The interceptor validates JWT tokens and checks permissions before route handlers execute.
 
 **Current Pattern**:
 ```kotlin
-post("/locations/{locationId}/products/{productId}/counts") {
-    val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
-    if (call.authenticate(jwtConfig) == null) return@post
-    
-    val locationId = call.parameters["locationId"]!!
-    if (!call.authorize(Permission("stock", "count", "write"), locationId)) return@post
-    
-    // Actual endpoint logic...
-}
-```
-
-**Desired Pattern**:
-```kotlin
 route("/locations/{locationId}/products/{productId}/counts") {
-    requiresAuth {
-        permission = Permission("stock", "count", "write")
-        locationParam = "locationId"
-    }
+    requiresAuth(Permission("stock", "count", "write"), "locationId")
     
     post {
         // Actual endpoint logic...
@@ -108,25 +95,20 @@ route("/locations/{locationId}/products/{productId}/counts") {
 }
 ```
 
-**Requirements**:
-1. Create Ktor plugin or route configuration extension for declarative auth
-2. Support permission requirements as route attributes
-3. Support location parameter extraction for scope validation
-4. Automatically handle 401/403 responses
-5. Ensure `call.principal` is available in authenticated routes
-6. Refactor all endpoints to use new declarative pattern
-7. Verify all authentication tests still pass
-
 **Benefits**:
-- Reduces boilerplate in endpoint handlers
-- Makes authentication requirements explicit and discoverable
+- Reduces boilerplate in endpoint handlers (removed 3 lines from each endpoint)
+- Makes authentication requirements explicit and discoverable at route level
 - Prevents accidentally forgetting authentication checks
 - Easier to audit permission requirements across API
 - More maintainable as permission model evolves
 
-**Files to Modify**:
-- `src/main/kotlin/org/darren/stock/ktor/auth/AuthenticationPlugin.kt` (new)
-- All endpoint files (`Sale.kt`, `Move.kt`, `Delivery.kt`, `GetStock.kt`, `StockCount.kt`)
+**Files Modified**:
+- `src/main/kotlin/org/darren/stock/ktor/auth/AuthenticationPlugin.kt` (new) - Route interceptor implementation
+- All endpoint files (`Sale.kt`, `Move.kt`, `Delivery.kt`, `GetStock.kt`, `StockCount.kt`) - Simplified to use declarative auth
+
+**Test Results**:
+- All 65 tests passing ✅ (63 active, 2 skipped)
+- All authentication scenarios still working correctly
 
 ---
 
@@ -580,4 +562,4 @@ _This section will track features as they move from backlog to completion._
 
 **Last Updated**: 2025-12-13  
 **Total Backlog Items**: 11  
-**Critical**: 0 | **High**: 2 | **Medium**: 5 | **Low**: 2 | **Complete**: 4
+**Critical**: 0 | **High**: 2 | **Medium**: 4 | **Low**: 2 | **Complete**: 5

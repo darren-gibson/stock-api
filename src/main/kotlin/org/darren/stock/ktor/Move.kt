@@ -11,58 +11,54 @@ import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.stockSystem.Move.recordMovement
 import org.darren.stock.domain.stockSystem.MoveCommand
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.ktor.auth.JwtConfig
 import org.darren.stock.ktor.auth.Permission
-import org.darren.stock.ktor.auth.authenticate
-import org.darren.stock.ktor.auth.authorize
+import org.darren.stock.ktor.auth.requiresAuth
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Move {
     fun Routing.moveEndpoint() {
-        post("/locations/{sourceLocationId}/{productId}/movements") {
-            val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
-            if (call.authenticate(jwtConfig) == null) return@post
+        route("/locations/{sourceLocationId}/{productId}/movements") {
+            requiresAuth(Permission("stock", "movement", "write"), "sourceLocationId")
 
-            val sourceId = call.parameters["sourceLocationId"]!!
-            val productId = call.parameters["productId"]!!
+            post {
+                val sourceId = call.parameters["sourceLocationId"]!!
+                val productId = call.parameters["productId"]!!
+                val stockSystem by inject<StockSystem>(StockSystem::class.java)
 
-            if (!call.authorize(Permission("stock", "movement", "write"), sourceId)) return@post
+                val request = call.receive<MoveRequestDTO>()
 
-            val stockSystem by inject<StockSystem>(StockSystem::class.java)
-
-            val request = call.receive<MoveRequestDTO>()
-
-            try {
-                with(request) {
-                    val command =
-                        MoveCommand(
-                            fromLocationId = sourceId,
-                            toLocationId = destinationLocationId,
-                            productId = productId,
-                            quantity = quantity,
-                            reason = reason,
-                            movedAt = movedAt,
+                try {
+                    with(request) {
+                        val command =
+                            MoveCommand(
+                                fromLocationId = sourceId,
+                                toLocationId = destinationLocationId,
+                                productId = productId,
+                                quantity = quantity,
+                                reason = reason,
+                                movedAt = movedAt,
+                            )
+                        stockSystem.recordMovement(command)
+                        call.respond(
+                            Created,
+                            MoveResponseDTO(
+                                requestId,
+                                sourceId,
+                                destinationLocationId,
+                                productId,
+                                quantity,
+                                reason,
+                                movedAt,
+                            ),
                         )
-                    stockSystem.recordMovement(command)
-                    call.respond(
-                        Created,
-                        MoveResponseDTO(
-                            requestId,
-                            sourceId,
-                            destinationLocationId,
-                            productId,
-                            quantity,
-                            reason,
-                            movedAt,
-                        ),
-                    )
-                }
-            } catch (e: LocationNotTrackedException) {
-                if (e.locationId == request.destinationLocationId) {
-                    call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
-                } else {
-                    throw e
+                    }
+                } catch (e: LocationNotTrackedException) {
+                    if (e.locationId == request.destinationLocationId) {
+                        call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
+                    } else {
+                        throw e
+                    }
                 }
             }
         }

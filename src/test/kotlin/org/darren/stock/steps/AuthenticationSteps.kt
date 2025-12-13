@@ -16,7 +16,10 @@ import java.util.*
 class AuthenticationSteps {
     companion object {
         // Mock identity provider key pair (RS256)
-        private val keyPair: KeyPair = Jwts.SIG.RS256.keyPair().build()
+        private val keyPair: KeyPair =
+            Jwts.SIG.RS256
+                .keyPair()
+                .build()
 
         // Mock identity provider details
         private const val ISSUER = "https://identity-provider.example.com"

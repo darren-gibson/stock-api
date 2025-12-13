@@ -6,9 +6,7 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
-import org.darren.stock.domain.InsufficientStockException
 import org.darren.stock.steps.helpers.TestDateTimeProvider
-import org.junit.jupiter.api.assertInstanceOf
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -22,7 +20,6 @@ class StockMovementStepDefinitions : KoinComponent {
     @When("I initiate a stock movement transaction with the following details:")
     fun iInitiateAStockMovementTransactionWithTheFollowingDetails(stockMovements: List<StockMovement>) =
         runBlocking {
-
             stockMovements.forEach { movement ->
                 with(movement) {
                     performStockMove(from, to, product, quantity)
@@ -31,24 +28,38 @@ class StockMovementStepDefinitions : KoinComponent {
         }
 
     @Then("the move request should fail with an InsufficientStock exception")
-    fun theMoveRequestShouldFailWithAnInsufficientStockException() = runBlocking {
-        apiCallStepDefinitions.theAPIShouldRespondWithStatusCode(400)
-        apiCallStepDefinitions.theResponseBodyShouldContain("""{"status":"InsufficientStock"}""")
-    }
+    fun theMoveRequestShouldFailWithAnInsufficientStockException() =
+        runBlocking {
+            apiCallStepDefinitions.theAPIShouldRespondWithStatusCode(400)
+            apiCallStepDefinitions.theResponseBodyShouldContain("""{"status":"InsufficientStock"}""")
+        }
 
     @DataTableType
     fun locationEntryTransformer(row: Map<String?, String>) =
         StockMovement(
-            row["source"]!!, row["destination"]!!, row["product"]!!,
-            row["quantity"]!!.toDouble(), row["reason"]!!
+            row["source"]!!,
+            row["destination"]!!,
+            row["product"]!!,
+            row["quantity"]!!.toDouble(),
+            row["reason"]!!,
         )
 
     @And("{double} {string} is moved from {string} to {string}")
-    fun moveFromTo(quantity: Double, product: String, from: String, to: String) = runBlocking {
+    fun moveFromTo(
+        quantity: Double,
+        product: String,
+        from: String,
+        to: String,
+    ) = runBlocking {
         performStockMove(from, to, product, quantity)
     }
 
-    private suspend fun performStockMove(from: String, to: String, product: String, quantity: Double) {
+    private suspend fun performStockMove(
+        from: String,
+        to: String,
+        product: String,
+        quantity: Double,
+    ) {
         try {
             val url = "/locations/$from/$product/movements"
             val requestId = UUID.randomUUID().toString()
@@ -72,6 +83,6 @@ class StockMovementStepDefinitions : KoinComponent {
         val to: String,
         val product: String,
         val quantity: Double,
-        val reason: String
+        val reason: String,
     )
 }

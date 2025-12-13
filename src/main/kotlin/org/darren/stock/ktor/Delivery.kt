@@ -8,29 +8,25 @@ import kotlinx.serialization.Serializable
 import org.darren.stock.domain.ProductQuantity
 import org.darren.stock.domain.stockSystem.Delivery.recordDelivery
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.ktor.auth.JwtConfig
 import org.darren.stock.ktor.auth.Permission
-import org.darren.stock.ktor.auth.authenticate
-import org.darren.stock.ktor.auth.authorize
+import org.darren.stock.ktor.auth.requiresAuth
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Delivery {
     fun Routing.deliveryEndpoint() {
-        post("/locations/{locationId}/deliveries") {
-            val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
-            if (call.authenticate(jwtConfig) == null) return@post
+        route("/locations/{locationId}/deliveries") {
+            requiresAuth(Permission("stock", "movement", "write"), "locationId")
 
-            val locationId = call.parameters["locationId"]!!
+            post {
+                val locationId = call.parameters["locationId"]!!
+                val stockSystem by inject<StockSystem>(StockSystem::class.java)
+                val request = call.receive<DeliveryRequestDTO>()
 
-            if (!call.authorize(Permission("stock", "movement", "write"), locationId)) return@post
-
-            val stockSystem by inject<StockSystem>(StockSystem::class.java)
-            val request = call.receive<DeliveryRequestDTO>()
-
-            with(request) {
-                stockSystem.recordDelivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
-                call.respond(Created)
+                with(request) {
+                    stockSystem.recordDelivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
+                    call.respond(Created)
+                }
             }
         }
     }
