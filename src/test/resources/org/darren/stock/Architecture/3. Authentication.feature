@@ -8,10 +8,25 @@ Feature: Authentication & Authorization
   The API uses Bearer Token authentication with JWT (JSON Web Tokens). Clients must include a valid bearer token in the `Authorization` header for all requests.
 
   *Authorization Model*
-  The API implements role-based access control with the following permissions:
-  - **READ**: View stock levels and location information
-  - **WRITE**: Record sales, deliveries, movements, and stock counts
-  - **ADMIN**: Perform admin overrides and system configuration
+  The API implements job-based access control where:
+  - The bearer token contains colleague identity and their job function (e.g., "Store Stock Controller")
+  - Job functions are mapped to specific permissions/claims maintained within the Stock API
+  - Permissions can be scoped to specific locations (e.g., "Cambridge" store)
+  - The Stock API maintains the job-to-permission mappings internally
+  - Admin functions exist to manage job roles and their associated permissions
+
+  *Example Job Functions and Permissions*
+  - **Store Stock Controller** (location-scoped): Can record stock counts for their assigned location(s)
+  - **Warehouse Manager** (location-scoped): Can record deliveries, movements, and counts for their warehouse
+  - **Regional Stock Auditor**: Can view stock levels across multiple locations
+  - **System Administrator**: Can manage job roles, permissions, and system configuration
+
+  *Token Claims*
+  The JWT token must contain:
+  - `sub`: Colleague unique identifier
+  - `name`: Colleague name
+  - `job`: Job function (e.g., "Store Stock Controller")
+  - `location`: Assigned location(s) if job is location-scoped (optional array)
 
   ==== Authentication Header Format
 
@@ -51,11 +66,12 @@ Feature: Authentication & Authorization
   ==== Notes
 
   - All endpoints require authentication unless explicitly documented as public
-  - READ operations require READ permission or higher
-  - WRITE operations require WRITE permission or higher
-  - ADMIN operations require ADMIN permission
-  - Tokens should be validated on every request
-  - Expired tokens should be rejected with `401 Unauthorized`
+  - The Stock API validates the JWT signature and expiry
+  - The Stock API looks up the job function from the token and resolves it to specific permissions
+  - Location-scoped permissions are validated against the location in the request
+  - Expired or invalid tokens are rejected with `401 Unauthorized`
+  - Valid tokens without required permissions return `403 Forbidden`
+  - Job-to-permission mappings are managed through admin endpoints
 
   Background:
     Given the following locations exist:
@@ -107,15 +123,15 @@ Feature: Authentication & Authorization
       """
 
   Scenario: Successfully access API with valid READ permission
-    This test ensures that valid tokens with READ permission can access read-only endpoints.
-    Given I have a valid authentication token with READ permission
+    This test ensures that valid tokens with appropriate job function can access read endpoints.
+    Given I have a valid authentication token with job "Regional Stock Auditor"
     And a product "product123" exists in "DC01" with a stock level of 100
     When I send a GET request to "/locations/DC01/products/product123"
     Then the API should respond with status code 200
 
-  Scenario: Fail to perform write operation with only READ permission
-    This test ensures that tokens with only READ permission cannot perform write operations.
-    Given I have a valid authentication token with READ permission
+  Scenario: Fail to perform write operation without required permission
+    This test ensures that tokens without write permissions for the operation cannot perform it.
+    Given I have a valid authentication token with job "Regional Stock Auditor"
     And "DC01" is a tracked location
     And a product "product123" exists in "DC01" with a stock level of 100
     When I send a POST request to "/locations/DC01/products/product123/sales" with the following payload:
@@ -140,9 +156,9 @@ Feature: Authentication & Authorization
       -----
       """
 
-  Scenario: Successfully perform write operation with WRITE permission
-    This test ensures that valid tokens with WRITE permission can perform write operations.
-    Given I have a valid authentication token with WRITE permission
+  Scenario: Successfully perform write operation with appropriate job permission
+    This test ensures that valid tokens with appropriate job function can perform write operations.
+    Given I have a valid authentication token with job "Store Stock Controller" for location "DC01"
     And "DC01" is a tracked location
     And a product "product123" exists in "DC01" with a stock level of 100
     When I send a POST request to "/locations/DC01/products/product123/sales" with the following payload:
@@ -158,9 +174,9 @@ Feature: Authentication & Authorization
       """
     Then the API should respond with status code 201
 
-  Scenario: Fail to perform admin operation without ADMIN permission
-    This test ensures that admin operations require ADMIN permission.
-    Given I have a valid authentication token with WRITE permission
+  Scenario: Fail to perform operation at location outside colleague scope
+    This test ensures that location-scoped permissions are enforced.
+    Given I have a valid authentication token with job "Store Stock Controller" for location "Cambridge"
     And "DC01" is a tracked location
     And a product "product123" exists in "DC01" with a stock level of 100
     When I send a POST request to "/locations/DC01/products/product123/counts" with the following payload:
@@ -186,12 +202,12 @@ Feature: Authentication & Authorization
       -----
       """
 
-  Scenario: Successfully perform admin operation with ADMIN permission
-    This test ensures that valid tokens with ADMIN permission can perform admin operations.
-    Given I have a valid authentication token with ADMIN permission
-    And "DC01" is a tracked location
-    And a product "product123" exists in "DC01" with a stock level of 100
-    When I send a POST request to "/locations/DC01/products/product123/counts" with the following payload:
+  Scenario: Successfully perform operation at location within colleague scope
+    This test ensures that location-scoped permissions work correctly.
+    Given I have a valid authentication token with job "Store Stock Controller" for location "Cambridge"
+    And "Cambridge" is a tracked location
+    And a product "product123" exists in "Cambridge" with a stock level of 100
+    When I send a POST request to "/locations/Cambridge/products/product123/counts" with the following payload:
       """asciidoc
       [source, json]
       -----
@@ -200,6 +216,46 @@ Feature: Authentication & Authorization
           "quantity": 50,
           "reason": "Override",
           "countedAt": "2024-12-13T12:00:00Z"
+      }
+      -----
+      """
+    Then the API should respond with status code 201
+
+  Scenario: Fail to manage job permissions without admin rights
+    This test ensures that job-permission management requires appropriate admin access.
+    Given I have a valid authentication token with job "Store Stock Controller" for location "Cambridge"
+    When I send a POST request to "/admin/jobs" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "jobFunction": "New Role",
+          "permissions": ["stock:count:write"]
+      }
+      -----
+      """
+    Then the API should respond with status code 403
+    And the response body should contain:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "status": "PermissionDenied"
+      }
+      -----
+      """
+
+  Scenario: Successfully manage job permissions with admin rights
+    This test ensures that system administrators can manage job-to-permission mappings.
+    Given I have a valid authentication token with job "System Administrator"
+    When I send a POST request to "/admin/jobs" with the following payload:
+      """asciidoc
+      [source, json]
+      -----
+      {
+          "jobFunction": "Warehouse Manager",
+          "permissions": ["stock:read", "stock:movement:write", "stock:delivery:write", "stock:count:write"],
+          "locationScoped": true
       }
       -----
       """

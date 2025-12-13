@@ -13,24 +13,37 @@ This document tracks features and improvements that have been identified through
 ## 🔴 Critical Priority
 
 ### 1. Authentication & Authorization System
-**Status**: Not Implemented  
+**Status**: In Progress (Specification Phase Complete)  
 **Effort**: Large (3-5 days)
 
 **Description**:
-All API endpoint specifications reference bearer token authentication and permission-based authorization, but no implementation exists.
+All API endpoint specifications reference bearer token authentication and job-based authorization, but no implementation exists. The system uses JWT tokens containing colleague identity and job function, with job-to-permission mappings maintained within the Stock API.
 
 **Requirements**:
-1. **Create/validate feature specifications**:
+1. **Create/validate feature specifications**: ✅ Complete
    - Uncomment authentication scenarios in test features
    - Review and finalize authentication contract specifications
    - Ensure OpenAPI specs are complete and accurate
    - Define expected request/response formats for auth flows
-2. Implement bearer token authentication middleware in Ktor
+2. Implement bearer token JWT authentication middleware in Ktor
 3. Add authentication interceptor to validate tokens on protected endpoints
-4. Implement `401 Unauthorized` response when token is missing/invalid
-5. Implement `403 Forbidden` response when token lacks required permissions
-6. Define permission model for different operations (read, write, admin)
-7. Add authentication context to endpoint handlers
+4. Implement JWT token parsing and validation (signature, expiry)
+5. Implement `401 Unauthorized` response when token is missing/invalid
+6. Extract colleague identity and job function from JWT claims
+7. Implement job-to-permission lookup mechanism
+8. Implement location-scoped permission validation
+9. Implement `403 Forbidden` response when token lacks required permissions
+10. Add authentication context to endpoint handlers
+
+**Authorization Model**:
+- JWT tokens contain: `sub` (colleague ID), `name`, `job` (function), `location` (array, optional)
+- Job functions map to specific permissions (e.g., "Store Stock Controller" → stock:count:write for assigned location)
+- Permissions are scoped to locations where applicable
+- Examples:
+  - "Store Stock Controller" (Cambridge) → can record counts at Cambridge only
+  - "Regional Stock Auditor" → can view stock across multiple locations
+  - "Warehouse Manager" → can record deliveries, movements, counts for their warehouse
+  - "System Administrator" → can manage job roles and permissions
 
 **Evidence**:
 - All endpoint specs show: `Authorization: Bearer abc123xyz`
@@ -295,7 +308,75 @@ One commented scenario shows validation when requestId is missing entirely.
    - Run tests to confirm current behavior
    - If passing: document and close item
    - If failing: create proper specification then implement
-2. If not passing, implement missing validation
+- If not passing, implement missing validation
+
+---
+
+### 10. Job Role & Permission Management Admin APIs
+**Status**: Not Implemented  
+**Effort**: Medium (2-3 days)
+
+**Description**:
+Admin endpoints to manage job-to-permission mappings within the Stock API. System administrators need to create, update, and delete job functions and their associated permissions.
+
+**Requirements**:
+1. **Create/validate feature specifications**:
+   - Create comprehensive admin API feature file
+   - Define CRUD operations for job functions
+   - Specify permission format and structure
+   - Define location-scoped permission rules
+   - Document which jobs can manage other jobs
+   - Create scenarios for validation and error cases
+2. Implement `POST /admin/jobs` - Create new job function with permissions
+3. Implement `GET /admin/jobs` - List all job functions
+4. Implement `GET /admin/jobs/{jobFunction}` - Get specific job details
+5. Implement `PUT /admin/jobs/{jobFunction}` - Update job permissions
+6. Implement `DELETE /admin/jobs/{jobFunction}` - Remove job function
+7. Implement `GET /admin/permissions` - List available permissions
+8. Add validation for permission format (e.g., `stock:count:write`, `stock:read`)
+9. Ensure only System Administrator job can access these endpoints
+10. Store job-permission mappings (in-memory or database)
+
+**Permission Format**:
+- Pattern: `{resource}:{operation}:{action}`
+- Examples:
+  - `stock:read` - View stock levels
+  - `stock:count:write` - Record stock counts
+  - `stock:movement:write` - Record stock movements
+  - `stock:delivery:write` - Record deliveries
+  - `stock:sale:write` - Record sales
+  - `admin:jobs:write` - Manage job functions
+
+**Job Function Structure**:
+```json
+{
+  "jobFunction": "Store Stock Controller",
+  "permissions": ["stock:count:write", "stock:read"],
+  "locationScoped": true,
+  "description": "Can perform stock counts at assigned store location"
+}
+```
+
+**Evidence**:
+- Authentication feature (Architecture/3. Authentication.feature) references job-to-permission management
+- Scenarios show System Administrator managing job functions via `/admin/jobs`
+
+**Files to Create**:
+- `src/test/resources/org/darren/stock/Admin/JobManagement.feature`
+- `src/main/kotlin/org/darren/stock/ktor/Admin.kt`
+- `src/main/kotlin/org/darren/stock/domain/JobFunction.kt`
+- `src/main/kotlin/org/darren/stock/domain/Permission.kt`
+
+**Test Coverage**:
+- Create job function successfully
+- Fail to create duplicate job function
+- Update job function permissions
+- Delete job function
+- List all job functions
+- Get specific job function details
+- Fail to manage jobs without admin permission
+- Validate permission format
+- Handle location-scoped vs non-scoped jobs
 
 ---
 
@@ -305,13 +386,14 @@ One commented scenario shows validation when requestId is missing entirely.
 
 1. **Authentication & Authorization** - Foundational for security
 2. **Idempotency** - Critical for production reliability
-3. **Insufficient Stock Validation** - Prevents data integrity issues
-4. **Product Existence Validation** - Completes basic validation layer
-5. **Error Response Standardization** - Clean up before adding more features
-6. **Delivery Input Validation** - Complete delivery endpoint
-7. **Supplier Verification** - Enhanced delivery validation
-8. **API Documentation** - Before external release
-9. **Missing Request Payload** - Verify if already complete
+3. **Job Role & Permission Management** - Required to support authentication
+4. **Insufficient Stock Validation** - Prevents data integrity issues
+5. **Product Existence Validation** - Completes basic validation layer
+6. **Error Response Standardization** - Clean up before adding more features
+7. **Delivery Input Validation** - Complete delivery endpoint
+8. **Supplier Verification** - Enhanced delivery validation
+9. **API Documentation** - Before external release
+10. **Missing Request Payload** - Verify if already complete
 
 ### Testing Strategy
 
@@ -378,5 +460,5 @@ _This section will track features as they move from backlog to completion._
 ---
 
 **Last Updated**: 2025-12-13  
-**Total Backlog Items**: 9  
-**Critical**: 2 | **High**: 2 | **Medium**: 3 | **Low**: 2
+**Total Backlog Items**: 10  
+**Critical**: 2 | **High**: 2 | **Medium**: 4 | **Low**: 2
