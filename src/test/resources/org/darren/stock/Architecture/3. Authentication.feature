@@ -27,6 +27,16 @@ Feature: Authentication & Authorization
   - `name`: Colleague name
   - `job`: Job function (e.g., "Store Stock Controller")
   - `location`: Assigned location(s) if job is location-scoped (optional array)
+  - `iss`: Token issuer
+  - `aud`: Token audience
+  - `exp`: Token expiration timestamp
+  - `iat`: Token issued at timestamp
+
+  *Token Validation*
+  - JWT signature must be valid (RS256 algorithm)
+  - Token must not be expired (`exp` > current time)
+  - Issuer (`iss`) must match expected identity provider
+  - Audience (`aud`) must include this API
 
   ==== Authentication Header Format
 
@@ -66,7 +76,9 @@ Feature: Authentication & Authorization
   ==== Notes
 
   - All endpoints require authentication unless explicitly documented as public
-  - The Stock API validates the JWT signature and expiry
+  - The Stock API validates the JWT signature using public keys from the identity provider
+  - The identity provider is treated as an external system (mocked in tests)
+  - JWT tokens follow OAuth 2.0 standard with RS256 signing algorithm
   - The Stock API looks up the job function from the token and resolves it to specific permissions
   - Location-scoped permissions are validated against the location in the request
   - Expired or invalid tokens are rejected with `401 Unauthorized`
@@ -74,7 +86,8 @@ Feature: Authentication & Authorization
   - Job-to-permission mappings are managed through admin endpoints
 
   Background:
-    Given the following locations exist:
+    Given the identity provider is available
+    And the following locations exist:
       | Location Id | Parent Location Id | Roles                    |
       | DC01        |                    | TrackedInventoryLocation |
 
