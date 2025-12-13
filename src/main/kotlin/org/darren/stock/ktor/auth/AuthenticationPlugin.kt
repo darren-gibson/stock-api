@@ -3,6 +3,7 @@ package org.darren.stock.ktor.auth
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.application.hooks.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
@@ -30,19 +31,21 @@ fun Route.requiresAuth(
     permission: Permission,
     locationParam: String? = null,
 ) {
-    intercept(ApplicationCallPipeline.Call) {
-        val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
+    install(createRouteScopedPlugin("AuthenticationPlugin") {
+        on(CallSetup) { call ->
+            val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
 
-        // Authenticate
-        if (call.authenticate(jwtConfig) == null) return@intercept finish()
+            // Authenticate
+            if (call.authenticate(jwtConfig) == null) {
+                call.respond(HttpStatusCode.Unauthorized)
+                return@on
+            }
 
-        // Authorize
-        val locationId = locationParam?.let { call.parameters[it] }
-        if (!call.authorize(permission, locationId)) {
-            return@intercept finish()
+            // Authorize
+            val locationId = locationParam?.let { call.parameters[it] }
+            if (!call.authorize(permission, locationId)) {
+                return@on
+            }
         }
-
-        // Proceed to route handler
-        proceed()
-    }
+    })
 }
