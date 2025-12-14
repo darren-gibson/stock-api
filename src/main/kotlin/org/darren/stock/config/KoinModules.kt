@@ -2,19 +2,19 @@ package org.darren.stock.config
 
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
+import io.opentelemetry.api.GlobalOpenTelemetry
+import io.opentelemetry.api.metrics.Meter
 import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.ktor.idempotency.IdempotencyStore
-import org.darren.stock.ktor.idempotency.InMemoryIdempotencyStore
-import org.darren.stock.persistence.InMemoryStockEventRepository
-import org.koin.dsl.module
-import io.opentelemetry.api.GlobalOpenTelemetry
-import io.opentelemetry.api.metrics.Meter
-import org.darren.stock.ktor.idempotency.OtelResponseCacher
 import org.darren.stock.ktor.idempotency.DefaultResponseCacher
 import org.darren.stock.ktor.idempotency.IdempotencyMetrics
+import org.darren.stock.ktor.idempotency.IdempotencyStore
+import org.darren.stock.ktor.idempotency.InMemoryIdempotencyStore
+import org.darren.stock.ktor.idempotency.OtelResponseCacher
+import org.darren.stock.persistence.InMemoryStockEventRepository
+import org.koin.dsl.module
 import java.time.LocalDateTime
 
 /**
