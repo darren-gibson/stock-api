@@ -166,36 +166,56 @@ With authentication now enforced on all endpoints, existing tests were failing w
 ---
 
 ### 2. Idempotency for State-Changing Operations
-**Status**: Partially Implemented (requestId captured but not enforced)  
-**Effort**: Medium (2-3 days)
+**Status**: ✅ Core Implementation Complete (Enhancement Items Below)  
+**Effort**: Medium (2-3 days) - **COMPLETED**
 
 **Description**:
-The `requestId` parameter is documented and captured in Sale, Delivery, and Movement endpoints but duplicate requests are not detected or handled.
+The `requestId` parameter is now fully implemented with duplicate request detection and response caching. Duplicate requests return the original response without re-executing business logic.
 
-**Requirements**:
-1. **Create/validate feature specifications**:
-   - Uncomment duplicate request scenarios in test features
-   - Define exact behavior for duplicate `requestId` handling
-   - Specify response format and status code (200 vs 409)
-   - Document idempotency key TTL and storage strategy
-   - Update OpenAPI specs with idempotency behavior
-2. Implement idempotency key tracking (in-memory cache or database)
-3. Return existing response for duplicate `requestId` instead of re-processing
-4. Define TTL for idempotency keys (e.g., 24 hours)
-5. Return appropriate status code for duplicate requests (200 with existing response)
-6. Handle race conditions for concurrent duplicate requests
+**Completed**:
+1. ✅ Implemented `IdempotencyPlugin` and `IdempotencyStore` for request deduplication
+2. ✅ Created `receiveAndCheckDuplicate<T>()` helper that reads body once as typed DTO
+3. ✅ Updated Sale, Move, Delivery, and StockCount endpoints to use idempotency pattern
+4. ✅ Made `requestId` mandatory for all state-changing operations (requests without it return 400)
+5. ✅ Implemented SHA-256 body fingerprinting and content validation (body hash stored with cached response)
+6. ✅ Implemented `InMemoryIdempotencyStore` using Caffeine with a 24-hour TTL and size limits
+7. ✅ Duplicate requests return cached 2xx responses without mutating state
+8. ✅ All duplicate request test scenarios passing (Sale, Delivery, Movement, StockCount)
+
+**Enhancement Items** (Future Work):
+1. **Architecture Documentation** 🟡 Medium Priority
+   - Architecture docs updated to reflect in-memory cache now uses Caffeine with automatic expiry
+   - Documented single-read approach, body fingerprinting, TTL (24 hours), and config pointers
+
+2. **Failure Handling Tests** 🟠 High Priority
+   - Test that 500 errors are NOT cached (retries should be allowed)
+   - Verify only successful responses (2xx) are stored in IdempotencyStore
+   - Test behavior when original request fails but retry succeeds
+   - Test race conditions: concurrent requests with same requestId
+
+3. **Request Content Validation** 🟠 High Priority (COMPLETED)
+   - SHA-256 body hashing implemented and validated on duplicate requests
+   - Duplicate requestId with different body now returns `409 Conflict` and does not execute business logic
+   - Tests added to cover this behavior
+
+4. **Production Readiness** 🟡 Medium Priority
+   - TTL implemented (24 hours) in in-memory store; consider persistent Redis-backed `IdempotencyStore` for multi-instance deployments
+   - Add metrics/logging for cache hit/miss rates (TODO)
+   - Monitor cache size and consider eviction tuning (Caffeine `maximumSize` is configured)
 
 **Evidence**:
-- Sale Contract feature (line 282-297): Commented scenario for duplicate `requestId`
-- Delivery Contract documentation: "The `requestId` ensures that duplicate submissions of the same request are handled gracefully"
-- AdminOverride feature (line 56): Commented duplicate stock count scenario
+- Sale Contract feature: ✅ "Handle duplicate sale request using the same requestId" - PASSING
+- Delivery Contract feature: ✅ "Handle duplicate delivery request using the same requestId" - PASSING
+- Movement Contract feature: ✅ "Handle duplicate movement request using the same requestId" - PASSING
+- AdminOverride feature: ✅ "Handle duplicate stock count creation with the same requestId" - PASSING
 
-**Files to Modify**:
-- `src/main/kotlin/org/darren/stock/domain/` - Add idempotency tracking
-- `src/main/kotlin/org/darren/stock/ktor/Sale.kt`
-- `src/main/kotlin/org/darren/stock/ktor/Delivery.kt`
-- `src/main/kotlin/org/darren/stock/ktor/Move.kt`
-- `src/main/kotlin/org/darren/stock/ktor/StockCount.kt`
+**Files Modified**:
+- ✅ `src/main/kotlin/org/darren/stock/ktor/idempotency/IdempotencyPlugin.kt` - New
+- ✅ `src/main/kotlin/org/darren/stock/ktor/idempotency/IdempotencyStore.kt` - New
+- ✅ `src/main/kotlin/org/darren/stock/ktor/Sale.kt`
+- ✅ `src/main/kotlin/org/darren/stock/ktor/Delivery.kt`
+- ✅ `src/main/kotlin/org/darren/stock/ktor/Move.kt`
+- ✅ `src/main/kotlin/org/darren/stock/ktor/StockCount.kt`
 
 **Test Coverage**:
 - Uncomment and implement scenarios:
@@ -237,7 +257,92 @@ Sales can currently be recorded even when insufficient stock exists. The API sho
 
 ---
 
-### 4. Product Existence Validation
+### 4. OpenTelemetry Observability
+**Status**: Not Implemented  
+**Effort**: Medium (2-3 days)  
+**Priority**: 🟠 High
+
+**Description**:
+Implement comprehensive observability using OpenTelemetry (OTel) with distributed tracing, structured logging, and metrics collection. This is essential for production monitoring, debugging, and performance analysis.
+
+**Requirements**:
+
+1. **Distributed Tracing**:
+   - Add OpenTelemetry SDK for Kotlin/JVM
+   - Instrument Ktor with automatic trace context propagation
+   - Add custom spans for key operations (stock mutations, cache hits, external calls)
+   - Include trace/span IDs in all log messages for correlation
+   - Export traces to OTLP endpoint (configurable, default: localhost:4317)
+   - Trace attributes: operation type, location ID, product ID, requestId
+
+2. **Structured Logging**:
+   - Configure logback with JSON formatting (for log aggregation)
+   - Add trace context (trace_id, span_id) to all log entries
+   - Include standard fields: timestamp, level, logger, message, thread
+   - Add contextual fields: requestId, locationId, productId, userId
+   - Use MDC (Mapped Diagnostic Context) for request-scoped values
+   - Export logs to OTLP or compatible backend
+
+3. **Metrics**:
+   - HTTP request duration histogram (by endpoint, status code)
+   - Request rate counter (by endpoint, method)
+   - Idempotency cache hit/miss counter
+   - Stock operation counters (sales, deliveries, movements, counts)
+   - Business metrics: total stock value, daily sales volume
+   - JVM metrics: memory, GC, threads
+   - Export metrics to OTLP endpoint
+
+4. **Configuration**:
+   - Environment variables for OTLP endpoint configuration
+   - Service name: "stock-api"
+   - Service version from build metadata
+   - Deployment environment (dev, staging, prod)
+   - Sampling configuration (100% in dev, configurable in prod)
+
+**Implementation Details**:
+- Add dependencies:
+  - `io.opentelemetry:opentelemetry-sdk`
+  - `io.opentelemetry:opentelemetry-exporter-otlp`
+  - `io.opentelemetry.instrumentation:opentelemetry-ktor-2.0`
+  - `io.opentelemetry:opentelemetry-extension-kotlin`
+- Configure OTel in `Application.kt` module
+- Add custom instrumentation for:
+  - IdempotencyStore cache operations
+  - StockSystem business logic
+  - LocationApiClient external calls
+- Update logback.xml with JSON encoder and trace context
+- Add Koin module for OTel components
+
+**Benefits**:
+- End-to-end request tracing across services
+- Correlation of logs, traces, and metrics
+- Performance bottleneck identification
+- Cache hit rate visibility
+- Production debugging and troubleshooting
+- SLA monitoring and alerting
+
+**Test Coverage**:
+- Unit tests for custom span creation
+- Integration tests verifying trace propagation
+- Metrics collection tests
+- Log output format validation
+
+**Files to Create/Modify**:
+- `src/main/kotlin/org/darren/stock/observability/OtelConfiguration.kt` (new)
+- `src/main/kotlin/org/darren/stock/config/KoinModules.kt` - Add OTel module
+- `src/main/kotlin/org/darren/stock/ktor/Application.kt` - Install OTel plugin
+- `src/main/resources/logback.xml` - Add JSON encoder, trace context
+- `build.gradle.kts` - Add OTel dependencies
+- `src/main/resources/application.yaml` - OTel configuration properties
+
+**References**:
+- [OpenTelemetry Kotlin](https://opentelemetry.io/docs/instrumentation/java/)
+- [Ktor OpenTelemetry](https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/ktor)
+- [OTLP Specification](https://opentelemetry.io/docs/specs/otlp/)
+
+---
+
+### 5. Product Existence Validation
 **Status**: Not Implemented  
 **Effort**: Small (1 day)
 
@@ -269,7 +374,7 @@ Endpoints don't validate that a product exists before performing operations on i
 
 ## 🟡 Medium Priority
 
-### 5. Delivery Input Validation
+### 6. Delivery Input Validation
 **Status**: Partially Implemented  
 **Effort**: Small (1 day)
 
@@ -560,6 +665,6 @@ _This section will track features as they move from backlog to completion._
 
 ---
 
-**Last Updated**: 2025-12-13  
-**Total Backlog Items**: 11  
-**Critical**: 0 | **High**: 2 | **Medium**: 4 | **Low**: 2 | **Complete**: 5
+**Last Updated**: 2025-12-14  
+**Total Backlog Items**: 12  
+**Critical**: 0 | **High**: 3 | **Medium**: 4 | **Low**: 2 | **Complete**: 5

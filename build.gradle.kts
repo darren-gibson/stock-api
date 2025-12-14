@@ -48,6 +48,9 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.21")
     testImplementation("io.insert-koin:koin-test:4.1.1")
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
+
+    // Caffeine for in-memory cache with expiry
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
@@ -76,7 +79,10 @@ tasks.register<Exec>("cukedoctor") {
     )
 }
 
-tasks.named("test") { finalizedBy("cukedoctor") }
+// Only run cukedoctor for production builds, not during development/testing
+// Run explicitly with: ./gradlew cukedoctor
+// Or as part of: ./gradlew build (but not ./gradlew test)
+tasks.named("assemble") { finalizedBy("cukedoctor") }
 
 application {
     mainClass = "org.darren.stock.ktor.ApplicationKt"

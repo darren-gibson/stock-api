@@ -9,6 +9,9 @@ import org.darren.stock.domain.stockSystem.Sale.recordSale
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.Permission
 import org.darren.stock.ktor.auth.requiresAuth
+import org.darren.stock.ktor.idempotency.idempotent
+import org.darren.stock.ktor.idempotency.receiveAndCheckDuplicate
+import org.darren.stock.ktor.idempotency.respondIdempotent
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -16,16 +19,19 @@ object Sale {
     fun Routing.saleEndpoint() {
         route("/locations/{locationId}/products/{productId}/sales") {
             requiresAuth(Permission("stock", "movement", "write"), "locationId")
+            idempotent()
 
             post {
                 val locationId = call.parameters["locationId"]!!
                 val productId = call.parameters["productId"]!!
                 val stockSystem by inject<StockSystem>(StockSystem::class.java)
-                val request = call.receive<SaleRequestDTO>()
+
+                // Receive body and check for duplicates (only if requestId is present)
+                val request = call.receiveAndCheckDuplicate<SaleRequestDTO> { it.requestId } ?: return@post
 
                 with(request) {
                     stockSystem.recordSale(locationId, productId, quantity, soldAt)
-                    call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, soldAt))
+                    call.respondIdempotent(Created, SaleResponseDTO(requestId, locationId, productId, quantity, soldAt))
                 }
             }
         }

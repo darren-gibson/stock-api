@@ -308,6 +308,46 @@ Feature: Contract: Stock Movement Endpoint
       -----
       """
 
+  Scenario: Handle duplicate movement request using the same requestId
+    Given "store3" is a tracked location
+    And "warehouse1" is a tracked location
+    And a product "product123" exists in "store3" with a stock level of 100
+    And I send a POST request to "/locations/store3/product123/movements" with the following payload:
+      """
+      {
+          "destinationLocationId": "warehouse1",
+          "quantity": 20.0,
+          "requestId": "move-abc123-dup-test",
+          "reason": "replenishment",
+          "movedAt": "2024-12-26T15:35:00Z"
+      }
+      """
+    And the API should respond with status code 201
+    When I send a POST request to "/locations/store3/product123/movements" with the following payload:
+      """
+      {
+          "destinationLocationId": "warehouse1",
+          "quantity": 20.0,
+          "requestId": "move-abc123-dup-test",
+          "reason": "replenishment",
+          "movedAt": "2024-12-26T15:35:00Z"
+      }
+      """
+    Then the API should respond with status code 201
+    And the response body should contain:
+      """
+      {
+          "requestId": "move-abc123-dup-test",
+          "sourceLocationId": "store3",
+          "destinationLocationId": "warehouse1",
+          "productId": "product123",
+          "quantity": 20.0,
+          "reason": "replenishment",
+          "movedAt": "2024-12-26T15:35:00"
+      }
+      """
+    And the stock level of "product123" in "store3" should be updated to 80
+
   Scenario: Fail to record a stock movement with an untracked destination location
     When I send a POST request to "/locations/store3/product123/movements" with the following payload:
       """asciidoc

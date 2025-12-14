@@ -179,6 +179,45 @@ Feature: Contract: Record Delivery Endpoint
       -----
       """
 
+  Scenario: Handle duplicate delivery request using the same requestId
+    Given "warehouse1-receiving" is a tracked location
+    And "warehouse1-receiving" is expecting the following deliveries from "supplier123":
+      | Product ID  | Quantity |
+      | product456  | 100      |
+    And I send a POST request to "/locations/warehouse1-receiving/deliveries" with the following payload:
+      """
+      {
+          "requestId": "delivery-xyz789-dup-test",
+          "supplierId": "supplier123",
+          "supplierRef": "supplier-invoice-dup",
+          "deliveredAt": "2024-12-26T15:35:00Z",
+          "products": [
+              {
+                  "productId": "product456",
+                  "quantity": 100
+              }
+          ]
+      }
+      """
+    And the API should respond with status code 201
+    When I send a POST request to "/locations/warehouse1-receiving/deliveries" with the following payload:
+      """
+      {
+          "requestId": "delivery-xyz789-dup-test",
+          "supplierId": "supplier123",
+          "supplierRef": "supplier-invoice-dup",
+          "deliveredAt": "2024-12-26T15:35:00Z",
+          "products": [
+              {
+                  "productId": "product456",
+                  "quantity": 100
+              }
+          ]
+      }
+      """
+    Then the API should respond with status code 201
+    And the stock level of "product456" in "warehouse1-receiving" should be updated to 100
+
   Scenario: Fail to record a delivery due to invalid location
     Given "invalidLocation" does not exist as a location
     When I send a POST request to "/locations/invalidLocation/deliveries" with the following payload:

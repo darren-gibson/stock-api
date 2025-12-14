@@ -13,6 +13,9 @@ import org.darren.stock.domain.stockSystem.MoveCommand
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.Permission
 import org.darren.stock.ktor.auth.requiresAuth
+import org.darren.stock.ktor.idempotency.idempotent
+import org.darren.stock.ktor.idempotency.receiveAndCheckDuplicate
+import org.darren.stock.ktor.idempotency.respondIdempotent
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -20,13 +23,15 @@ object Move {
     fun Routing.moveEndpoint() {
         route("/locations/{sourceLocationId}/{productId}/movements") {
             requiresAuth(Permission("stock", "movement", "write"), "sourceLocationId")
+            idempotent()
 
             post {
                 val sourceId = call.parameters["sourceLocationId"]!!
                 val productId = call.parameters["productId"]!!
                 val stockSystem by inject<StockSystem>(StockSystem::class.java)
 
-                val request = call.receive<MoveRequestDTO>()
+                // Receive body and check for duplicates
+                val request = call.receiveAndCheckDuplicate<MoveRequestDTO> { it.requestId } ?: return@post
 
                 try {
                     with(request) {
@@ -40,7 +45,7 @@ object Move {
                                 movedAt = movedAt,
                             )
                         stockSystem.recordMovement(command)
-                        call.respond(
+                        call.respondIdempotent(
                             Created,
                             MoveResponseDTO(
                                 requestId,

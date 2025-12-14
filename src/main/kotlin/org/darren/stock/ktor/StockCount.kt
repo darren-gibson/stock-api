@@ -11,6 +11,9 @@ import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.domain.stockSystem.count
 import org.darren.stock.ktor.auth.Permission
 import org.darren.stock.ktor.auth.requiresAuth
+import org.darren.stock.ktor.idempotency.idempotent
+import org.darren.stock.ktor.idempotency.receiveAndCheckDuplicate
+import org.darren.stock.ktor.idempotency.respondIdempotent
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -18,6 +21,7 @@ object StockCount {
     fun Routing.stockCountEndpoint() {
         route("/locations/{locationId}/products/{productId}/counts") {
             requiresAuth(Permission("stock", "count", "write"), "locationId")
+            idempotent()
 
             post {
                 val locationId = call.parameters["locationId"]!!
@@ -25,11 +29,13 @@ object StockCount {
                 val locations by inject<LocationApiClient>(LocationApiClient::class.java)
                 val stockSystem by inject<StockSystem>(StockSystem::class.java)
 
-                val request = call.receive<StockCountRequestDTO>()
+                // Receive body and check for duplicates
+                val request = call.receiveAndCheckDuplicate<StockCountRequestDTO> { it.requestId } ?: return@post
+
                 locations.ensureValidLocation(locationId)
                 with(request) {
                     stockSystem.count(locationId, productId, quantity, reason, countedAt)
-                    call.respond(
+                    call.respondIdempotent(
                         Created,
                         StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt),
                     )
