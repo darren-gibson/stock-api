@@ -10,6 +10,11 @@ import org.darren.stock.ktor.idempotency.IdempotencyStore
 import org.darren.stock.ktor.idempotency.InMemoryIdempotencyStore
 import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.dsl.module
+import io.opentelemetry.api.GlobalOpenTelemetry
+import io.opentelemetry.api.metrics.Meter
+import org.darren.stock.ktor.idempotency.OtelResponseCacher
+import org.darren.stock.ktor.idempotency.DefaultResponseCacher
+import org.darren.stock.ktor.idempotency.IdempotencyMetrics
 import java.time.LocalDateTime
 
 /**
@@ -57,9 +62,14 @@ object KoinModules {
                 org.darren.stock.ktor.idempotency
                     .DefaultRequestFingerprint()
             }
+            single<Meter> {
+                GlobalOpenTelemetry.get().getMeter(IdempotencyMetrics.METER_NAME)
+            }
+
             single<org.darren.stock.ktor.idempotency.ResponseCacher> {
-                org.darren.stock.ktor.idempotency
-                    .DefaultResponseCacher(get())
+                // Wrap the default cacher with OTEL metrics decorator; meter is injected so tests can
+                // provide a local meter when needed.
+                OtelResponseCacher(DefaultResponseCacher(get()), get())
             }
         }
 
