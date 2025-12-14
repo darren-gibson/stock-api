@@ -66,6 +66,10 @@ class ServiceLifecycleSteps : KoinComponent {
                     module { single { LocationApiClient(locationHost) } },
                     module { single<StockSystem> { StockSystem() } },
                     module { single { testApp.client.engine } },
+                    // Register services introduced by the domain refactor so endpoints can inject them
+                    module { single<org.darren.stock.domain.service.StockReader> { org.darren.stock.domain.service.StockSystemReader(get()) } },
+                    module { single<org.darren.stock.domain.service.LocationValidator> { org.darren.stock.domain.service.LocationApiClientValidator(get()) } },
+                    module { single<org.darren.stock.domain.service.StockService> { org.darren.stock.domain.service.StockService(get(), get()) } },
                     module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
                     module { single { ApiCallStepDefinitions() } },
                     module { single { TestDateTimeProvider() } },
