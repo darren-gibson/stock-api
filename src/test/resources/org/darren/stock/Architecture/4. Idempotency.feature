@@ -61,7 +61,12 @@ Feature: Architecture Overview - Idempotency
   - **Cache Key**: The `requestId` value from the request body
   - **Cached Data**: HTTP status code, response body, `Content-Type` header, and request body hash
   - **Body Fingerprinting**: SHA-256 hash of the serialized request body; stored and validated on duplicate requests
+  - **Body Fingerprinting**: SHA-256 hash of the serialized request body; stored and validated on duplicate requests
   - **TTL**: 24 hours (entries expire automatically via Caffeine configuration)
+  - **Configuration**: The in-memory idempotency store exposes two runtime-configurable properties via Koin:
+    - `IDEMPOTENCY_TTL_SECONDS`: Time-to-live for cached responses in seconds (default: `86400` — 24 hours)
+    - `IDEMPOTENCY_MAX_SIZE`: Maximum number of cached entries to retain (default: `10000`)
+    These values can be supplied via the application's `koin.properties` or environment properties used by Koin at startup.
   - **Single Body Read**: Uses `receiveAndCheckDuplicate<T>()` to deserialize once and compute the body hash
   - **Error Caching**: Only successful responses (2xx) are cached; 4xx and 5xx responses are not cached
 
