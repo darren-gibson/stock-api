@@ -96,6 +96,57 @@ When adding a feature/endpoints:
 - Prefer adding/adjusting step definitions and feature coverage consistent with existing tests.
 - For low-level serialization or utility behavior, add small JUnit tests (see `JsonSerializerTest`).
 
+## Cucumber feature file conventions
+
+- Location: place feature files under `src/test/resources/org/darren/stock/` in a subfolder matching the
+  domain area (e.g. `Idempotency`, `Sale`). Keep feature files next to their step definitions for
+  discoverability.
+- Naming: prefer short, descriptive names with an ordering prefix where helpful (e.g. `5. Metrics.feature`).
+- Style: write features as documentation first — include a brief **Overview** and an explicit **Background**
+  section when common setup is required. Use Gherkin syntax without additional code fences or surrounding
+  markup. Avoid introducing stray backticks or fenced blocks inside `.feature` files as they break Cucumber's
+  parser.
+- Content: keep scenarios focused and readable. Prefer scenario outlines for table-driven examples and
+  keep step wording stable so step definitions remain reusable.
+- Step definitions: place step implementations under `src/test/kotlin/org/darren/stock/steps` and keep
+  them small and explicit. When testing metrics or other observability outputs, prefer using in-memory
+  testing helpers (e.g. an `InMemoryMetricReader`) and avoid registering a global SDK inside step code.
+- Metrics/tests: if a scenario asserts metric names or values, reference the canonical metric constants
+  (where available) from production code instead of repeating literal strings. This makes refactors safer
+  and keeps feature files aligned with code.
+- Formatting: treat `.feature` files as source — run Cucumber locally via Gradle to validate and avoid
+  formatting tools that may insert or wrap content incorrectly.
+- Review: when updating feature files in a PR, include a short note describing the behaviour the feature
+  documents and any non-obvious test setup (e.g. local meter providers). This helps reviewers catch
+  accidental behavioural changes.
+
+## Definition Of Done (DoD) Requirements For Feature Files
+
+To ensure feature files remain a reliable source of documentation and are compatible with Cukedoctor
+and the project's test suite, include the following checks in your pull request before merging:
+
+- **Feature syntax & AsciiDoc description:** Verify the free-form description under `Feature:` is
+  valid AsciiDoc (plain paragraphs and simple lists) and contains no code fences or inline backticks.
+- **Local validation:** Run the test suite locally and confirm Cucumber features parse and execute:
+
+  - `./gradlew test`
+  - `./gradlew spotlessApply` (fix formatting) then `./gradlew spotlessCheck`
+
+- **Cukedoctor / docs generation:** If you have the docs generation task available in your local
+  environment, generate the feature documentation and inspect the output (e.g. `build/docs/features`)
+  for correctness. If the repository later adds an automated `cukedoctor` task, run it and ensure it
+  completes without errors.
+- **Metrics & observability assertions:** When scenarios assert metrics, keep the human-readable
+  metric names in the feature description for docs, but assert values in step definitions using
+  canonical constants from production code (avoid duplicating literal strings across many files).
+- **PR checklist:** In your PR description, include a short note that the feature description is
+  AsciiDoc-friendly, tests were run locally, and docs (if generated) were inspected. Where possible,
+  include a link or path to generated docs to help reviewers.
+
+CI maintainers: consider adding a build validation step that runs the documentation generation
+task (e.g. Cukedoctor) and fails the build if generation errors occur. If you want, I can prepare a
+non-invasive Gradle task snippet or CI suggestion; ask before adding new dependencies.
+
 ## Formatting + naming
 
 - Prefer concise, intention-revealing names.

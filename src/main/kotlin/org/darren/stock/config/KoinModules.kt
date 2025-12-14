@@ -48,7 +48,19 @@ object KoinModules {
 
     val idempotencyModule =
         module {
-            single<IdempotencyStore> { InMemoryIdempotencyStore() }
+            single<IdempotencyStore> {
+                val ttl = getProperty("IDEMPOTENCY_TTL_SECONDS", "86400").toLong()
+                val max = getProperty("IDEMPOTENCY_MAX_SIZE", "10000").toLong()
+                InMemoryIdempotencyStore(ttlSeconds = ttl, maximumSize = max)
+            }
+            single<org.darren.stock.ktor.idempotency.RequestFingerprint> {
+                org.darren.stock.ktor.idempotency
+                    .DefaultRequestFingerprint()
+            }
+            single<org.darren.stock.ktor.idempotency.ResponseCacher> {
+                org.darren.stock.ktor.idempotency
+                    .DefaultResponseCacher(get())
+            }
         }
 
     /**

@@ -17,13 +17,15 @@ import java.util.concurrent.TimeUnit
  * For production with multiple instances, use a persistent implementation
  * backed by Redis or similar distributed cache.
  */
-class InMemoryIdempotencyStore : IdempotencyStore {
-    private val ttlSeconds = 86400L // 24 hours
+class InMemoryIdempotencyStore(
+    private val ttlSeconds: Long = 86_400L, // 24 hours
+    private val maximumSize: Long = 10_000L,
+) : IdempotencyStore {
     private val cache: Cache<String, IdempotentResponse> =
         Caffeine
             .newBuilder()
             .expireAfterWrite(ttlSeconds, TimeUnit.SECONDS)
-            .maximumSize(10_000)
+            .maximumSize(maximumSize)
             .build()
 
     override fun get(requestId: String): IdempotentResponse? = cache.getIfPresent(requestId)

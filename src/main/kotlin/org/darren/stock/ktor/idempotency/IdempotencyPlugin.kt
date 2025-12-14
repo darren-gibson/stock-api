@@ -11,7 +11,6 @@ import io.ktor.server.routing.*
 import io.ktor.util.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.koin.java.KoinJavaComponent.inject
 import java.security.MessageDigest
 
 val logger = KotlinLogging.logger {}
@@ -94,15 +93,22 @@ suspend inline fun <reified T : Any> ApplicationCall.receiveAndCheckDuplicate(
 
     // Compute body hash for content validation
     val json = Json.encodeToString(dto)
-    val bodyHash = computeBodyHash(json)
+    val koin =
+        org.koin.java.KoinJavaComponent
+            .getKoin()
+    val fingerprinter =
+        koin.getOrNull(RequestFingerprint::class) ?: DefaultRequestFingerprint()
+    val bodyHash = fingerprinter.fingerprint(json)
 
     // Store requestId and bodyHash for later use by respondIdempotent
     attributes.put(RequestIdKey, requestId)
     attributes.put(BodyHashKey, bodyHash)
 
     // Check for cached response
-    val store by inject<IdempotencyStore>(IdempotencyStore::class.java)
-    val cachedResponse = store.get(requestId)
+    val cacher =
+        koin.getOrNull(ResponseCacher::class)
+            ?: DefaultResponseCacher(koin.getOrNull(IdempotencyStore::class)!!)
+    val cachedResponse = cacher.get(requestId)
 
     if (cachedResponse != null) {
         // Validate that the request body matches the cached request
@@ -167,11 +173,16 @@ suspend inline fun <reified T : Any> ApplicationCall.respondIdempotent(
         val json = Json.encodeToString(message)
 
         // Store in idempotency store
-        val store by inject<IdempotencyStore>(IdempotencyStore::class.java)
+        val koin =
+            org.koin.java.KoinJavaComponent
+                .getKoin()
+        val cacher =
+            koin.getOrNull(ResponseCacher::class)
+                ?: DefaultResponseCacher(koin.getOrNull(IdempotencyStore::class)!!)
         val contentType = "application/json; charset=UTF-8"
 
         logger.info { "Storing idempotent response for requestId: $requestId, status: ${status.value}" }
-        store.put(requestId, status.value, json, contentType, bodyHash)
+        cacher.store(requestId, status.value, json, contentType, bodyHash)
     } else if (requestId != null) {
         logger.info { "Not caching error response for requestId: $requestId, status: ${status.value}" }
     }
@@ -189,11 +200,16 @@ suspend fun ApplicationCall.respondIdempotent(status: HttpStatusCode) {
     val bodyHash = attributes.getOrNull(BodyHashKey)
     if (requestId != null && bodyHash != null && status.value in 200..299) {
         // Only cache successful responses (2xx)
-        val store by inject<IdempotencyStore>(IdempotencyStore::class.java)
+        val koin =
+            org.koin.java.KoinJavaComponent
+                .getKoin()
+        val cacher =
+            koin.getOrNull(ResponseCacher::class)
+                ?: DefaultResponseCacher(koin.getOrNull(IdempotencyStore::class)!!)
         val contentType = "application/json; charset=UTF-8"
 
         logger.info { "Storing idempotent no-body response for requestId: $requestId, status: ${status.value}" }
-        store.put(requestId, status.value, "", contentType, bodyHash)
+        cacher.store(requestId, status.value, "", contentType, bodyHash)
     } else if (requestId != null) {
         logger.info { "Not caching error response for requestId: $requestId, status: ${status.value}" }
     }
