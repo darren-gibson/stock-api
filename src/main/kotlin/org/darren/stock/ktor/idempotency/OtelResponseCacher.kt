@@ -5,8 +5,13 @@ import io.opentelemetry.api.metrics.LongCounter
 import io.opentelemetry.api.metrics.Meter
 
 /**
- * ResponseCacher that records hits/misses as OpenTelemetry metrics in addition to delegating
- * to an underlying ResponseCacher implementation.
+ * Decorator for `ResponseCacher` that records hits/misses using OpenTelemetry
+ * counters while delegating actual storage to the underlying cacher.
+ *
+ * This class intentionally separates telemetry concerns from caching semantics
+ * so that instrumentation can be composed around any `ResponseCacher`
+ * implementation (for example, a remote store-backed cacher or an in-memory
+ * implementation).
  */
 class OtelResponseCacher(
     private val delegate: ResponseCacher,
