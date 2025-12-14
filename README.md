@@ -1,5 +1,8 @@
 # Stock API
 
+![CI](https://github.com/darren-gibson/stock-api/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
 Lightweight stock management API (Ktor + Koin) used for demo and integration tests.
 
 This repository contains:
