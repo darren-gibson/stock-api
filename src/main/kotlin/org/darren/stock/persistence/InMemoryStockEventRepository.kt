@@ -22,6 +22,6 @@ class InMemoryStockEventRepository : StockEventRepository {
         product: String,
         event: StockPotEvent,
     ) {
-        events.computeIfAbsent(Pair(location, product)) { mutableListOf() }.add(event)
+        events.getOrPut(Pair(location, product)) { mutableListOf() }.add(event)
     }
 }

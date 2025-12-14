@@ -14,8 +14,8 @@ import java.security.PublicKey
 private val logger = KotlinLogging.logger {}
 
 /**
- * Authentication principal representing an authenticated colleague.
- * Contains user identity and authorization context extracted from JWT token.
+ * Authentication principal representing an authenticated colleague. Contains user identity and
+ * authorization context extracted from JWT token.
  */
 data class ColleaguePrincipal(
     val sub: String,
@@ -24,23 +24,17 @@ data class ColleaguePrincipal(
     val locations: List<String>,
 )
 
-/**
- * Key for storing authenticated principal in call attributes.
- */
+/** Key for storing authenticated principal in call attributes. */
 val ColleaguePrincipalKey = AttributeKey<ColleaguePrincipal>("ColleaguePrincipal")
 
-/**
- * Configuration for JWT authentication.
- */
+/** Configuration for JWT authentication. */
 data class JwtConfig(
     val publicKey: PublicKey,
     val issuer: String,
     val audience: String,
 )
 
-/**
- * Error response for authentication failures.
- */
+/** Error response for authentication failures. */
 @Serializable
 internal data class AuthErrorDTO(
     val status: String,
@@ -54,8 +48,8 @@ internal data class AuthErrorDTO(
 fun validateToken(
     token: String,
     config: JwtConfig,
-): ColleaguePrincipal? =
-    try {
+): ColleaguePrincipal? {
+    return try {
         val claims =
             Jwts
                 .parser()
@@ -71,12 +65,7 @@ fun validateToken(
         val job = claims["job"] as? String ?: return null
         val locations = extractLocations(claims)
 
-        ColleaguePrincipal(
-            sub = sub,
-            name = name,
-            job = job,
-            locations = locations,
-        )
+        ColleaguePrincipal(sub = sub, name = name, job = job, locations = locations)
     } catch (e: JwtException) {
         logger.warn(e) { "JWT validation failed: ${e.message}" }
         null
@@ -84,11 +73,9 @@ fun validateToken(
         logger.warn(e) { "JWT validation failed: ${e.message}" }
         null
     }
+}
 
-/**
- * Extracts locations from JWT claims.
- * Handles both single string and array formats.
- */
+/** Extracts locations from JWT claims. Handles both single string and array formats. */
 private fun extractLocations(claims: Claims): List<String> {
     val locationClaim = claims["location"] ?: return emptyList()
 
@@ -99,9 +86,7 @@ private fun extractLocations(claims: Claims): List<String> {
     }
 }
 
-/**
- * Authentication interceptor that validates JWT tokens on all requests.
- */
+/** Authentication interceptor that validates JWT tokens on all requests. */
 suspend fun ApplicationCall.authenticate(config: JwtConfig): ColleaguePrincipal? {
     val authHeader = request.headers[HttpHeaders.Authorization]
 
@@ -128,8 +113,6 @@ suspend fun ApplicationCall.authenticate(config: JwtConfig): ColleaguePrincipal?
     return principal
 }
 
-/**
- * Extension to retrieve authenticated principal from call.
- */
+/** Extension to retrieve authenticated principal from call. */
 val ApplicationCall.principal: ColleaguePrincipal?
     get() = attributes.getOrNull(ColleaguePrincipalKey)

@@ -4,6 +4,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.time.LocalDateTime
@@ -15,6 +17,7 @@ import kotlin.reflect.full.memberProperties
 @OptIn(ExperimentalSerializationApi::class)
 @Serializer(forClass = LocalDateTime::class)
 object DateSerializer : KSerializer<LocalDateTime> {
+    override val descriptor = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
     private val logger = KotlinLogging.logger {}
     private val formatter = DateTimeFormatter.ISO_DATE_TIME
 
@@ -37,7 +40,11 @@ object DateSerializer : KSerializer<LocalDateTime> {
     @Suppress("UNCHECKED_CAST", "SwallowedException")
     private fun Decoder.collectDebugPath(): String {
         try {
-            val reader = (this::class as KClass<Any>).memberProperties.first { it.name == "lexer" }.getter(this)!!
+            val reader =
+                (this::class as KClass<Any>)
+                    .memberProperties
+                    .first { it.name == "lexer" }
+                    .getter(this)!!
             return (reader::class as KClass<Any>)
                 .memberProperties
                 .first { it.name == "path" }

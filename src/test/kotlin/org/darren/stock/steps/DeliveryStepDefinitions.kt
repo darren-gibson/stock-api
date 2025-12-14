@@ -21,7 +21,7 @@ class DeliveryStepDefinitions : KoinComponent {
     private val dateTimeProvider: TestDateTimeProvider by inject()
 
     @Given("{string} is due to be delivered by {string} to {string} with a quantity of {double}")
-    @Suppress("UnusedParameter")
+    @Suppress("UnusedParameter", "UNUSED_PARAMETER")
     fun isDueToBeDeliveredByToWithAQuantityOf(
         productId: String,
         supplierId: String,
@@ -32,7 +32,7 @@ class DeliveryStepDefinitions : KoinComponent {
     }
 
     @Given("{string} is expecting the following deliveries from {string}:")
-    @Suppress("UnusedParameter")
+    @Suppress("UnusedParameter", "UNUSED_PARAMETER")
     fun isExpectingTheFollowingDeliveriesFrom(
         locationId: String,
         supplierId: String,
