@@ -31,21 +31,23 @@ fun Route.requiresAuth(
     permission: Permission,
     locationParam: String? = null,
 ) {
-    install(createRouteScopedPlugin("AuthenticationPlugin") {
-        on(CallSetup) { call ->
-            val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
+    install(
+        createRouteScopedPlugin("AuthenticationPlugin") {
+            on(CallSetup) { call ->
+                val jwtConfig by inject<JwtConfig>(JwtConfig::class.java)
 
-            // Authenticate
-            if (call.authenticate(jwtConfig) == null) {
-                call.respond(HttpStatusCode.Unauthorized)
-                return@on
-            }
+                // Authenticate
+                if (call.authenticate(jwtConfig) == null) {
+                    call.respond(HttpStatusCode.Unauthorized)
+                    return@on
+                }
 
-            // Authorize
-            val locationId = locationParam?.let { call.parameters[it] }
-            if (!call.authorize(permission, locationId)) {
-                return@on
+                // Authorize
+                val locationId = locationParam?.let { call.parameters[it] }
+                if (!call.authorize(permission, locationId)) {
+                    return@on
+                }
             }
-        }
-    })
+        },
+    )
 }

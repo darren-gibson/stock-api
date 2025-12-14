@@ -31,7 +31,7 @@ Feature: Override stock count record for Product in a Location
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174000",
           "reason": "AdminOverride",
-          "quantity": 100,
+          "quantity": 100.0,
           "countedAt": "2024-12-11T09:16:29.577617"
       }
       -----
@@ -53,28 +53,42 @@ Feature: Override stock count record for Product in a Location
       """
     And the current stock level of "SKU12345" in "Warehouse-01" will equal 100
 
-#  Scenario: Handle duplicate stock count creation with the same requestId
-#    Given a valid location "Warehouse-01" exists
-#    And a valid product code "SKU12345" exists
-#    And a stock count has already been created with "requestId": "123e4567-e89b-12d3-a456-426614174000"
-#    When I resend the POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the same payload:
-#      """
-#      {
-#          "requestId": "123e4567-e89b-12d3-a456-426614174000",
-#          "reason": "AdminOverride",
-#          "quantity": 100
-#      }
-#      """
-#    Then the API should respond with status code 200
-#    And the response body should contain:
-#      """
-#      {
-#          "status": "duplicate_request",
-#          "message": "The request has already been processed.",
-#          "processedAt": "2024-12-07T10:00:00Z"
-#      }
-#      """
-#
+  Scenario: Handle duplicate stock count creation with the same requestId
+    Given "Warehouse-01" is a tracked location
+    And "SKU12345" is a valid product
+    And I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
+      """
+      {
+          "requestId": "123e4567-e89b-12d3-a456-426614174000",
+          "reason": "AdminOverride",
+          "quantity": 100.0,
+          "countedAt": "2024-12-07T10:00:00Z"
+      }
+      """
+    And the API should respond with status code 201
+    When I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
+      """
+      {
+          "requestId": "123e4567-e89b-12d3-a456-426614174000",
+          "reason": "AdminOverride",
+          "quantity": 100.0,
+          "countedAt": "2024-12-07T10:00:00Z"
+      }
+      """
+    Then the API should respond with status code 201
+    And the response body should contain:
+      """
+      {
+          "requestId": "123e4567-e89b-12d3-a456-426614174000",
+          "location": "Warehouse-01",
+          "productId": "SKU12345",
+          "quantity": 100.0,
+          "reason": "AdminOverride",
+          "countedAt": "2024-12-07T10:00:00"
+      }
+      """
+    And the current stock level of "SKU12345" in "Warehouse-01" will equal 100.0
+
   Scenario: Fail to create a stock count due to invalid location
     locations must exist and be known to the system before counts can be recorded against them. Attempting to set the stock level for a product in a location that does not exist will result in an error.
     Given an invalid location "Invalid-Warehouse" is provided
@@ -85,7 +99,7 @@ Feature: Override stock count record for Product in a Location
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174003",
           "reason": "AdminOverride",
-          "quantity": 100,
+          "quantity": 100.0,
           "countedAt": "2024-12-11T09:16:29.577617"
       }
       -----
@@ -110,7 +124,7 @@ Feature: Override stock count record for Product in a Location
       -----
       {
           "reason": "AdminOverride",
-          "quantity": 100,
+          "quantity": 100.0,
           "countedAt": "2024-12-11T09:16:29.577617"
       }
       -----
@@ -126,7 +140,7 @@ Feature: Override stock count record for Product in a Location
       -----
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174002",
-          "quantity": 100,
+          "quantity": 100.0,
           "countedAt": "2024-12-11T09:16:29.577617"
       }
       -----
@@ -159,7 +173,7 @@ Feature: Override stock count record for Product in a Location
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174002",
           "reason": "AdminOverride",
-          "quantity": 100,
+          "quantity": 100.0,
           "countedAt": "invalid-timestamp"
       }
       -----

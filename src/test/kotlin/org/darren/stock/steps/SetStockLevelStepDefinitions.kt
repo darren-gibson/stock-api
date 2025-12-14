@@ -31,6 +31,13 @@ class SetStockLevelStepDefinitions : KoinComponent {
         setStockLevels(productId, locationId, quantity)
     }
 
+    @Given("{string} is a valid product")
+    @Suppress("UnusedParameter")
+    fun isAValidProduct(productId: String) {
+        // No-op: product existence is not validated in this system
+        // Products are considered valid by virtue of being referenced
+    }
+
     private fun setStockLevels(
         productId: String,
         locationId: String,

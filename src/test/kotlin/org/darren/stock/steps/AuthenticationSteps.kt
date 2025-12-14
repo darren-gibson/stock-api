@@ -142,6 +142,7 @@ class AuthenticationSteps {
  */
 object TestContext {
     private var authorizationToken: String? = null
+    var lastRequestBody: String = ""
 
     fun setAuthorizationToken(token: String?) {
         authorizationToken = token

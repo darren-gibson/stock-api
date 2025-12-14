@@ -15,9 +15,11 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.JwtConfig
+import org.darren.stock.ktor.idempotency.IdempotencyStore
+import org.darren.stock.ktor.idempotency.InMemoryIdempotencyStore
 import org.darren.stock.ktor.module
-import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.darren.stock.steps.helpers.TestDateTimeProvider
+import org.darren.stock.steps.helpers.TestStockEventRepository
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
@@ -60,7 +62,7 @@ class ServiceLifecycleSteps : KoinComponent {
             startKoin {
                 modules(
                     module { single { client } },
-                    module { single<StockEventRepository> { InMemoryStockEventRepository() } },
+                    module { single<StockEventRepository> { TestStockEventRepository() } },
                     module { single { LocationApiClient(locationHost) } },
                     module { single<StockSystem> { StockSystem() } },
                     module { single { testApp.client.engine } },
@@ -68,6 +70,7 @@ class ServiceLifecycleSteps : KoinComponent {
                     module { single { ApiCallStepDefinitions() } },
                     module { single { TestDateTimeProvider() } },
                     module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
+                    module { single<IdempotencyStore> { InMemoryIdempotencyStore() } },
                     module {
                         single {
                             JwtConfig(

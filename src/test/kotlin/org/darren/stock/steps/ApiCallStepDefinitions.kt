@@ -25,7 +25,9 @@ class ApiCallStepDefinitions : KoinComponent {
         url: String,
         payload: String,
     ) = runBlocking {
-        response = sendPostRequest(url, payload.removeAsciiDocs())
+        val cleanPayload = payload.removeAsciiDocs()
+        TestContext.lastRequestBody = cleanPayload
+        response = sendPostRequest(url, cleanPayload)
     }
 
     suspend fun sendPostRequest(

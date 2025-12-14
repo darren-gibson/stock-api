@@ -6,6 +6,8 @@ import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.ktor.idempotency.IdempotencyStore
+import org.darren.stock.ktor.idempotency.InMemoryIdempotencyStore
 import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.dsl.module
 import java.time.LocalDateTime
@@ -44,6 +46,11 @@ object KoinModules {
             }
         }
 
+    val idempotencyModule =
+        module {
+            single<IdempotencyStore> { InMemoryIdempotencyStore() }
+        }
+
     /**
      * Returns all application modules for production use.
      */
@@ -54,5 +61,6 @@ object KoinModules {
             stockSystemModule,
             stockEventRepositoryModule,
             dateTimeProviderModule,
+            idempotencyModule,
         )
 }

@@ -49,11 +49,25 @@ class LocationAPIStepDefinitions : KoinComponent {
             createLocationForTest(locationId, "Shop")
         }
 
+    @Given("{string} is an untracked location")
+    fun isAnUntrackedLocation(locationId: String): Unit =
+        runBlocking {
+            createUntrackedLocationForTest(locationId, "Shop")
+        }
+
     private fun createLocationForTest(
         locationId: String,
         role: String,
     ) {
         locations[locationId] = SimpleLocation(locationId, listOf(role, trackedInventoryRoleName))
+    }
+
+    private fun createUntrackedLocationForTest(
+        locationId: String,
+        role: String,
+    ) {
+        // Create location WITHOUT the tracked inventory role
+        locations[locationId] = SimpleLocation(locationId, listOf(role))
     }
 
     @Given("{string} does not exist as a store")
