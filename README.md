@@ -63,4 +63,5 @@ See `CONTRIBUTING.md` for guidelines.
 
 ## License
 
-This project has no license file by default. Add a `LICENSE` (MIT/Apache-2.0) if you want to open-source it.
+This project is licensed under the MIT License — see the `LICENSE` file for details.
+
