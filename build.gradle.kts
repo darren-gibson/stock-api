@@ -55,7 +55,7 @@ dependencies {
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
 
     // Caffeine for in-memory cache with expiry
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
     // OpenTelemetry API for metrics
     implementation("io.opentelemetry:opentelemetry-api:1.57.0")
     // SDK and testing artifacts used in integration tests
