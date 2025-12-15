@@ -1,0 +1,42 @@
+package org.darren.stock.config
+
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+
+class KoinModulesTest {
+    @AfterEach
+    fun tearDown() {
+        try {
+            stopKoin()
+        } catch (ignored: Exception) {
+        }
+    }
+
+    @Test
+    fun `koin modules load and provide core bindings`() {
+        val koinApp =
+            startKoin {
+                // Provide minimal properties needed by modules that read properties
+                properties(
+                    mapOf(
+                        "LOCATION_API" to "http://localhost",
+                        "IDEMPOTENCY_TTL_SECONDS" to "60",
+                        "IDEMPOTENCY_MAX_SIZE" to "100",
+                    ),
+                )
+                modules(KoinModules.allModules())
+            }
+
+        // Resolve a couple of core bindings to ensure the modules wire correctly
+        val stockService = koinApp.koin.get<org.darren.stock.domain.service.StockService>()
+        val repository = koinApp.koin.get<org.darren.stock.domain.StockEventRepository>()
+        val dateTimeProvider = koinApp.koin.get<org.darren.stock.domain.DateTimeProvider>()
+
+        assertNotNull(stockService)
+        assertNotNull(repository)
+        assertNotNull(dateTimeProvider)
+    }
+}

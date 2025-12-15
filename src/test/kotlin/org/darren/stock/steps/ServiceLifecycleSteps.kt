@@ -11,16 +11,11 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.darren.stock.config.TestKoinModules
 import org.darren.stock.domain.DateTimeProvider
-import org.darren.stock.domain.LocationApiClient
-import org.darren.stock.domain.StockEventRepository
-import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.JwtConfig
-import org.darren.stock.ktor.idempotency.IdempotencyStore
-import org.darren.stock.ktor.idempotency.InMemoryIdempotencyStore
 import org.darren.stock.ktor.module
 import org.darren.stock.steps.helpers.TestDateTimeProvider
-import org.darren.stock.steps.helpers.TestStockEventRepository
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
@@ -69,45 +64,30 @@ class ServiceLifecycleSteps : KoinComponent {
 
     private fun registerTestKoinModules(client: HttpClient) {
         startKoin {
+            // Provide properties used by production modules
+            properties(mapOf("LOCATION_API" to locationHost))
+
+            // Load only test modules to provide test-scoped bindings (avoid duplicate production bindings)
             modules(
-                module { single { client } },
-                module { single<StockEventRepository> { TestStockEventRepository() } },
-                module { single { LocationApiClient(locationHost) } },
-                module { single<StockSystem> { StockSystem() } },
-                module { single { testApp.client.engine } },
-                // Register services introduced by the domain refactor so endpoints can inject them
-                module {
-                    single<org.darren.stock.domain.service.StockReader> {
-                        org.darren.stock.domain.service
-                            .StockSystemReader(get())
-                    }
-                },
-                module {
-                    single<org.darren.stock.domain.service.LocationValidator> {
-                        org.darren.stock.domain.service
-                            .LocationApiClientValidator(get())
-                    }
-                },
-                module {
-                    single<org.darren.stock.domain.service.StockService> {
-                        org.darren.stock.domain.service
-                            .StockService(get(), get())
-                    }
-                },
-                module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
-                module { single { ApiCallStepDefinitions() } },
-                module { single { TestDateTimeProvider() } },
-                module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
-                module { single<IdempotencyStore> { InMemoryIdempotencyStore() } },
-                module {
-                    single {
-                        JwtConfig(
-                            publicKey = AuthenticationSteps.getPublicKey(),
-                            issuer = "https://identity-provider.example.com",
-                            audience = "stock-api",
-                        )
-                    }
-                },
+                TestKoinModules.testModules(client) +
+                    listOf(
+                        // Test-specific small modules that don't belong in a shared test helper
+                        module { single { testApp.client.engine } },
+                        module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
+                        module { single { ApiCallStepDefinitions() } },
+                        module { single { TestDateTimeProvider() } },
+                        module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
+                        // JwtConfig remains test-scoped for scenarios
+                        module {
+                            single {
+                                JwtConfig(
+                                    publicKey = AuthenticationSteps.getPublicKey(),
+                                    issuer = "https://identity-provider.example.com",
+                                    audience = "stock-api",
+                                )
+                            }
+                        },
+                    ),
             )
         }
     }
