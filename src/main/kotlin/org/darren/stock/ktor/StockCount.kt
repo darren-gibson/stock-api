@@ -49,7 +49,7 @@ object StockCount {
         val requestId: String,
         val reason: StockCountReason,
         val quantity: Double,
-        @Serializable(with = DateSerializer::class) val countedAt: LocalDateTime,
+        @Serializable(with = org.darren.stock.util.DateSerializer::class) val countedAt: LocalDateTime,
     )
 
     @Serializable

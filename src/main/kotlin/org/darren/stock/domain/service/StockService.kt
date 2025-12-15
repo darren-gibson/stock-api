@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.darren.stock.domain.StockLevel
-import org.darren.stock.ktor.DateSerializer
+import org.darren.stock.util.DateSerializer
 import java.time.LocalDateTime
 
 /**
