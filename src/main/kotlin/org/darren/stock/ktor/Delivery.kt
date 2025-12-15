@@ -42,7 +42,7 @@ object Delivery {
         val requestId: String,
         val supplierId: String,
         val supplierRef: String,
-        @Serializable(with = DateSerializer::class)
+        @Serializable(with = org.darren.stock.util.DateSerializer::class)
         val deliveredAt: LocalDateTime,
         val products: List<ProductDTO>,
     )

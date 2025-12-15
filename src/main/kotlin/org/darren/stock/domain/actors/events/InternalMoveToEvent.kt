@@ -3,7 +3,7 @@ package org.darren.stock.domain.actors.events
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.MovementReason
 import org.darren.stock.domain.StockState
-import org.darren.stock.ktor.DateSerializer
+import org.darren.stock.util.DateSerializer
 import java.time.LocalDateTime
 
 @Serializable
