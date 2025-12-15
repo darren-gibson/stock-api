@@ -52,10 +52,10 @@ dependencies {
     // Caffeine for in-memory cache with expiry
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     // OpenTelemetry API for metrics
-    implementation("io.opentelemetry:opentelemetry-api:1.30.0")
+    implementation("io.opentelemetry:opentelemetry-api:1.57.0")
     // SDK and testing artifacts used in integration tests
-    testImplementation("io.opentelemetry:opentelemetry-sdk:1.30.0")
-    testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.30.0")
+    testImplementation("io.opentelemetry:opentelemetry-sdk:1.57.0")
+    testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.57.0")
     testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
