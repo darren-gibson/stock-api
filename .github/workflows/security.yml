@@ -1,0 +1,76 @@
+name: Security Checks
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  semgrep:
+    name: Semgrep scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: p/ci
+
+  dependency-check:
+    name: OWASP Dependency-Check
+    runs-on: ubuntu-latest
+    needs: semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run OWASP Dependency-Check (Docker)
+        run: |
+          mkdir -p build/reports
+          docker run --rm \
+            -v "${{ github.workspace }}":/src \
+            -v "${{ github.workspace }}/.dependency-check-data":/usr/share/dependency-check/data \
+            owasp/dependency-check:12.1.9 \
+            --project "stock-api" \
+            --scan /src \
+            --format HTML \
+            --out /src/build/reports
+      - name: Upload dependency-check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: build/reports/dependency-check-report.html
+
+  spotbugs:
+    name: SpotBugs (FindSecBugs)
+    runs-on: ubuntu-latest
+    needs: dependency-check
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+      - name: Run SpotBugs
+        run: ./gradlew spotbugsMain --no-daemon
+      - name: Upload SpotBugs report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotbugs-report
+          path: build/reports/spotbugs
+
+  build:
+    name: Build and tests
+    runs-on: ubuntu-latest
+    needs: [spotbugs]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+      - name: Run build
+        run: ./gradlew spotlessCheck detekt build --no-daemon

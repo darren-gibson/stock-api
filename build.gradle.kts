@@ -6,7 +6,10 @@ plugins {
     id("io.ktor.plugin") version "3.3.3"
     id("com.diffplug.spotless") version "7.0.0.BETA4"
     id("io.gitlab.arturbosch.detekt") version "1.23.7"
+    id("com.github.spotbugs") version "6.4.8"
 }
+
+// Note: OWASP Dependency-Check will be run from CI via the official GitHub Action
 
 group = "org.darren"
 version = "1.0-SNAPSHOT"
@@ -61,6 +64,10 @@ dependencies {
     testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
+    // SpotBugs FindSecBugs plugin for security-focused bug patterns
+    // Note: spotbugsPlugins configuration is used by the SpotBugs Gradle plugin
+    // See: https://spotbugs.github.io/ and https://find-sec-bugs.github.io/
+    // The actual declaration below uses the plugin configuration at the end of the file.
 }
 
 tasks.test {
@@ -129,3 +136,21 @@ detekt {
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     jvmTarget = "21"
 }
+
+// Configure SpotBugs
+spotbugs {
+    toolVersion.set("4.9.8")
+    ignoreFailures.set(false)
+}
+
+// Add FindSecBugs plugin for SpotBugs
+configurations {
+    create("spotbugsPlugins")
+}
+
+dependencies {
+    // Find security-focused bug patterns
+    add("spotbugsPlugins", "com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
+}
+
+// Dependency-Check is executed in CI (see .github/workflows/security.yml)
