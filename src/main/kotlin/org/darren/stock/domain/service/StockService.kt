@@ -1,12 +1,12 @@
 package org.darren.stock.domain.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.darren.stock.domain.StockLevel
 import org.darren.stock.ktor.DateSerializer
 import java.time.LocalDateTime
-import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 /**
  * Application service that encapsulates the domain interactions required to
