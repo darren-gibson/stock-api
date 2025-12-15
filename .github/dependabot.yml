@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    # Optionally ignore some updates; leave empty for now
+    # ignore:
+    #   - dependency-name: "org.example:lib"
+    #     update-types: ["version-update:semver-major"]
