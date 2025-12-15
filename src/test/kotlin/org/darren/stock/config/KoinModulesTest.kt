@@ -17,17 +17,18 @@ class KoinModulesTest {
 
     @Test
     fun `koin modules load and provide core bindings`() {
-        val koinApp = startKoin {
-            // Provide minimal properties needed by modules that read properties
-            properties(
-                mapOf(
-                    "LOCATION_API" to "http://localhost",
-                    "IDEMPOTENCY_TTL_SECONDS" to "60",
-                    "IDEMPOTENCY_MAX_SIZE" to "100",
-                ),
-            )
-            modules(KoinModules.allModules())
-        }
+        val koinApp =
+            startKoin {
+                // Provide minimal properties needed by modules that read properties
+                properties(
+                    mapOf(
+                        "LOCATION_API" to "http://localhost",
+                        "IDEMPOTENCY_TTL_SECONDS" to "60",
+                        "IDEMPOTENCY_MAX_SIZE" to "100",
+                    ),
+                )
+                modules(KoinModules.allModules())
+            }
 
         // Resolve a couple of core bindings to ensure the modules wire correctly
         val stockService = koinApp.koin.get<org.darren.stock.domain.service.StockService>()

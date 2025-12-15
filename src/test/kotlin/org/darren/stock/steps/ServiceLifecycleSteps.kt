@@ -11,23 +11,16 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.darren.stock.config.TestKoinModules
 import org.darren.stock.domain.DateTimeProvider
-import org.darren.stock.domain.LocationApiClient
-import org.darren.stock.domain.StockEventRepository
-import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.JwtConfig
-import org.darren.stock.ktor.idempotency.IdempotencyStore
-import org.darren.stock.ktor.idempotency.InMemoryIdempotencyStore
 import org.darren.stock.ktor.module
 import org.darren.stock.steps.helpers.TestDateTimeProvider
-import org.darren.stock.steps.helpers.TestStockEventRepository
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
-import org.darren.stock.config.TestKoinModules
-import org.darren.stock.config.KoinModules
 
 class ServiceLifecycleSteps : KoinComponent {
     private lateinit var testApp: TestApplication
