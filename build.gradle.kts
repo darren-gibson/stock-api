@@ -45,6 +45,8 @@ dependencies {
     testImplementation("org.junit.platform:junit-platform-suite:1.11.4")
     testImplementation("io.ktor:ktor-server-test-host-jvm:3.3.3")
     testImplementation("io.ktor:ktor-client-mock:3.3.3")
+    // Ensure Kotlin reflection is available on the test classpath for dynamic module loading
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:2.2.21")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.21")
     testImplementation("io.insert-koin:koin-test:4.1.1")
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
@@ -63,6 +65,8 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    // Disable Ktor's development auto-reload during tests to avoid dynamic module loading
+    systemProperty("io.ktor.development", "false")
 }
 
 /** Generates living documentation from Cucumber test results */

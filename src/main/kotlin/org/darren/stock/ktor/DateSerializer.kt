@@ -3,7 +3,6 @@ package org.darren.stock.ktor
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -15,7 +14,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 
 @OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = LocalDateTime::class)
 object DateSerializer : KSerializer<LocalDateTime> {
     override val descriptor = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
     private val logger = KotlinLogging.logger {}
