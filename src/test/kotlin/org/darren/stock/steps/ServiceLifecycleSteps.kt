@@ -4,6 +4,7 @@ import io.cucumber.java.After
 import io.cucumber.java.Before
 import io.cucumber.java.en.Given
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.routing.*
@@ -48,42 +49,68 @@ class ServiceLifecycleSteps : KoinComponent {
             TestContext.setAuthorizationToken(defaultToken)
 
             testApp = buildKtorTestApp()
-            val client =
-                testApp.createClient {
-                    install(ContentNegotiation) {
-                        json(
-                            Json {
-                                ignoreUnknownKeys = true
-                            },
-                        )
-                    }
-                }
+            val client = createTestClient(testApp)
 
-            startKoin {
-                modules(
-                    module { single { client } },
-                    module { single<StockEventRepository> { TestStockEventRepository() } },
-                    module { single { LocationApiClient(locationHost) } },
-                    module { single<StockSystem> { StockSystem() } },
-                    module { single { testApp.client.engine } },
-                    module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
-                    module { single { ApiCallStepDefinitions() } },
-                    module { single { TestDateTimeProvider() } },
-                    module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
-                    module { single<IdempotencyStore> { InMemoryIdempotencyStore() } },
-                    module {
-                        single {
-                            JwtConfig(
-                                publicKey = AuthenticationSteps.getPublicKey(),
-                                issuer = "https://identity-provider.example.com",
-                                audience = "stock-api",
-                            )
-                        }
+            registerTestKoinModules(client)
+
+            testApp.start()
+        }
+
+    private fun createTestClient(testApp: TestApplication) =
+        testApp.createClient {
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
                     },
                 )
             }
-            testApp.start()
         }
+
+    private fun registerTestKoinModules(client: HttpClient) {
+        startKoin {
+            modules(
+                module { single { client } },
+                module { single<StockEventRepository> { TestStockEventRepository() } },
+                module { single { LocationApiClient(locationHost) } },
+                module { single<StockSystem> { StockSystem() } },
+                module { single { testApp.client.engine } },
+                // Register services introduced by the domain refactor so endpoints can inject them
+                module {
+                    single<org.darren.stock.domain.service.StockReader> {
+                        org.darren.stock.domain.service
+                            .StockSystemReader(get())
+                    }
+                },
+                module {
+                    single<org.darren.stock.domain.service.LocationValidator> {
+                        org.darren.stock.domain.service
+                            .LocationApiClientValidator(get())
+                    }
+                },
+                module {
+                    single<org.darren.stock.domain.service.StockService> {
+                        org.darren.stock.domain.service
+                            .StockService(get(), get())
+                    }
+                },
+                module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
+                module { single { ApiCallStepDefinitions() } },
+                module { single { TestDateTimeProvider() } },
+                module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
+                module { single<IdempotencyStore> { InMemoryIdempotencyStore() } },
+                module {
+                    single {
+                        JwtConfig(
+                            publicKey = AuthenticationSteps.getPublicKey(),
+                            issuer = "https://identity-provider.example.com",
+                            audience = "stock-api",
+                        )
+                    }
+                },
+            )
+        }
+    }
 
     private fun buildKtorTestApp(): TestApplication =
         TestApplication {

@@ -7,6 +7,11 @@ import io.opentelemetry.api.metrics.Meter
 import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
+import org.darren.stock.domain.service.LocationApiClientValidator
+import org.darren.stock.domain.service.LocationValidator
+import org.darren.stock.domain.service.StockReader
+import org.darren.stock.domain.service.StockService
+import org.darren.stock.domain.service.StockSystemReader
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.idempotency.DefaultResponseCacher
 import org.darren.stock.ktor.idempotency.IdempotencyMetrics
@@ -35,6 +40,9 @@ object KoinModules {
     val stockSystemModule =
         module {
             single<StockSystem> { StockSystem() }
+            single<StockReader> { StockSystemReader(get()) }
+            single<LocationValidator> { LocationApiClientValidator(get()) }
+            single<StockService> { StockService(get(), get()) }
         }
 
     val stockEventRepositoryModule =
