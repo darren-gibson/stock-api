@@ -5,6 +5,10 @@
         </encoder>
     </appender>
 
+    <!-- Silence noisy Ktor internal DEBUG traces while keeping test-level debug available -->
+    <logger name="io.ktor.test" level="INFO" />
+    <logger name="io.ktor.server.engine" level="INFO" />
+
     <root level="debug">
         <appender-ref ref="STDOUT" />
     </root>

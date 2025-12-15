@@ -11,10 +11,11 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.ConcurrentHashMap
 
-class StockSystem : KoinComponent {
+class StockSystem(
+    private val actorScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
+) : KoinComponent {
     val locations by inject<LocationApiClient>()
     private val stockPots = ConcurrentHashMap<Pair<String, String>, SendChannel<StockPotMessages>>()
-    private val actorScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     fun getStockPot(
         locationId: String,

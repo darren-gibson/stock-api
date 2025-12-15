@@ -9,6 +9,8 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.darren.stock.config.TestKoinModules
@@ -21,6 +23,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import java.io.Closeable
+import kotlin.coroutines.ContinuationInterceptor
 
 class ServiceLifecycleSteps : KoinComponent {
     private lateinit var testApp: TestApplication
@@ -129,6 +133,19 @@ class ServiceLifecycleSteps : KoinComponent {
             if (this@ServiceLifecycleSteps::testApp.isInitialized) {
                 testApp.stop()
             }
+            // Attempt to cancel and close any test-specific coroutine scope (created by TestKoinModules)
+            try {
+                val koin = getKoin()
+                val scope = koin.getOrNull<CoroutineScope>()
+                if (scope != null) {
+                    scope.cancel()
+                    val dispatcher = scope.coroutineContext[ContinuationInterceptor] as? Closeable
+                    dispatcher?.close()
+                }
+            } catch (e: Exception) {
+                logger.warn(e) { "Failed to cleanup test coroutine scope" }
+            }
+
             stopKoin()
         }
 }
