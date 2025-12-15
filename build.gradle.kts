@@ -42,7 +42,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.4")
     testImplementation("io.cucumber:cucumber-java:7.33.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.33.0")
-    testImplementation("org.junit.platform:junit-platform-suite:1.11.4")
+    testImplementation("org.junit.platform:junit-platform-suite:6.0.1")
     testImplementation("io.ktor:ktor-server-test-host-jvm:3.3.3")
     testImplementation("io.ktor:ktor-client-mock:3.3.3")
     // Ensure Kotlin reflection is available on the test classpath for dynamic module loading
