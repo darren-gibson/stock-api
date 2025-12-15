@@ -26,7 +26,16 @@ class StockService(
         productId: String,
         includeChildren: Boolean,
     ): GetStockResponseDTO {
-        logger.debug { "StockService.getStockResponse called: locationId=$locationId productId=$productId includeChildren=$includeChildren" }
+        logger.debug {
+            buildString {
+                append("StockService.getStockResponse called: locationId=")
+                append(locationId)
+                append(" productId=")
+                append(productId)
+                append(" includeChildren=")
+                append(includeChildren)
+            }
+        }
         locationValidator.ensureValidLocation(locationId)
 
         val stockLevel: StockLevel = stockReader.retrieveValue(locationId, productId, includeChildren)
@@ -35,7 +44,7 @@ class StockService(
         try {
             val json = Json.encodeToString(dto)
             logger.debug { "StockService.getStockResponse result JSON=$json" }
-        } catch (e: Exception) {
+        } catch (e: kotlinx.serialization.SerializationException) {
             logger.debug(e) { "Failed to serialize DTO for logging" }
         }
 

@@ -160,6 +160,20 @@ non-invasive Gradle task snippet or CI suggestion; ask before adding new depende
 - Both tools are configured in `build.gradle.kts` with project-specific rules in `detekt.yml`
 - **Always run `./gradlew spotlessApply` after making code changes** to ensure consistent formatting
 
+## Pre-commit checks (agent behavior)
+
+- Before committing or pushing any code changes, run the following checks locally and ensure they pass:
+  - `./gradlew spotlessCheck` (formatting)
+  - `./gradlew detekt` (static analysis)
+  - `./gradlew build` (compile + tests)
+  - `./gradlew test` (run the test suite explicitly to ensure tests are executed and not skipped; use `--no-daemon` if your environment requires it)
+
+- If `spotlessCheck` fails, run `./gradlew spotlessApply` to auto-fix formatting and re-run the checks.
+- The code assistant (Copilot / automation) should always execute these checks before making commits or opening PRs and fix trivial formatting issues automatically.
+ - If `spotlessCheck` fails, run `./gradlew spotlessApply` to auto-fix formatting and re-run the checks.
+ - Ensure tests actually run locally by executing `./gradlew test` and fixing failures before committing. If tests are being skipped or not running due to local Gradle daemon or environment issues, run `./gradlew test --no-daemon`.
+ - The code assistant (Copilot / automation) should always execute these checks before making commits or opening PRs and fix trivial formatting issues automatically.
+
 ## Ask before changing (important)
 
 Ask the user before you do any of the following:
