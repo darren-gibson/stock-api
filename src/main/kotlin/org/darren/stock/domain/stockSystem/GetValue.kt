@@ -1,16 +1,16 @@
 package org.darren.stock.domain.stockSystem
 
-import kotlinx.coroutines.CompletableDeferred
+import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
+import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.coroutineScope
 import org.darren.stock.domain.Location
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.LocationApiClient.LocationDTO
 import org.darren.stock.domain.StockLevel
 import org.darren.stock.domain.StockState
-import org.darren.stock.domain.actors.Reply
-import org.darren.stock.domain.actors.messages.GetValue
-import org.darren.stock.domain.actors.messages.StockPotMessages
+import org.darren.stock.domain.actors.StockPotProtocol
+import org.darren.stock.domain.actors.StockPotProtocol.GetValue
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -24,26 +24,28 @@ object GetValue : KoinComponent {
         val allLocations = locationApi.getLocationsHierarchy(locationId, if (includeChildren) null else 1)
 
         val stockPots = getAllStockPotAndAllChildrenForLocation(allLocations, productId)
-
         val stockCountByLocation =
-            stockPots.entries.associate { sp ->
-                val completable = CompletableDeferred<Reply>()
-                sp.value.send(GetValue(completable))
-                sp.key to completable
+            coroutineScope {
+                stockPots.entries
+                    .map { sp ->
+                        async {
+                            val reply = sp.value.ask(GetValue())
+                            sp.key to reply
+                        }
+                    }.awaitAll()
+                    .toMap()
             }
-
-        stockCountByLocation.values.awaitAll()
 
         return convertToStockLevel(allLocations, productId, stockCountByLocation)
     }
 
-    private suspend fun convertToStockLevel(
+    private fun convertToStockLevel(
         location: LocationDTO,
         productId: String,
-        stockCountByLocation: Map<String, CompletableDeferred<Reply>>,
+        stockCountByLocation: Map<String, Result<StockPotProtocol.Reply>>,
     ): StockLevel {
-        val state =
-            stockCountByLocation[location.id]?.await()?.getOrThrow() ?: StockState(
+        val state: StockState =
+            stockCountByLocation[location.id]?.getOrThrow()?.result ?: StockState(
                 Location(location.id),
                 productId,
                 null,
@@ -60,7 +62,7 @@ object GetValue : KoinComponent {
     private fun StockSystem.getAllStockPotAndAllChildrenForLocation(
         allLocations: LocationDTO,
         productId: String,
-    ): Map<String, SendChannel<StockPotMessages>> {
+    ): Map<String, ActorRef> {
         val locationSet = getTrackedLocationIds(allLocations).toSet()
 
         return getAllActiveStockPotsFor(locationSet, productId)

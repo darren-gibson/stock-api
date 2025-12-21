@@ -31,14 +31,10 @@ fun main(args: Array<String>) {
 fun Application.module() {
     install(ContentNegotiation) {
         json(
-            Json {
-                decodeEnumsCaseInsensitive = true
-            },
+            Json { decodeEnumsCaseInsensitive = true },
         )
     }
-    install(StatusPages) {
-        handleExceptions()
-    }
+    install(StatusPages) { handleExceptions() }
     routing {
         moveEndpoint()
         statusEndpoint()

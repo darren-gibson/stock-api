@@ -36,6 +36,9 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
     implementation("ch.qos.logback:logback-classic:1.5.22")
 
+    // Actor4k for actor system
+    implementation("io.github.smyrgeorge:actor4k:1.4.5")
+
     // JWT for authentication
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")

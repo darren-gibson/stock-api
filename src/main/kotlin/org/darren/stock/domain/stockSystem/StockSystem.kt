@@ -1,49 +1,44 @@
 package org.darren.stock.domain.stockSystem
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.SendChannel
+import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
+import io.github.smyrgeorge.actor4k.system.ActorSystem
+import kotlinx.coroutines.runBlocking
 import org.darren.stock.domain.LocationApiClient
-import org.darren.stock.domain.actors.StockPotActor.Companion.createStockPotActor
-import org.darren.stock.domain.actors.messages.StockPotMessages
+import org.darren.stock.domain.ProductLocation
+import org.darren.stock.domain.actors.StockPotActor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.concurrent.ConcurrentHashMap
 
-class StockSystem(
-    private val actorScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
-) : KoinComponent {
+class StockSystem : KoinComponent {
     val locations by inject<LocationApiClient>()
-    private val stockPots = ConcurrentHashMap<Pair<String, String>, SendChannel<StockPotMessages>>()
 
-    fun getStockPot(
+    suspend fun getStockPot(
         locationId: String,
         productId: String,
-    ): SendChannel<StockPotMessages> =
-        stockPots.getOrPut(locationId to productId) {
-            createStockPotActor(locationId, productId)
-        }
-
-    fun createStockPotActor(
-        locationId: String,
-        productId: String,
-    ) = actorScope.createStockPotActor(locationId, productId)
+    ): ActorRef =
+        ActorSystem.get(
+            StockPotActor::class,
+            ProductLocation.of(productId, locationId).toString(),
+        )
 
     // TODO: Need to consider how to handle the case where a stock pot is no longer needed
     // TODO: Need to reduce to a number of stock pots that are actually needed.
-    // What about Stores with child locations of aisles, modules, shelves, etc? The numbers will soon mount up.
+    // What about Stores with child locations of aisles, modules, shelves, etc? The numbers will
+    // soon mount up.
+    // TODO: Should not be blocking here
     fun getAllActiveStockPotsFor(
         locationIds: Set<String>,
         productId: String,
-    ): Map<String, SendChannel<StockPotMessages>> {
-        val allPossible = locationIds.map { loc -> loc to productId }.toSet()
-        val toCreate = allPossible - stockPots.keys
+    ): Map<String, ActorRef> =
+        runBlocking {
+            val allPossible = locationIds.map { loc -> loc to productId }.toSet()
 
-        toCreate.forEach { (locationId, productId) ->
-            stockPots[locationId to productId] = createStockPotActor(locationId, productId)
+            allPossible.associate { (locationId, productId) ->
+                locationId to
+                    ActorSystem.get(
+                        StockPotActor::class,
+                        ProductLocation.of(productId, locationId).toString(),
+                    )
+            }
         }
-
-        return allPossible.associate { it.first to stockPots[it]!! }
-    }
 }

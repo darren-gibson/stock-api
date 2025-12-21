@@ -1,9 +1,7 @@
 package org.darren.stock.domain.stockSystem
 
-import kotlinx.coroutines.CompletableDeferred
 import org.darren.stock.domain.StockCountReason
-import org.darren.stock.domain.actors.Reply
-import org.darren.stock.domain.actors.messages.RecordCount
+import org.darren.stock.domain.actors.StockPotProtocol.RecordCount
 import java.time.LocalDateTime
 
 suspend fun StockSystem.count(
@@ -14,7 +12,7 @@ suspend fun StockSystem.count(
     eventTime: LocalDateTime,
 ) {
     val stockPot = getStockPot(location, product)
-    val result = CompletableDeferred<Reply>()
-    stockPot.send(RecordCount(eventTime, quantity, reason, result))
-    result.await().getOrThrow()
+    val reply = stockPot.ask(RecordCount(eventTime, quantity, reason)).getOrThrow()
+
+    reply.result
 }

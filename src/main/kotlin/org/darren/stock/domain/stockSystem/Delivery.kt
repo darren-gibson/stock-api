@@ -1,12 +1,8 @@
 package org.darren.stock.domain.stockSystem
 
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.channels.SendChannel
+import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
 import org.darren.stock.domain.ProductQuantity
-import org.darren.stock.domain.actors.Reply
-import org.darren.stock.domain.actors.messages.RecordDelivery
-import org.darren.stock.domain.actors.messages.StockPotMessages
+import org.darren.stock.domain.actors.StockPotProtocol
 import java.time.LocalDateTime
 
 object Delivery {
@@ -18,24 +14,23 @@ object Delivery {
         products: List<ProductQuantity>,
     ) {
         locations.ensureLocationsAreTracked(locationId)
-        val deferredList =
-            products.map {
-                val stockPot = getStockPot(locationId, it.productId)
-                processDelivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate)
-            }
-        deferredList.awaitAll()
+        products.forEach {
+            val stockPot = getStockPot(locationId, it.productId)
+            val result = processDelivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate)
+            result.getOrThrow().result
+        }
+        // TODO: These calls should be async
         // TODO: What happens if the delivery fails?
     }
 
     private suspend fun processDelivery(
-        stockPot: SendChannel<StockPotMessages>,
+        stockPot: ActorRef,
         quantity: Double,
         supplierId: String,
         supplierRef: String,
         deliveryDate: LocalDateTime,
-    ): CompletableDeferred<Reply> {
-        val result = CompletableDeferred<Reply>()
-        stockPot.send(RecordDelivery(quantity, supplierId, supplierRef, deliveryDate, result))
-        return result
-    }
+    ): Result<StockPotProtocol.Reply> =
+        stockPot.ask(
+            StockPotProtocol.RecordDelivery(quantity, supplierId, supplierRef, deliveryDate),
+        )
 }

@@ -2,7 +2,6 @@ package org.darren.stock.domain.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.darren.stock.domain.StockLevel
 import org.darren.stock.util.DateSerializer

@@ -1,10 +1,14 @@
 package org.darren.stock.config
 
+import io.github.smyrgeorge.actor4k.system.ActorSystem
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import kotlin.time.Duration.Companion.seconds
 
 class KoinModulesTest {
     @AfterEach
@@ -12,6 +16,13 @@ class KoinModulesTest {
         try {
             stopKoin()
         } catch (ignored: Exception) {
+        }
+        // Also shutdown ActorSystem
+        runBlocking {
+            try {
+                withTimeout(2.seconds) { ActorSystem.shutdown() }
+            } catch (ignored: Exception) {
+            }
         }
     }
 
