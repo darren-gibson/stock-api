@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.serialization") version "2.3.0"
     id("io.ktor.plugin") version "3.3.3"
-    id("com.diffplug.spotless") version "7.0.0.BETA4"
+    id("com.diffplug.spotless") version "8.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.7"
     id("com.github.spotbugs") version "6.4.8"
 }
