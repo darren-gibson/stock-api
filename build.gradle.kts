@@ -1,8 +1,8 @@
 @file:Suppress("LocalVariableName")
 
 plugins {
-    kotlin("jvm") version "2.2.21"
-    kotlin("plugin.serialization") version "2.2.21"
+    kotlin("jvm") version "2.3.0"
+    kotlin("plugin.serialization") version "2.3.0"
     id("io.ktor.plugin") version "3.3.3"
     id("com.diffplug.spotless") version "7.0.0.BETA4"
     id("io.gitlab.arturbosch.detekt") version "1.23.7"
@@ -52,8 +52,8 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host-jvm:3.3.3")
     testImplementation("io.ktor:ktor-client-mock:3.3.3")
     // Ensure Kotlin reflection is available on the test classpath for dynamic module loading
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect:2.2.21")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.21")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:2.3.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.3.0")
     testImplementation("io.insert-koin:koin-test:4.1.1")
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
 

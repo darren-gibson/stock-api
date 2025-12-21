@@ -101,14 +101,6 @@ class StockPotActor(
             .also { logger.debug { this } }
     }
 
-    private suspend fun processEventIfNotNull(event: StockPotEvent): StockState {
-        return if (event is NullStockPotEvent) {
-            currentState
-        } else {
-            processEvent(event)
-        }
-    }
-
     private suspend fun processEvent(event: StockPotEvent): StockState {
         persistEvent(event)
 
