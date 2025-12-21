@@ -9,8 +9,8 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.LocationApiClient.LocationDTO
 import org.darren.stock.domain.StockLevel
 import org.darren.stock.domain.StockState
-import org.darren.stock.domain.actors.messages.StockPotProtocol
-import org.darren.stock.domain.actors.messages.StockPotProtocol.GetValue
+import org.darren.stock.domain.actors.StockPotProtocol
+import org.darren.stock.domain.actors.StockPotProtocol.GetValue
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

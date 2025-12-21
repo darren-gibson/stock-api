@@ -1,6 +1,6 @@
 package org.darren.stock.domain.stockSystem
 
-import ProductLocation
+import org.darren.stock.domain.ProductLocation
 import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
 import io.github.smyrgeorge.actor4k.system.ActorSystem
 import kotlinx.coroutines.runBlocking

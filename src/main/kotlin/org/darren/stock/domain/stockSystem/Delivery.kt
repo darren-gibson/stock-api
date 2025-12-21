@@ -2,7 +2,7 @@ package org.darren.stock.domain.stockSystem
 
 import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
 import org.darren.stock.domain.ProductQuantity
-import org.darren.stock.domain.actors.messages.StockPotProtocol
+import org.darren.stock.domain.actors.StockPotProtocol
 import java.time.LocalDateTime
 
 object Delivery {

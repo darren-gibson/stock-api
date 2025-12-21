@@ -1,4 +1,4 @@
-package org.darren.stock.domain.actors.messages
+package org.darren.stock.domain.actors
 
 import io.github.smyrgeorge.actor4k.actor.ActorProtocol
 import io.github.smyrgeorge.actor4k.actor.ref.ActorRef

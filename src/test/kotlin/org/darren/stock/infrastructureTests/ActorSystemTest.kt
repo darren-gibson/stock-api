@@ -1,6 +1,6 @@
 package org.darren.stock.infrastructureTests
 
-import ProductLocation
+import org.darren.stock.domain.ProductLocation
 import io.github.smyrgeorge.actor4k.actor.Actor
 import io.github.smyrgeorge.actor4k.actor.ActorProtocol
 import io.github.smyrgeorge.actor4k.actor.Behavior
@@ -24,7 +24,7 @@ class ActorSystemTest {
 
 //    class StockPotActor(key: String) :
 //        Actor<StockPotProtocol, StockPotProtocol.Reply>(key) {
-//        private    val productLocation = ProductLocation.parse(key)
+//        private    val productLocation = org.darren.stock.domain.ProductLocation.parse(key)
 //        private   val locationId = productLocation.locationId
 //        private   val productId = productLocation.productId
 //

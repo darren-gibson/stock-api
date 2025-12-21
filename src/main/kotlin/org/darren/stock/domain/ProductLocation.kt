@@ -1,3 +1,5 @@
+package org.darren.stock.domain
+
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8

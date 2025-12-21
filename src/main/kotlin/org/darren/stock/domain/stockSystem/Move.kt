@@ -1,6 +1,6 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.actors.messages.StockPotProtocol
+import org.darren.stock.domain.actors.StockPotProtocol
 
 object Move {
     suspend fun StockSystem.recordMovement(command: MoveCommand) {

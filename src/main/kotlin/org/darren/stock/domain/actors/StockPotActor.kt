@@ -4,12 +4,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smyrgeorge.actor4k.actor.Actor
 import io.github.smyrgeorge.actor4k.actor.Behavior
 import kotlinx.coroutines.runBlocking
-import org.darren.stock.domain.InsufficientStockException
-import org.darren.stock.domain.Location
-import org.darren.stock.domain.StockEventRepository
-import org.darren.stock.domain.StockState
+import org.darren.stock.domain.*
 import org.darren.stock.domain.actors.events.*
-import org.darren.stock.domain.actors.messages.StockPotProtocol
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

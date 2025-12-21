@@ -1,6 +1,6 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.actors.messages.StockPotProtocol
+import org.darren.stock.domain.actors.StockPotProtocol
 import java.time.LocalDateTime
 
 object Sale {
