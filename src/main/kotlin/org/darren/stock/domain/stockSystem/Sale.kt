@@ -3,6 +3,7 @@ package org.darren.stock.domain.stockSystem
 import kotlinx.coroutines.CompletableDeferred
 import org.darren.stock.domain.actors.Reply
 import org.darren.stock.domain.actors.messages.RecordSale
+import org.darren.stock.domain.actors.messages.StockPotProtocol
 import java.time.LocalDateTime
 
 object Sale {
@@ -14,8 +15,6 @@ object Sale {
     ) {
         locations.ensureLocationsAreTracked(locationId)
         val stockPot = getStockPot(locationId, productId)
-        val result = CompletableDeferred<Reply>()
-        stockPot.send(RecordSale(eventTime, quantity, result))
-        result.await().getOrThrow()
+        stockPot.ask( StockPotProtocol.RecordSale(eventTime, quantity))
     }
 }
