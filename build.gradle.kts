@@ -4,9 +4,10 @@ plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.serialization") version "2.3.0"
     id("io.ktor.plugin") version "3.3.3"
-    id("com.diffplug.spotless") version "7.0.0.BETA4"
-    id("io.gitlab.arturbosch.detekt") version "1.23.7"
+    id("com.diffplug.spotless") version "8.1.0"
+    id("io.gitlab.arturbosch.detekt") version "1.23.8"
     id("com.github.spotbugs") version "6.4.8"
+    id("com.github.ben-manes.versions") version "0.53.0"
 }
 
 // Note: OWASP Dependency-Check will be run from CI via the official GitHub Action
@@ -58,7 +59,7 @@ dependencies {
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
 
     // Caffeine for in-memory cache with expiry
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
     // OpenTelemetry API for metrics
     implementation("io.opentelemetry:opentelemetry-api:1.57.0")
     // SDK and testing artifacts used in integration tests
