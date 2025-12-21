@@ -3,8 +3,6 @@ package org.darren.stock.domain.stockSystem
 import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
 import java.time.LocalDateTime
 import org.darren.stock.domain.ProductQuantity
-import org.darren.stock.domain.actors.Reply
-import org.darren.stock.domain.actors.messages.RecordDelivery
 import org.darren.stock.domain.actors.messages.StockPotProtocol
 
 object Delivery {
@@ -18,7 +16,8 @@ object Delivery {
         locations.ensureLocationsAreTracked(locationId)
         products.forEach {
             val stockPot = getStockPot(locationId, it.productId)
-            processDelivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate)
+            val result = processDelivery(stockPot, it.quantity, supplierId, supplierRef, deliveryDate).getOrThrow()
+            result.result.getOrThrow()
         }
         // TODO: These calls should be async
         // TODO: What happens if the delivery fails?

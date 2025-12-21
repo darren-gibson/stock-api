@@ -8,16 +8,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8e38962-cf38-4a07-a34e-d82d2f3e896a" name="Changes" comment="Add copilot instructions">
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/infrastructureTests/ActorSystemTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/config/KoinModules.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/config/KoinModules.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/service/StockService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/service/StockService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/GetValue.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/StockSystem.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/steps/ServiceLifecycleSteps.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/GetValue.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/RecordCount.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/RecordDelivery.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/RecordInternalMoveTo.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/RecordMove.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/RecordSale.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/messages/StockPotMessages.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Count.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Count.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Delivery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Delivery.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Move.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Sale.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/stockSystem/Sale.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/infrastructureTests/ActorSystemTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/org/darren/stock/infrastructureTests/ActorSystemTest.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,6 +128,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Cucumber Java.Feature: 1. Failure Handling.executor": "Run",
     "Cucumber Java.Feature: 1. Movement Into.executor": "Run",
     "Cucumber Java.Feature: 2. Delivery Contract.executor": "Run",
     "Cucumber Java.Feature: 2. Get Stock Contract.executor": "Run",
@@ -155,6 +161,7 @@
     "Cucumber Java.Scenario: Fail to record a stock movement with an untracked source location.executor": "Run",
     "Cucumber Java.Scenario: Retrieve the stock level only for the specific location without child locations.executor": "Run",
     "Cucumber Java.Scenario: Sale by each.executor": "Run",
+    "Cucumber Java.Scenario: Server errors (5xx) should not be cached - retries should be allowed.executor": "Run",
     "Cucumber Java.Scenario: Stock retrieval remains consistent after a system failure.executor": "Debug",
     "Cucumber Java.Scenario: Successfully create a stock count.executor": "Run",
     "Cucumber Java.Scenario: Successfully record a delivery and update stock levels.executor": "Run",
@@ -247,14 +254,14 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.RunSuiteTestClass">
-    <configuration name="Feature: 3. Sale" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: 1. Failure Handling" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/3. Sale.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Idempotency/1. Failure Handling.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
       <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
-      <option name="SUGGESTED_NAME" value="Feature: 3. Sale" />
+      <option name="SUGGESTED_NAME" value="Feature: 1. Failure Handling" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -266,15 +273,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Sale by each" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+    <configuration name="Feature: AdminOverride" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
       <option name="CUCUMBER_CORE_VERSION" value="5" />
-      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Sales/3. Sale.feature" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Counts/AdminOverride.feature" />
       <option name="GLUE" value="org.darren.stock.steps" />
       <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
       <module name="stock-api.test" />
-      <option name="NAME_FILTER" value="^Sale by each$" />
-      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Sale by each$&quot;" />
-      <option name="SUGGESTED_NAME" value="Scenario: Sale by each" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter" />
+      <option name="SUGGESTED_NAME" value="Feature: AdminOverride" />
       <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -286,53 +292,45 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ActorSystemTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;org.darren.stock.infrastructureTests.ActorSystemTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
+    <configuration name="Scenario: Server errors (5xx) should not be cached - retries should be allowed" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Idempotency/1. Failure Handling.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^Server errors \(5xx\) should not be cached \- retries should be allowed$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^Server errors \(5xx\) should not be cached \- retries should be allowed$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: Server errors (5xx) should not be cached - retries should be allowed" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
-    <configuration name="ActorSystemTest.test actor system starts and shuts down when there's a StockPot Actor" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;org.darren.stock.infrastructureTests.ActorSystemTest.test actor system starts and shuts down when there's a StockPot Actor&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
+    <configuration name="Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
+      <option name="CUCUMBER_CORE_VERSION" value="5" />
+      <option name="FILE_PATH" value="$PROJECT_DIR$/src/test/resources/org/darren/stock/Counts/AdminOverride.feature" />
+      <option name="GLUE" value="org.darren.stock.steps" />
+      <option name="MAIN_CLASS_NAME" value="io.cucumber.core.cli.Main" />
+      <module name="stock-api.test" />
+      <option name="NAME_FILTER" value="^\&quot;Override\&quot; as a stock count reason will set the stock level at that location$" />
+      <option name="PROGRAM_PARAMETERS" value=" --plugin org.jetbrains.plugins.cucumber.java.run.CucumberJvm5SMFormatter --name &quot;^\&quot;Override\&quot; as a stock count reason will set the stock level at that location$&quot;" />
+      <option name="SUGGESTED_NAME" value="Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.cucumber.core.cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="RunSuiteTestClass" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -359,19 +357,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Cucumber Java.Feature: 3. Sale" />
-      <item itemvalue="Cucumber Java.Scenario: Sale by each" />
-      <item itemvalue="Gradle.ActorSystemTest" />
-      <item itemvalue="Gradle.ActorSystemTest.test actor system starts and shuts down when there's a StockPot Actor" />
+      <item itemvalue="Cucumber Java.Feature: 1. Failure Handling" />
+      <item itemvalue="Cucumber Java.Feature: AdminOverride" />
+      <item itemvalue="Cucumber Java.Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
+      <item itemvalue="Cucumber Java.Scenario: Server errors (5xx) should not be cached - retries should be allowed" />
       <item itemvalue="Gradle.RunSuiteTestClass" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.RunSuiteTestClass" />
-        <item itemvalue="Cucumber Java.Feature: 3. Sale" />
-        <item itemvalue="Gradle.ActorSystemTest" />
-        <item itemvalue="Gradle.ActorSystemTest.test actor system starts and shuts down when there's a StockPot Actor" />
-        <item itemvalue="Cucumber Java.Scenario: Sale by each" />
+        <item itemvalue="Cucumber Java.Scenario: Server errors (5xx) should not be cached - retries should be allowed" />
+        <item itemvalue="Cucumber Java.Feature: 1. Failure Handling" />
+        <item itemvalue="Cucumber Java.Scenario: &quot;Override&quot; as a stock count reason will set the stock level at that location" />
+        <item itemvalue="Cucumber Java.Feature: AdminOverride" />
       </list>
     </recent_temporary>
   </component>
@@ -866,6 +864,29 @@
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/Move.kt</url>
           <line>33</line>
           <option name="timeStamp" value="147" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt</url>
+          <line>28</line>
+          <option name="timeStamp" value="161" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/ktor/StockCount.kt</url>
+          <line>37</line>
+          <option name="timeStamp" value="162" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt</url>
+          <line>41</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="164" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt</url>
+          <line>136</line>
+          <option name="timeStamp" value="165" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

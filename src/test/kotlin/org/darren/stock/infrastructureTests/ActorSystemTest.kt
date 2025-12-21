@@ -71,7 +71,7 @@ class ActorSystemTest {
         val registry = SimpleActorRegistry(loggerFactory).factoryFor(SimpleActor::class) { key ->
             SimpleActor(key)
         }.factoryFor(StockPotActor::class) { key ->
-            StockPotActor(key, InMemoryStockEventRepository())
+            StockPotActor(key)
         }
         ActorSystem.register(loggerFactory).register(registry).start()
     }

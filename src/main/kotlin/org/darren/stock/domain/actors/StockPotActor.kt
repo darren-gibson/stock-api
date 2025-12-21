@@ -10,14 +10,14 @@ import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.StockState
 import org.darren.stock.domain.actors.events.*
 import org.darren.stock.domain.actors.messages.StockPotProtocol
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-typealias Reply = Result<StockState>
-
-class StockPotActor(key: String, private val repository: StockEventRepository) :
-    Actor<StockPotProtocol, StockPotProtocol.Reply>(key) {
+class StockPotActor(key: String) : Actor<StockPotProtocol, StockPotProtocol.Reply>(key), KoinComponent {
     private val productLocation = ProductLocation.parse(key)
     private val locationId = productLocation.locationId
     private val productId = productLocation.productId
+    private val repository: StockEventRepository by inject()
     private var currentState = StockState(Location(locationId), productId)
     private val logger = KotlinLogging.logger {}
 

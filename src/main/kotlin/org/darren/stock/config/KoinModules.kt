@@ -101,7 +101,7 @@ object KoinModules {
                         val loggerFactory = SimpleLoggerFactory()
                         val registry = SimpleActorRegistry(loggerFactory)
                             .factoryFor(StockPotActor::class) { key ->
-                                StockPotActor(key, get())
+                                StockPotActor(key)
                             }
                         ActorSystem
                             .register(loggerFactory)
