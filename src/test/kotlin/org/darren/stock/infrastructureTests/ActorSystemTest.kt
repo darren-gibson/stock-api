@@ -1,6 +1,5 @@
 package org.darren.stock.infrastructureTests
 
-import org.darren.stock.domain.ProductLocation
 import io.github.smyrgeorge.actor4k.actor.Actor
 import io.github.smyrgeorge.actor4k.actor.ActorProtocol
 import io.github.smyrgeorge.actor4k.actor.Behavior
@@ -9,6 +8,7 @@ import io.github.smyrgeorge.actor4k.system.registry.SimpleActorRegistry
 import io.github.smyrgeorge.actor4k.util.SimpleLoggerFactory
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.darren.stock.domain.ProductLocation
 import org.darren.stock.domain.actors.StockPotActor
 import org.junit.jupiter.api.Test
 import kotlin.time.Duration.Companion.seconds
@@ -21,21 +21,6 @@ class ActorSystemTest {
             TODO("Not yet implemented")
         }
     }
-
-//    class StockPotActor(key: String) :
-//        Actor<StockPotProtocol, StockPotProtocol.Reply>(key) {
-//        private    val productLocation = org.darren.stock.domain.ProductLocation.parse(key)
-//        private   val locationId = productLocation.locationId
-//        private   val productId = productLocation.productId
-//
-//        override suspend fun onReceive(m: StockPotProtocol): Behavior<StockPotProtocol.Reply> {
-//            TODO("Not yet implemented")
-//        }
-//
-// //        override suspend fun onReceive(m: ActorProtocol): Behavior<ActorProtocol.Response> {
-// //            TODO("Not yet implemented")
-// //        }
-//    }
 
     @Test
     fun `test actor system starts and shuts down when there's no actors`() {

@@ -3,11 +3,11 @@ package org.darren.stock.domain.actors
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smyrgeorge.actor4k.actor.Actor
 import io.github.smyrgeorge.actor4k.actor.Behavior
-import kotlinx.coroutines.runBlocking
 import org.darren.stock.domain.*
 import org.darren.stock.domain.actors.events.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.LocalDateTime
 
 class StockPotActor(
     key: String,
@@ -18,6 +18,7 @@ class StockPotActor(
     private val productId = productLocation.productId
     private val repository: StockEventRepository by inject()
     private var currentState = StockState(Location(locationId), productId)
+    private var lastEventTime: LocalDateTime? = null
     private val logger = KotlinLogging.logger {}
 
     init {
@@ -30,9 +31,8 @@ class StockPotActor(
     }
 
     override suspend fun onBeforeActivate() {
-        // Optional override.
         logger.info { "[${address()}] onBeforeActivate" }
-        recreateState()
+        recreateStateFromEvents()
         super.onBeforeActivate()
     }
 
@@ -42,97 +42,128 @@ class StockPotActor(
         super.onActivate(m)
     }
 
-    private fun protocolToEvent(m: StockPotProtocol): StockPotEvent =
-        when (m) {
+    private suspend fun convertProtocolToEvent(protocol: StockPotProtocol): StockPotEvent =
+        when (protocol) {
             is StockPotProtocol.GetValue -> NullStockPotEvent()
-            is StockPotProtocol.RecordCount -> CountEvent(m.eventTime, m.quantity, m.reason)
+            is StockPotProtocol.RecordCount -> CountEvent(protocol.eventTime, protocol.quantity, protocol.reason)
             is StockPotProtocol.RecordDelivery ->
-                DeliveryEvent(m.quantity, m.supplierId, m.supplierRef, m.eventTime)
+                DeliveryEvent(protocol.quantity, protocol.supplierId, protocol.supplierRef, protocol.eventTime)
 
             is StockPotProtocol.RecordInternalMoveTo ->
-                InternalMoveToEvent(m.productId, m.quantity, m.from, m.reason, m.eventTime)
+                InternalMoveToEvent(protocol.productId, protocol.quantity, protocol.from, protocol.reason, protocol.eventTime)
 
-            is StockPotProtocol.RecordMove -> performMove(m)
-            is StockPotProtocol.RecordSale -> SaleEvent(m.eventTime, m.quantity)
+            is StockPotProtocol.RecordMove -> handleMove(protocol)
+            is StockPotProtocol.RecordSale -> SaleEvent(protocol.eventTime, protocol.quantity)
         }
 
-    private fun performMove(m: StockPotProtocol.RecordMove): StockPotEvent {
-        with(currentState) {
-            val toState = performMove(productId, location.id, m)
-            return MoveEvent(
-                m.quantity,
-                toState.location.id,
-                m.reason,
-                m.eventTime,
-            )
-        }
+    private suspend fun handleMove(recordMove: StockPotProtocol.RecordMove): StockPotEvent {
+        validateMove(recordMove)
+        val destinationState = performInterActorMove(recordMove)
+        return createMoveEvent(recordMove, destinationState)
     }
 
-    private fun performMove(
-        productId: String,
-        locationId: String,
-        m: StockPotProtocol.RecordMove,
-    ): StockState {
-        if (currentState.quantity!! < m.quantity) {
+    private fun validateMove(recordMove: StockPotProtocol.RecordMove) {
+        if (currentState.quantity!! < recordMove.quantity) {
             throw InsufficientStockException()
         }
+    }
 
-        return runBlocking {
-            m.to.ask(
+    private suspend fun performInterActorMove(recordMove: StockPotProtocol.RecordMove): StockState =
+        recordMove.to
+            .ask(
                 StockPotProtocol.RecordInternalMoveTo(
                     productId,
-                    m.quantity,
+                    recordMove.quantity,
                     locationId,
-                    m.reason,
-                    m.eventTime,
+                    recordMove.reason,
+                    recordMove.eventTime,
                 ),
-            )
-        }.getOrThrow()
+            ).getOrThrow()
             .result
-    }
+
+    private fun createMoveEvent(
+        recordMove: StockPotProtocol.RecordMove,
+        destinationState: StockState,
+    ): StockPotEvent =
+        MoveEvent(
+            recordMove.quantity,
+            destinationState.location.id,
+            recordMove.reason,
+            recordMove.eventTime,
+        )
 
     override suspend fun onReceive(m: StockPotProtocol): Behavior<StockPotProtocol.Reply> {
         logger.debug { "$this, MSG=$m" }
-
+        val event = convertProtocolToEvent(m)
+        val newState = processEvent(event)
         return Behavior
-            .Reply(
-                StockPotProtocol.Reply(
-                    processEvent(protocolToEvent(m)),
-                ),
-            ).also {
-                logger.debug { this }
-            }
+            .Reply(StockPotProtocol.Reply(newState))
+            .also { logger.debug { this } }
     }
 
-    private suspend fun processEvent(stockPotEvent: StockPotEvent): StockState {
-        if (stockPotEvent !is NullStockPotEvent) {
-            persistEvent(stockPotEvent)
-            return applyOrRecreateStateIfOutOfOrderEvent(stockPotEvent)
+    private suspend fun processEventIfNotNull(event: StockPotEvent): StockState {
+        return if (event is NullStockPotEvent) {
+            currentState
         } else {
-            return applyEvent(stockPotEvent)
+            processEvent(event)
         }
     }
 
-    private suspend fun StockPotActor.applyOrRecreateStateIfOutOfOrderEvent(
-        stockPotEvent: StockPotEvent,
-    ) = if (stockPotEvent.eventDateTime.isBefore(currentState.lastUpdated)) {
+    private suspend fun processEvent(event: StockPotEvent): StockState {
+        persistEvent(event)
+
+        return if (isEventOutOfOrder(event)) {
+            handleOutOfOrderEvent(event)
+        } else {
+            handleInOrderEvent(event)
+        }
+    }
+
+    private fun isEventOutOfOrder(event: StockPotEvent): Boolean = lastEventTime != null && event.eventDateTime < lastEventTime
+
+    private suspend fun handleOutOfOrderEvent(event: StockPotEvent): StockState {
         logger.debug {
-            "${stockPotEvent.eventDateTime} is before current state: ${currentState.lastUpdated}"
+            "Event $event is out of order (lastEventTime=$lastEventTime, eventTime=${event.eventDateTime}), rebuilding state"
         }
-        recreateState()
-    } else {
-        applyEvent(stockPotEvent)
+        return recreateStateFromEvents()
     }
 
-    private suspend fun recreateState(): StockState {
-        currentState = StockState(currentState.location, currentState.productId)
-        val events = repository.getEvents(currentState.location.id, currentState.productId)
-        currentState = events.fold(currentState) { acc, stockPotEvent -> stockPotEvent.apply(acc) }
+    private suspend fun handleInOrderEvent(event: StockPotEvent): StockState {
+        applyEvent(event)
+        lastEventTime = event.eventDateTime
         return currentState
     }
 
-    private fun persistEvent(stockPotEvent: StockPotEvent) {
-        repository.insert(currentState.location.id, currentState.productId, stockPotEvent)
+    private suspend fun recreateStateFromEvents(): StockState {
+        logger.debug { "Recreating state from events due to out-of-order event" }
+        currentState = StockState(currentState.location, currentState.productId)
+        val events = repository.getEvents(locationId, productId)
+        currentState = events.fold(currentState) { state, event -> event.apply(state) }
+
+        // Update lastEventTime to the latest event time
+        lastEventTime = events.maxOfOrNull { it.eventDateTime }
+
+        return currentState
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private inline fun <T> logOperation(
+        operation: String,
+        block: () -> T,
+    ): T {
+        logger.debug { "Starting $operation" }
+        return try {
+            block().also { logger.debug { "Completed $operation" } }
+        } catch (e: Throwable) {
+            logger.error(e) { "Failed $operation" }
+            throw e
+        }
+    }
+
+    private suspend fun persistEvent(event: StockPotEvent) {
+        logOperation("persisting event $event") {
+            repository.insert(locationId, productId, event)
+        }
     }
 
     private suspend fun applyEvent(stockPotEvent: StockPotEvent): StockState {

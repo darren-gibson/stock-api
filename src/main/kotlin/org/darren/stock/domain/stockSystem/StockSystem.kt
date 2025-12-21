@@ -1,10 +1,10 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.ProductLocation
 import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
 import io.github.smyrgeorge.actor4k.system.ActorSystem
 import kotlinx.coroutines.runBlocking
 import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.ProductLocation
 import org.darren.stock.domain.actors.StockPotActor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
