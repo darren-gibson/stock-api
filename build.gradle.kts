@@ -5,7 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "2.3.0"
     id("io.ktor.plugin") version "3.3.3"
     id("com.diffplug.spotless") version "7.0.0.BETA4"
-    id("io.gitlab.arturbosch.detekt") version "1.23.7"
+    id("io.gitlab.arturbosch.detekt") version "1.23.8"
     id("com.github.spotbugs") version "6.4.8"
 }
 
