@@ -4,6 +4,7 @@ import io.cucumber.java.After
 import io.cucumber.java.Before
 import io.cucumber.java.en.Given
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.smyrgeorge.actor4k.system.ActorSystem
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
@@ -13,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.darren.stock.config.KoinModules.actor4kModule
 import org.darren.stock.config.TestKoinModules
 import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.ktor.auth.JwtConfig
@@ -77,6 +79,7 @@ class ServiceLifecycleSteps : KoinComponent {
                     listOf(
                         // Test-specific small modules that don't belong in a shared test helper
                         module { single { testApp.client.engine } },
+                        actor4kModule,
                         module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
                         module { single { ApiCallStepDefinitions() } },
                         module { single { TestDateTimeProvider() } },
@@ -147,5 +150,7 @@ class ServiceLifecycleSteps : KoinComponent {
             }
 
             stopKoin()
+            // TODO: Consider whether ActorSystem should be a Koin-managed singleton instead
+            ActorSystem.shutdown()
         }
 }

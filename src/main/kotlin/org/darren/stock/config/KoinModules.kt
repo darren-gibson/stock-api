@@ -1,5 +1,9 @@
 package org.darren.stock.config
 
+import ProductLocation
+import io.github.smyrgeorge.actor4k.system.ActorSystem
+import io.github.smyrgeorge.actor4k.system.registry.SimpleActorRegistry
+import io.github.smyrgeorge.actor4k.util.SimpleLoggerFactory
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
 import io.opentelemetry.api.GlobalOpenTelemetry
@@ -7,6 +11,7 @@ import io.opentelemetry.api.metrics.Meter
 import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
+import org.darren.stock.domain.actors.StockPotActor
 import org.darren.stock.domain.service.LocationApiClientValidator
 import org.darren.stock.domain.service.LocationValidator
 import org.darren.stock.domain.service.StockReader
@@ -19,8 +24,15 @@ import org.darren.stock.ktor.idempotency.IdempotencyStore
 import org.darren.stock.ktor.idempotency.InMemoryIdempotencyStore
 import org.darren.stock.ktor.idempotency.OtelResponseCacher
 import org.darren.stock.persistence.InMemoryStockEventRepository
+import org.koin.core.Koin
+import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.time.LocalDateTime
+
+/**
+ * Marker interface for Actor4k initializer.
+ */
+interface Actor4kInitializer
 
 /**
  * Application-level Koin module definitions.
@@ -81,6 +93,25 @@ object KoinModules {
             }
         }
 
+    val actor4kModule =
+        module(createdAtStart = true) {
+            single<Actor4kInitializer> {
+                object : Actor4kInitializer {
+                    init {
+                        val loggerFactory = SimpleLoggerFactory()
+                        val registry = SimpleActorRegistry(loggerFactory)
+                            .factoryFor(StockPotActor::class) { key ->
+                                StockPotActor(key, get())
+                            }
+                        ActorSystem
+                            .register(loggerFactory)
+                            .register(registry)
+                            .start()
+                    }
+                }
+            }
+        }
+
     /**
      * Returns all application modules for production use.
      */
@@ -92,5 +123,6 @@ object KoinModules {
             stockEventRepositoryModule,
             dateTimeProviderModule,
             idempotencyModule,
+            actor4kModule,
         )
 }
