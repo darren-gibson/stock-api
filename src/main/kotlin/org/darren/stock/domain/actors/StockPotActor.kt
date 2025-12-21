@@ -13,7 +13,10 @@ import org.darren.stock.domain.actors.messages.StockPotProtocol
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class StockPotActor(key: String) : Actor<StockPotProtocol, StockPotProtocol.Reply>(key), KoinComponent {
+class StockPotActor(
+    key: String,
+) : Actor<StockPotProtocol, StockPotProtocol.Reply>(key),
+    KoinComponent {
     private val productLocation = ProductLocation.parse(key)
     private val locationId = productLocation.locationId
     private val productId = productLocation.productId
@@ -26,7 +29,7 @@ class StockPotActor(key: String) : Actor<StockPotProtocol, StockPotProtocol.Repl
     }
 
     override suspend fun onShutdown() {
-        logger.info { "[${this} ${address()}] onShutdown" }
+        logger.info { "[$this ${address()}] onShutdown" }
         super.onShutdown()
     }
 
@@ -43,8 +46,8 @@ class StockPotActor(key: String) : Actor<StockPotProtocol, StockPotProtocol.Repl
         super.onActivate(m)
     }
 
-    private fun protocolToEvent(m: StockPotProtocol): StockPotEvent {
-        return when (m) {
+    private fun protocolToEvent(m: StockPotProtocol): StockPotEvent =
+        when (m) {
             is StockPotProtocol.GetValue -> NullStockPotEvent()
             is StockPotProtocol.RecordCount -> CountEvent(m.eventTime, m.quantity, m.reason)
             is StockPotProtocol.RecordDelivery ->
@@ -56,7 +59,6 @@ class StockPotActor(key: String) : Actor<StockPotProtocol, StockPotProtocol.Repl
             is StockPotProtocol.RecordMove -> performMove(m)
             is StockPotProtocol.RecordSale -> SaleEvent(m.eventTime, m.quantity)
         }
-    }
 
     private fun performMove(m: StockPotProtocol.RecordMove): StockPotEvent {
         with(currentState) {
@@ -65,7 +67,7 @@ class StockPotActor(key: String) : Actor<StockPotProtocol, StockPotProtocol.Repl
                 m.quantity,
                 toState.location.id,
                 m.reason,
-                m.eventTime
+                m.eventTime,
             )
         }
     }
@@ -73,7 +75,7 @@ class StockPotActor(key: String) : Actor<StockPotProtocol, StockPotProtocol.Repl
     private fun performMove(
         productId: String,
         locationId: String,
-        m: StockPotProtocol.RecordMove
+        m: StockPotProtocol.RecordMove,
     ): StockState {
         if (currentState.quantity!! < m.quantity) {
             throw InsufficientStockException()
@@ -86,45 +88,45 @@ class StockPotActor(key: String) : Actor<StockPotProtocol, StockPotProtocol.Repl
                     m.quantity,
                     locationId,
                     m.reason,
-                    m.eventTime
-                )
+                    m.eventTime,
+                ),
             )
-        }
-            .getOrThrow()
+        }.getOrThrow()
             .result
-            .getOrThrow()
     }
 
     override suspend fun onReceive(m: StockPotProtocol): Behavior<StockPotProtocol.Reply> {
         logger.debug { "$this, MSG=$m" }
 
-        return Behavior.Reply(
-            StockPotProtocol.Reply(
-                Result.runCatching {
-                    val stockPotEvent = protocolToEvent(m)
-                    if (stockPotEvent !is NullStockPotEvent) {
-                        persistEvent(stockPotEvent)
-                        applyOrRecreateStateIfOutOfOrderEvent(stockPotEvent)
-                    } else {
-                        applyEvent(stockPotEvent)
-                    }
-                }
-            )
-                .also { logger.debug { this } }
-        )
+        return Behavior
+            .Reply(
+                StockPotProtocol.Reply(
+                    processEvent(protocolToEvent(m)),
+                ),
+            ).also {
+                logger.debug { this }
+            }
+    }
+
+    private suspend fun processEvent(stockPotEvent: StockPotEvent): StockState {
+        if (stockPotEvent !is NullStockPotEvent) {
+            persistEvent(stockPotEvent)
+            return applyOrRecreateStateIfOutOfOrderEvent(stockPotEvent)
+        } else {
+            return applyEvent(stockPotEvent)
+        }
     }
 
     private suspend fun StockPotActor.applyOrRecreateStateIfOutOfOrderEvent(
-        stockPotEvent: StockPotEvent
-    ) =
-        if (stockPotEvent.eventDateTime.isBefore(currentState.lastUpdated)) {
-            logger.debug {
-                "${stockPotEvent.eventDateTime} is before current state: ${currentState.lastUpdated}"
-            }
-            recreateState()
-        } else {
-            applyEvent(stockPotEvent)
+        stockPotEvent: StockPotEvent,
+    ) = if (stockPotEvent.eventDateTime.isBefore(currentState.lastUpdated)) {
+        logger.debug {
+            "${stockPotEvent.eventDateTime} is before current state: ${currentState.lastUpdated}"
         }
+        recreateState()
+    } else {
+        applyEvent(stockPotEvent)
+    }
 
     private suspend fun recreateState(): StockState {
         currentState = StockState(currentState.location, currentState.productId)

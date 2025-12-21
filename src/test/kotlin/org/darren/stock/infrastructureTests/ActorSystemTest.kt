@@ -10,12 +10,13 @@ import io.github.smyrgeorge.actor4k.util.SimpleLoggerFactory
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.darren.stock.domain.actors.StockPotActor
-import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.junit.jupiter.api.Test
 import kotlin.time.Duration.Companion.seconds
 
 class ActorSystemTest {
-    class SimpleActor(key: String) : Actor<ActorProtocol, ActorProtocol.Response>(key) {
+    class SimpleActor(
+        key: String,
+    ) : Actor<ActorProtocol, ActorProtocol.Response>(key) {
         override suspend fun onReceive(m: ActorProtocol): Behavior<ActorProtocol.Response> {
             TODO("Not yet implemented")
         }
@@ -31,9 +32,9 @@ class ActorSystemTest {
 //            TODO("Not yet implemented")
 //        }
 //
-////        override suspend fun onReceive(m: ActorProtocol): Behavior<ActorProtocol.Response> {
-////            TODO("Not yet implemented")
-////        }
+// //        override suspend fun onReceive(m: ActorProtocol): Behavior<ActorProtocol.Response> {
+// //            TODO("Not yet implemented")
+// //        }
 //    }
 
     @Test
@@ -62,17 +63,23 @@ class ActorSystemTest {
 
     private fun stop() {
         runBlocking {
-            withTimeout(2.seconds) {  ActorSystem.shutdown() }
+            withTimeout(2.seconds) { ActorSystem.shutdown() }
         }
     }
 
     private fun start() {
-        val loggerFactory = SimpleLoggerFactory()
-        val registry = SimpleActorRegistry(loggerFactory).factoryFor(SimpleActor::class) { key ->
-            SimpleActor(key)
-        }.factoryFor(StockPotActor::class) { key ->
-            StockPotActor(key)
+        // Ensure any previous system is shut down
+        runBlocking {
+            withTimeout(2.seconds) { ActorSystem.shutdown() }
         }
+        val loggerFactory = SimpleLoggerFactory()
+        val registry =
+            SimpleActorRegistry(loggerFactory)
+                .factoryFor(SimpleActor::class) { key ->
+                    SimpleActor(key)
+                }.factoryFor(StockPotActor::class) { key ->
+                    StockPotActor(key)
+                }
         ActorSystem.register(loggerFactory).register(registry).start()
     }
 }

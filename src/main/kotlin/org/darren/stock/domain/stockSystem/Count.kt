@@ -14,5 +14,5 @@ suspend fun StockSystem.count(
     val stockPot = getStockPot(location, product)
     val reply = stockPot.ask(RecordCount(eventTime, quantity, reason)).getOrThrow()
 
-    reply.result.getOrThrow()
+    reply.result
 }

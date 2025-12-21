@@ -1,9 +1,6 @@
 package org.darren.stock.config
 
 import io.ktor.client.HttpClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.newSingleThreadContext
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.idempotency.IdempotencyStore
@@ -29,12 +26,8 @@ object TestKoinModules {
                 single<LocationApiClient> { LocationApiClient("http://location.api.darren.org") }
 
                 // Stock system used by domain services
-                // Provide a deterministic single-threaded scope for actors during tests
-                single<kotlinx.coroutines.CoroutineScope> {
-                    CoroutineScope(SupervisorJob() + newSingleThreadContext("test-stock-actors"))
-                }
                 single<StockSystem> {
-                    StockSystem(get())
+                    StockSystem()
                 }
 
                 // Provide an in-memory idempotency store for tests

@@ -12,7 +12,7 @@ object Sale {
     ) {
         locations.ensureLocationsAreTracked(locationId)
         val stockPot = getStockPot(locationId, productId)
-        val result = stockPot.ask( StockPotProtocol.RecordSale(eventTime, quantity)).getOrThrow()
-        result.result.getOrThrow()
+        val result = stockPot.ask(StockPotProtocol.RecordSale(eventTime, quantity))
+        result.getOrThrow().result
     }
 }

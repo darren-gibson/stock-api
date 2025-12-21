@@ -24,14 +24,17 @@ object GetValue : KoinComponent {
         val allLocations = locationApi.getLocationsHierarchy(locationId, if (includeChildren) null else 1)
 
         val stockPots = getAllStockPotAndAllChildrenForLocation(allLocations, productId)
-        val stockCountByLocation = coroutineScope {
-            stockPots.entries.map { sp ->
-                async {
-                    val reply = sp.value.ask(GetValue())
-                    sp.key to reply
-                }
-            }.awaitAll().toMap()
-        }
+        val stockCountByLocation =
+            coroutineScope {
+                stockPots.entries
+                    .map { sp ->
+                        async {
+                            val reply = sp.value.ask(GetValue())
+                            sp.key to reply
+                        }
+                    }.awaitAll()
+                    .toMap()
+            }
 
         return convertToStockLevel(allLocations, productId, stockCountByLocation)
     }
@@ -42,7 +45,7 @@ object GetValue : KoinComponent {
         stockCountByLocation: Map<String, Result<StockPotProtocol.Reply>>,
     ): StockLevel {
         val state: StockState =
-            stockCountByLocation[location.id]?.getOrThrow()?.result?.getOrThrow() ?: StockState(
+            stockCountByLocation[location.id]?.getOrThrow()?.result ?: StockState(
                 Location(location.id),
                 productId,
                 null,

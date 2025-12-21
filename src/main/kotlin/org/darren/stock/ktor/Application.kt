@@ -23,14 +23,15 @@ fun main(args: Array<String>) {
         fileProperties()
         modules(KoinModules.allModules())
     }
-    io.ktor.server.netty.EngineMain.main(args)
+    io.ktor.server.netty.EngineMain
+        .main(args)
 }
 
 @OptIn(ExperimentalSerializationApi::class)
 fun Application.module() {
     install(ContentNegotiation) {
         json(
-                Json { decodeEnumsCaseInsensitive = true },
+            Json { decodeEnumsCaseInsensitive = true },
         )
     }
     install(StatusPages) { handleExceptions() }

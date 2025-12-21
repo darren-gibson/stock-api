@@ -3,7 +3,9 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
 
 @JvmInline
-value class ProductLocation private constructor(private val encoded: String) {
+value class ProductLocation private constructor(
+    private val encoded: String,
+) {
     val productId: String
         get() = decode(parts.first)
 
@@ -22,7 +24,10 @@ value class ProductLocation private constructor(private val encoded: String) {
     companion object {
         private const val SEPARATOR = "|"
 
-        fun of(productId: String, locationId: String): ProductLocation {
+        fun of(
+            productId: String,
+            locationId: String,
+        ): ProductLocation {
             require(productId.isNotBlank()) { "productId must not be blank" }
             require(locationId.isNotBlank()) { "locationId must not be blank" }
 
