@@ -1,8 +1,8 @@
 @file:Suppress("LocalVariableName")
 
 plugins {
-    kotlin("jvm") version "2.3.0"
-    kotlin("plugin.serialization") version "2.3.0"
+    kotlin("jvm") version "2.2.21"
+    kotlin("plugin.serialization") version "2.2.21"
     id("io.ktor.plugin") version "3.3.3"
     id("com.diffplug.spotless") version "8.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
@@ -31,8 +31,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
-    implementation("io.insert-koin:koin-core:4.1.1")
-    implementation("io.insert-koin:koin-ktor:4.1.1")
+    runtimeOnly("io.insert-koin:koin-core:4.2.0-beta2")
+    implementation("io.insert-koin:koin-ktor:4.2.0-beta2")
 
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
     implementation("ch.qos.logback:logback-classic:1.5.22")
@@ -53,8 +53,8 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host-jvm:3.3.3")
     testImplementation("io.ktor:ktor-client-mock:3.3.3")
     // Ensure Kotlin reflection is available on the test classpath for dynamic module loading
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect:2.3.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.3.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:2.2.21")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.21")
     testImplementation("io.insert-koin:koin-test:4.1.1")
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
 
@@ -109,7 +109,7 @@ application {
 }
 
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(21)
 }
 
 spotless {
@@ -138,7 +138,7 @@ detekt {
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    jvmTarget = "21"
+    jvmTarget = "22"
 }
 
 // Configure SpotBugs
@@ -154,4 +154,4 @@ dependencies {
     add("spotbugsPlugins", "com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
 }
 
-// Dependency-Check is executed in CI (see .github/workflows/security.yml)
+// Dependency-Check is executed in CI (see .GitHub/workflows/security.yml)

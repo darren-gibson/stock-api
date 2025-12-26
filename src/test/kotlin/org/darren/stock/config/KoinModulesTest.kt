@@ -15,13 +15,13 @@ class KoinModulesTest {
     fun tearDown() {
         try {
             stopKoin()
-        } catch (ignored: Exception) {
+        } catch (_: Exception) {
         }
         // Also shutdown ActorSystem
         runBlocking {
             try {
                 withTimeout(2.seconds) { ActorSystem.shutdown() }
-            } catch (ignored: Exception) {
+            } catch (_: Exception) {
             }
         }
     }
