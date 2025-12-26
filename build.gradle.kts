@@ -65,7 +65,7 @@ dependencies {
     // SDK and testing artifacts used in integration tests
     testImplementation("io.opentelemetry:opentelemetry-sdk:1.57.0")
     testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.57.0")
-    testImplementation("net.javacrumbs.json-unit:json-unit:4.1.0")
+    testImplementation("net.javacrumbs.json-unit:json-unit:5.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
     // SpotBugs FindSecBugs plugin for security-focused bug patterns
