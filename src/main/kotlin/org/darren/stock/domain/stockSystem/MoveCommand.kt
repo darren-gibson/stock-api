@@ -14,4 +14,5 @@ data class MoveCommand(
     val quantity: Double,
     val reason: MovementReason,
     val movedAt: LocalDateTime,
+    val requestId: String,
 )

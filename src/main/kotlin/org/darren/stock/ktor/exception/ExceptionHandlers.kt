@@ -14,6 +14,7 @@ import org.darren.stock.domain.InsufficientStockException
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.LocationNotFoundException
 import org.darren.stock.domain.LocationNotTrackedException
+import org.darren.stock.domain.stockSystem.IdempotencyContentMismatchException
 import org.darren.stock.ktor.ErrorDTO
 import org.darren.stock.ktor.InvalidValuesDTO
 import org.darren.stock.ktor.MissingFieldsDTO
@@ -90,6 +91,22 @@ object InsufficientStockHandler : ExceptionHandler {
 }
 
 /**
+ * Handles IdempotencyContentMismatchException by responding with 409 Conflict.
+ */
+object IdempotencyContentMismatchHandler : ExceptionHandler {
+    override suspend fun handle(
+        call: ApplicationCall,
+        cause: Throwable,
+    ): Boolean {
+        if (cause is IdempotencyContentMismatchException) {
+            call.respond(HttpStatusCode.Conflict, ErrorDTO("IdempotencyContentMismatch"))
+            return true
+        }
+        return false
+    }
+}
+
+/**
  * Handles BadRequestException including MissingFieldException and InvalidValuesException.
  */
 object BadRequestHandler : ExceptionHandler {
@@ -126,6 +143,7 @@ object ExceptionHandlerChain {
             LocationNotFoundHandler,
             LocationNotTrackedHandler,
             InsufficientStockHandler,
+            IdempotencyContentMismatchHandler,
             BadRequestHandler,
         )
 

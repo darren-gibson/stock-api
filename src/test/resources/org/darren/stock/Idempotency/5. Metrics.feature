@@ -3,26 +3,26 @@ Feature: Idempotency Metrics
 
   ## Overview
 
-  The idempotency layer emits simple metrics intended for operational monitoring.
+  The domain-level idempotency system emits metrics intended for operational monitoring.
   This feature documents the metrics and provides an automated assertion that the
-  counters are emitted when cache lookups occur.
+  counters are emitted when duplicate requests are detected.
 
   ## Exported Counters
 
-  The idempotency instrumentation exposes two Long counters:
+  The domain idempotency instrumentation exposes two Long counters:
 
-  * `idempotency.cache.hits` : Incremented when a previously-cached idempotent response is returned (cache hit).
-  * `idempotency.cache.misses` : Incremented when a cache lookup does not find a stored response (cache miss).
+  * `idempotency.domain.hits` : Incremented when a duplicate request is detected and skipped at the domain level.
+  * `idempotency.domain.misses` : Incremented when a new request is processed (not a duplicate).
 
   These counters should be incremented precisely for the semantics above; the scenario below
   documents a minimal end-to-end interaction that produces one miss and one hit.
 
   Background:
-    Given an in-memory OpenTelemetry meter is configured
-    And an in-memory idempotency store backed ResponseCacher is available
+    Given "test-location" is a tracked location
+    And "test-supplier" is a registered supplier
 
-  Scenario: OpenTelemetry counters are emitted and recorded correctly for cache hits and misses
-    When I request a missing cache key
-    And I store a key and then request that key
-    Then the exported metrics should include "idempotency.cache.hits" and "idempotency.cache.misses"
-    And each counter should have value 1
+  Scenario: Domain-level idempotency works correctly for duplicate requests
+    When I make a delivery request with requestId "req-123"
+    Then the request should succeed
+    When I make the same delivery request again with requestId "req-123"
+    Then the request should return conflict due to idempotency

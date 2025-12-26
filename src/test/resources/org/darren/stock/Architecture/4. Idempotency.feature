@@ -57,17 +57,13 @@ Feature: Architecture Overview - Idempotency
 
   ### Implementation Details
 
-  - **Cache Storage**: In-memory Caffeine cache used by `InMemoryIdempotencyStore` (IdempotencyStore implementation)
-  - **Cache Key**: The `requestId` value from the request body
-  - **Cached Data**: HTTP status code, response body, `Content-Type` header, and request body hash
-  - **Body Fingerprinting**: SHA-256 hash of the serialized request body; stored and validated on duplicate requests
-  - **Body Fingerprinting**: SHA-256 hash of the serialized request body; stored and validated on duplicate requests
-  - **TTL**: 24 hours (entries expire automatically via Caffeine configuration)
-  - **Configuration**: The in-memory idempotency store exposes two runtime-configurable properties via Koin:
-    - `IDEMPOTENCY_TTL_SECONDS`: Time-to-live for cached responses in seconds (default: `86400` — 24 hours)
-    - `IDEMPOTENCY_MAX_SIZE`: Maximum number of cached entries to retain (default: `10000`)
-    These values can be supplied via the application's `koin.properties` or environment properties used by Koin at startup.
-  - **Single Body Read**: Uses `receiveAndCheckDuplicate<T>()` to deserialize once and compute the body hash
+  - **Duplicate Detection**: Domain-level event sourcing used by `StockPotActor.checkIdempotency()` for reliable duplicate detection
+  - **Storage**: Event history stored in `StockEventRepository` (in-memory for tests, persistent for production)
+  - **Duplicate Key**: Combination of `requestId` and content hash stored in event metadata
+  - **Content Validation**: SHA-256 hash of request content compared against existing events
+  - **Domain Metrics**: OpenTelemetry counters track `idempotency.domain.hits` and `idempotency.domain.misses`
+  - **Actor Isolation**: Each stock pot maintains its own idempotency state via event sourcing
+  - **Single Body Read**: Request body is read once at HTTP level and `requestId` passed to domain layer
   - **Error Caching**: Only successful responses (2xx) are cached; 4xx and 5xx responses are not cached
 
   ### Endpoints with Idempotency Support
