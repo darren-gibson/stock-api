@@ -53,9 +53,11 @@ suspend fun StockSystem.checkIdempotencyAndThrow(
         IdempotencyStatus.NOT_FOUND -> {
             // Process normally - no events found
         }
+
         IdempotencyStatus.MATCH -> {
             return // Idempotent - request already processed successfully
         }
+
         IdempotencyStatus.CONTENT_MISMATCH -> {
             throw IdempotencyContentMismatchException(
                 "Request with ID '$requestId' already exists but with different content",

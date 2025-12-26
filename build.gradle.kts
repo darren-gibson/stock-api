@@ -80,7 +80,7 @@ tasks.test {
     systemProperty("io.ktor.development", "false")
 }
 
-/** Generates living documentation from Cucumber test results */
+// Generates living documentation from Cucumber test results
 tasks.register<Exec>("cukedoctor") {
     commandLine(
         "java",
@@ -116,18 +116,11 @@ spotless {
     kotlin {
         target("**/*.kt")
         targetExclude("build/**/*.kt")
-        ktlint("1.5.0").editorConfigOverride(
-            mapOf(
-                "ktlint_code_style" to "ktlint_official",
-                "ktlint_standard_no-wildcard-imports" to "disabled",
-                "ktlint_standard_filename" to "disabled",
-                "ktlint_standard_max-line-length" to "disabled",
-            ),
-        )
+        ktlint("1.8.0")
     }
     kotlinGradle {
         target("*.gradle.kts")
-        ktlint("1.5.0")
+        ktlint("1.8.0")
     }
 }
 

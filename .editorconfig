@@ -1,0 +1,5 @@
+[*.{kt,kts}]
+ktlint_code_style = ktlint_official
+ktlint_standard_no-wildcard-imports = disabled # Disable the `no-wildcard-imports` rule from the `standard` rule set provided by KtLint
+ktlint_standard_filename = disabled # Disable the `filename` rule from the `standard` rule set provided by KtLint
+ktlint_standard_max-line-length = disabled # Disable the `max-line-length` rule from the `standard` rule set provided by KtLint
