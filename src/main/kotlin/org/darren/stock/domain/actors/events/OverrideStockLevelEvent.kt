@@ -12,5 +12,8 @@ class OverrideStockLevelEvent(
     @Serializable(with = DateSerializer::class)
     override val eventDateTime: LocalDateTime,
 ) : StockPotEvent() {
+    override val requestId: String = ""
+    override val contentHash: String = ""
+
     override suspend fun apply(state: StockState): StockState = state.copy(quantity = quantity, pendingAdjustment = pendingAdjustment)
 }

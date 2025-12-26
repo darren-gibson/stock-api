@@ -1,6 +1,6 @@
 package org.darren.stock.domain.stockSystem
 
-import org.darren.stock.domain.actors.StockPotProtocol
+import org.darren.stock.domain.actors.StockPotProtocol.RecordSale
 import java.time.LocalDateTime
 
 object Sale {
@@ -9,10 +9,19 @@ object Sale {
         productId: String,
         quantity: Double,
         eventTime: LocalDateTime,
+        requestId: String,
     ) {
+        // Calculate content hash for idempotency checking
+        val recordSale =
+            RecordSale(
+                eventTime = eventTime,
+                quantity = quantity,
+                requestId = requestId,
+            )
+
         locations.ensureLocationsAreTracked(locationId)
         val stockPot = getStockPot(locationId, productId)
-        val result = stockPot.ask(StockPotProtocol.RecordSale(eventTime, quantity))
+        val result = stockPot.ask(recordSale)
         result.getOrThrow().result
     }
 }

@@ -3,6 +3,7 @@ package org.darren.stock.domain.stockSystem
 import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
 import io.github.smyrgeorge.actor4k.system.ActorSystem
 import kotlinx.coroutines.runBlocking
+import org.darren.stock.domain.IdempotencyStatus
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.ProductLocation
 import org.darren.stock.domain.actors.StockPotActor
@@ -11,6 +12,7 @@ import org.koin.core.component.inject
 
 class StockSystem : KoinComponent {
     val locations by inject<LocationApiClient>()
+    val eventRepository by inject<org.darren.stock.domain.StockEventRepository>()
 
     suspend fun getStockPot(
         locationId: String,
@@ -41,4 +43,24 @@ class StockSystem : KoinComponent {
                     )
             }
         }
+}
+
+suspend fun StockSystem.checkIdempotencyAndThrow(
+    requestId: String,
+    contentHash: String,
+) {
+    when (eventRepository.checkIdempotencyStatus(requestId, contentHash)) {
+        IdempotencyStatus.NOT_FOUND -> {
+            // Process normally - no events found
+        }
+        IdempotencyStatus.MATCH -> {
+            return // Idempotent - request already processed successfully
+        }
+        IdempotencyStatus.CONTENT_MISMATCH -> {
+            throw IdempotencyContentMismatchException(
+                "Request with ID '$requestId' already exists but with different content",
+                requestId,
+            )
+        }
+    }
 }

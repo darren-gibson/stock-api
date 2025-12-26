@@ -5,17 +5,15 @@ import io.github.smyrgeorge.actor4k.system.registry.SimpleActorRegistry
 import io.github.smyrgeorge.actor4k.util.SimpleLoggerFactory
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
-import io.opentelemetry.api.GlobalOpenTelemetry
-import io.opentelemetry.api.metrics.Meter
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
+import org.darren.stock.domain.actors.IdempotencyService
 import org.darren.stock.domain.actors.StockPotActor
 import org.darren.stock.domain.service.*
 import org.darren.stock.domain.stockSystem.StockSystem
-import org.darren.stock.ktor.idempotency.*
 import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.dsl.module
 import java.time.LocalDateTime
@@ -47,6 +45,7 @@ object KoinModules {
             single<StockReader> { StockSystemReader(get()) }
             single<LocationValidator> { LocationApiClientValidator(get()) }
             single<StockService> { StockService(get(), get()) }
+            single<IdempotencyService> { IdempotencyService(get()) }
         }
 
     val stockEventRepositoryModule =
@@ -63,27 +62,6 @@ object KoinModules {
             }
         }
 
-    val idempotencyModule =
-        module {
-            single<IdempotencyStore> {
-                val ttl = getProperty("IDEMPOTENCY_TTL_SECONDS", "86400").toLong()
-                val max = getProperty("IDEMPOTENCY_MAX_SIZE", "10000").toLong()
-                InMemoryIdempotencyStore(ttlSeconds = ttl, maximumSize = max)
-            }
-            single<RequestFingerprint> {
-                DefaultRequestFingerprint()
-            }
-            single<Meter> {
-                GlobalOpenTelemetry.get().getMeter(IdempotencyMetrics.METER_NAME)
-            }
-
-            single<ResponseCacher> {
-                // Wrap the default cacher with OTEL metrics decorator; meter is injected so tests can
-                // provide a local meter when needed.
-                OtelResponseCacher(DefaultResponseCacher(get()), get())
-            }
-        }
-
     val actor4kModule =
         module(createdAtStart = true) {
             single<Actor4kInitializer> {
@@ -97,7 +75,7 @@ object KoinModules {
                         val registry =
                             SimpleActorRegistry(loggerFactory)
                                 .factoryFor(StockPotActor::class) { key ->
-                                    StockPotActor(key)
+                                    StockPotActor(key, get())
                                 }
                         ActorSystem
                             .register(loggerFactory)
@@ -118,7 +96,6 @@ object KoinModules {
             stockSystemModule,
             stockEventRepositoryModule,
             dateTimeProviderModule,
-            idempotencyModule,
             actor4kModule,
         )
 }

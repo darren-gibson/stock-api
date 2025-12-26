@@ -15,6 +15,9 @@ internal class InternalMoveToEvent(
     @Serializable(with = DateSerializer::class)
     override val eventDateTime: LocalDateTime,
 ) : StockPotEvent() {
+    override val requestId: String = ""
+    override val contentHash: String = ""
+
     override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! + quantity, lastUpdated = eventDateTime)
 
     override fun toString(): String = "InternalMoveToEvent(eventDateTime=$eventDateTime, productId='$productId', quantity=$quantity, from='$from', reason=$reason)"

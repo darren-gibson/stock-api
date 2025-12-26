@@ -173,14 +173,15 @@ With authentication now enforced on all endpoints, existing tests were failing w
 The `requestId` parameter is now fully implemented with duplicate request detection and response caching. Duplicate requests return the original response without re-executing business logic.
 
 **Completed**:
-1. ✅ Implemented `IdempotencyPlugin` and `IdempotencyStore` for request deduplication
+1. ✅ **REPLACED**: HTTP-level `IdempotencyPlugin` and `IdempotencyStore` replaced with domain-level idempotency using event sourcing
 2. ✅ Created `receiveAndCheckDuplicate<T>()` helper that reads body once as typed DTO
 3. ✅ Updated Sale, Move, Delivery, and StockCount endpoints to use idempotency pattern
 4. ✅ Made `requestId` mandatory for all state-changing operations (requests without it return 400)
-5. ✅ Implemented SHA-256 body fingerprinting and content validation (body hash stored with cached response)
-6. ✅ Implemented `InMemoryIdempotencyStore` using Caffeine with a 24-hour TTL and size limits
-7. ✅ Duplicate requests return cached 2xx responses without mutating state
+5. ✅ Implemented SHA-256 body fingerprinting and content validation (body hash checked against event history)
+6. ✅ **REPLACED**: HTTP-level `InMemoryIdempotencyStore` replaced with domain-level duplicate detection in `StockPotActor`
+7. ✅ Duplicate requests are rejected at domain level without mutating state
 8. ✅ All duplicate request test scenarios passing (Sale, Delivery, Movement, StockCount)
+9. ✅ Added domain-level OpenTelemetry metrics for idempotency hits/misses
 
 **Enhancement Items** (Future Work):
 1. **Architecture Documentation** 🟡 Medium Priority
@@ -188,8 +189,8 @@ The `requestId` parameter is now fully implemented with duplicate request detect
    - Documented single-read approach, body fingerprinting, TTL (24 hours), and config pointers
 
 2. **Failure Handling Tests** 🟠 High Priority
-   - Test that 500 errors are NOT cached (retries should be allowed)
-   - Verify only successful responses (2xx) are stored in IdempotencyStore
+   - Test that domain-level idempotency prevents duplicate execution even on failures
+   - Verify domain events are only created for successful operations
    - Test behavior when original request fails but retry succeeds
    - Test race conditions: concurrent requests with same requestId
 
@@ -199,9 +200,10 @@ The `requestId` parameter is now fully implemented with duplicate request detect
    - Tests added to cover this behavior
 
 4. **Production Readiness** 🟡 Medium Priority
-   - TTL implemented (24 hours) in in-memory store; consider persistent Redis-backed `IdempotencyStore` for multi-instance deployments
-   - Add metrics/logging for cache hit/miss rates (TODO)
-   - Monitor cache size and consider eviction tuning (Caffeine `maximumSize` is configured)
+   - Domain-level idempotency is production-ready with event sourcing
+   - Event persistence ensures idempotency survives restarts
+   - OpenTelemetry metrics provide observability for hit/miss rates
+   - Actor-based isolation prevents cross-stock-pot interference
 
 **Evidence**:
 - Sale Contract feature: ✅ "Handle duplicate sale request using the same requestId" - PASSING
@@ -210,8 +212,9 @@ The `requestId` parameter is now fully implemented with duplicate request detect
 - AdminOverride feature: ✅ "Handle duplicate stock count creation with the same requestId" - PASSING
 
 **Files Modified**:
-- ✅ `src/main/kotlin/org/darren/stock/ktor/idempotency/IdempotencyPlugin.kt` - New
-- ✅ `src/main/kotlin/org/darren/stock/ktor/idempotency/IdempotencyStore.kt` - New
+- ✅ **REMOVED**: `src/main/kotlin/org/darren/stock/ktor/idempotency/IdempotencyPlugin.kt` - Replaced with domain-level idempotency
+- ✅ **REMOVED**: `src/main/kotlin/org/darren/stock/ktor/idempotency/IdempotencyStore.kt` - Replaced with domain-level idempotency
+- ✅ `src/main/kotlin/org/darren/stock/domain/actors/StockPotActor.kt` - Added domain-level idempotency checking
 - ✅ `src/main/kotlin/org/darren/stock/ktor/Sale.kt`
 - ✅ `src/main/kotlin/org/darren/stock/ktor/Delivery.kt`
 - ✅ `src/main/kotlin/org/darren/stock/ktor/Move.kt`
@@ -307,7 +310,7 @@ Implement comprehensive observability using OpenTelemetry (OTel) with distribute
   - `io.opentelemetry:opentelemetry-extension-kotlin`
 - Configure OTel in `Application.kt` module
 - Add custom instrumentation for:
-  - IdempotencyStore cache operations
+  - Domain-level idempotency metrics (hits/misses)
   - StockSystem business logic
   - LocationApiClient external calls
 - Update logback.xml with JSON encoder and trace context

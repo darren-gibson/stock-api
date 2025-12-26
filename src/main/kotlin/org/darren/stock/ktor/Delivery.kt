@@ -10,9 +10,7 @@ import org.darren.stock.domain.stockSystem.Delivery.recordDelivery
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.Permission
 import org.darren.stock.ktor.auth.requiresAuth
-import org.darren.stock.ktor.idempotency.idempotent
-import org.darren.stock.ktor.idempotency.receiveAndCheckDuplicate
-import org.darren.stock.ktor.idempotency.respondIdempotent
+import org.darren.stock.util.DateSerializer
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
@@ -20,18 +18,29 @@ object Delivery {
     fun Routing.deliveryEndpoint() {
         route("/locations/{locationId}/deliveries") {
             requiresAuth(Permission("stock", "movement", "write"), "locationId")
-            idempotent()
 
             post {
                 val locationId = call.parameters["locationId"]!!
                 val stockSystem by inject<StockSystem>(StockSystem::class.java)
 
-                // Receive body and check for duplicates
-                val request = call.receiveAndCheckDuplicate<DeliveryRequestDTO> { it.requestId } ?: return@post
+                val request = call.receive<DeliveryRequestDTO>()
 
+                // Process the delivery (idempotency is handled in the domain layer)
                 with(request) {
-                    stockSystem.recordDelivery(locationId, supplierId, supplierRef, deliveredAt, products.productQuantity())
-                    call.respondIdempotent(Created)
+                    stockSystem.recordDelivery(
+                        org.darren.stock.domain.stockSystem.DeliveryRequest(
+                            locationId = locationId,
+                            supplierId = supplierId,
+                            supplierRef = supplierRef,
+                            deliveryDate = deliveredAt,
+                            products = products.productQuantity(),
+                            requestId = requestId,
+                        ),
+                    )
+                    call.respond(
+                        Created,
+                        DeliveryResponseDTO(requestId, locationId, supplierId, supplierRef, deliveredAt, products),
+                    )
                 }
             }
         }
@@ -42,7 +51,18 @@ object Delivery {
         val requestId: String,
         val supplierId: String,
         val supplierRef: String,
-        @Serializable(with = org.darren.stock.util.DateSerializer::class)
+        @Serializable(with = DateSerializer::class)
+        val deliveredAt: LocalDateTime,
+        val products: List<ProductDTO>,
+    )
+
+    @Serializable
+    private data class DeliveryResponseDTO(
+        val requestId: String,
+        val locationId: String,
+        val supplierId: String,
+        val supplierRef: String,
+        @Serializable(with = DateSerializer::class)
         val deliveredAt: LocalDateTime,
         val products: List<ProductDTO>,
     )

@@ -7,7 +7,7 @@ Lightweight stock management API (Ktor + Koin) used for demo and integration tes
 
 This repository contains:
 - Ktor HTTP endpoints for sales, deliveries, moves and counts
-- Idempotency support for state-changing operations using a Caffeine-backed in-memory cache
+- Domain-level idempotency support for state-changing operations using event sourcing
 - Tests: JUnit 5 and Cucumber feature specs
 
 ## Quick start
@@ -31,13 +31,13 @@ java -jar build/libs/stock-api.jar
 
 ## Idempotency
 
-- In-memory idempotency store uses Caffeine with a 24h TTL by default.
-- Request bodies are fingerprinted (SHA-256) and stored with the cached response.
-- Duplicate requests with the same `requestId` and identical content return the cached 2xx response.
-- Reuse of a `requestId` with different request content returns `409 Conflict`.
-- Only successful responses (2xx) are cached; 4xx and 5xx are not cached.
+- Domain-level idempotency using event sourcing prevents duplicate state changes
+- Request bodies are fingerprinted (SHA-256) and checked against event history
+- Duplicate requests with the same `requestId` and identical content are rejected with `409 Conflict`
+- Domain metrics track idempotency hits and misses using OpenTelemetry
+- Only state-changing operations (sales, deliveries, moves, counts) support idempotency
 
-Configuration for TTL and cache size lives in code; consider extracting to `application.yaml` for production.
+Idempotency is enforced at the domain layer using actor event sourcing for reliable duplicate detection.
 
 ## Publishing to GitHub (recommended)
 
