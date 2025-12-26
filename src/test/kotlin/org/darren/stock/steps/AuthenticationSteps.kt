@@ -143,6 +143,8 @@ class AuthenticationSteps {
 object TestContext {
     private var authorizationToken: String? = null
     var lastRequestBody: String = ""
+    var lastResponseBody: String = ""
+    var lastResponse: io.ktor.client.statement.HttpResponse? = null
 
     fun setAuthorizationToken(token: String?) {
         authorizationToken = token

@@ -185,7 +185,9 @@ Feature: Contract: Record Delivery Endpoint
       | Product ID  | Quantity |
       | product456  | 100      |
     And I send a POST request to "/locations/warehouse1-receiving/deliveries" with the following payload:
-      """
+      """asciidoc
+      [source, json]
+      -----
       {
           "requestId": "delivery-xyz789-dup-test",
           "supplierId": "supplier123",
@@ -198,10 +200,13 @@ Feature: Contract: Record Delivery Endpoint
               }
           ]
       }
+      -----
       """
     And the API should respond with status code 201
     When I send a POST request to "/locations/warehouse1-receiving/deliveries" with the following payload:
-      """
+      """asciidoc
+      [source, json]
+      -----
       {
           "requestId": "delivery-xyz789-dup-test",
           "supplierId": "supplier123",
@@ -214,6 +219,7 @@ Feature: Contract: Record Delivery Endpoint
               }
           ]
       }
+      -----
       """
     Then the API should respond with status code 201
     And the stock level of "product456" in "warehouse1-receiving" should be updated to 100

@@ -1,5 +1,6 @@
 package org.darren.stock.steps.helpers
 
+import org.darren.stock.domain.IdempotencyStatus
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.actors.events.StockPotEvent
 import org.darren.stock.persistence.InMemoryStockEventRepository
@@ -49,6 +50,25 @@ class TestStockEventRepository(
             failureCount++
             error("Simulated repository failure for testing")
         }
+        delegate.insert(location, product, event)
+    }
+
+    override fun getEventsByRequestId(requestId: String): Iterable<StockPotEvent> = delegate.getEventsByRequestId(requestId)
+
+    override fun checkIdempotencyStatus(
+        requestId: String,
+        contentHash: String,
+    ): IdempotencyStatus = delegate.checkIdempotencyStatus(requestId, contentHash)
+
+    /**
+     * Directly insert an event into the repository, bypassing failure simulation.
+     * Used for testing out-of-order event scenarios.
+     */
+    fun insertEventDirectly(
+        location: String,
+        product: String,
+        event: StockPotEvent,
+    ) {
         delegate.insert(location, product, event)
     }
 }

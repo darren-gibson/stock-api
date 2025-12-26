@@ -13,8 +13,10 @@ class MoveEvent(
     val reason: MovementReason,
     @Serializable(with = DateSerializer::class)
     override val eventDateTime: LocalDateTime,
+    override val requestId: String,
+    override val contentHash: String,
 ) : StockPotEvent() {
     override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! - quantity, lastUpdated = eventDateTime)
 
-    override fun toString(): String = "MoveEvent(eventDateTime=$eventDateTime, quantity=$quantity, to=$to, reason=$reason)"
+    override fun toString(): String = "MoveEvent(eventDateTime=$eventDateTime, quantity=$quantity, to=$to, reason=$reason, requestId='$requestId', contentHash='$contentHash')"
 }

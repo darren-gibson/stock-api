@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.darren.stock.domain.ProductLocation
 import org.darren.stock.domain.actors.StockPotActor
+import org.darren.stock.steps.helpers.TestStockEventRepository
 import org.junit.jupiter.api.Test
 import kotlin.time.Duration.Companion.seconds
 
@@ -63,7 +64,7 @@ class ActorSystemTest {
                 .factoryFor(SimpleActor::class) { key ->
                     SimpleActor(key)
                 }.factoryFor(StockPotActor::class) { key ->
-                    StockPotActor(key)
+                    StockPotActor(key, TestStockEventRepository())
                 }
         ActorSystem.register(loggerFactory).register(registry).start()
     }

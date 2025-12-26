@@ -11,6 +11,8 @@ import java.time.LocalDateTime
 @Serializable
 abstract class StockPotEvent : KoinComponent {
     abstract val eventDateTime: LocalDateTime
+    abstract val requestId: String
+    abstract val contentHash: String
 
     @Serializable(with = DateSerializer::class)
     val recordedDataTime: LocalDateTime = currentDateTime()

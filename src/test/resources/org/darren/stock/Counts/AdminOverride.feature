@@ -57,27 +57,35 @@ Feature: Override stock count record for Product in a Location
     Given "Warehouse-01" is a tracked location
     And "SKU12345" is a valid product
     And I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
-      """
+      """asciidoc
+      [source, json]
+      -----
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174000",
           "reason": "AdminOverride",
           "quantity": 100.0,
           "countedAt": "2024-12-07T10:00:00Z"
       }
+      -----
       """
     And the API should respond with status code 201
     When I send a POST request to "/locations/Warehouse-01/products/SKU12345/counts" with the following payload:
-      """
+      """asciidoc
+      [source, json]
+      -----
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174000",
           "reason": "AdminOverride",
           "quantity": 100.0,
           "countedAt": "2024-12-07T10:00:00Z"
       }
+      -----
       """
     Then the API should respond with status code 201
     And the response body should contain:
-      """
+      """asciidoc
+      [source, json]
+      -----
       {
           "requestId": "123e4567-e89b-12d3-a456-426614174000",
           "location": "Warehouse-01",
@@ -86,6 +94,7 @@ Feature: Override stock count record for Product in a Location
           "reason": "AdminOverride",
           "countedAt": "2024-12-07T10:00:00"
       }
+      -----
       """
     And the current stock level of "SKU12345" in "Warehouse-01" will equal 100.0
 
@@ -114,7 +123,6 @@ Feature: Override stock count record for Product in a Location
       }
       -----
       """
-
   Scenario: Fail to create a stock count due to missing requestId
     Given "Warehouse-01" is a Distribution Centre
     And a valid product code "SKU12345" exists

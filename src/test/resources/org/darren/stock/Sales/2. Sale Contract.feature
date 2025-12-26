@@ -278,25 +278,33 @@ Background:
     Given "Store-001" is a tracked location
     And a product "SKU12345" exists in "Store-001" with a stock level of 50
     And I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
-      """
+      """asciidoc
+      [source, json]
+      -----
       {
           "requestId": "abc123-e89b-12d3-a456-426614174000",
           "quantity": 5,
           "soldAt": "2024-12-07T12:00:00Z"
       }
+      -----
       """
     And the API should respond with status code 201
     When I send a POST request to "/locations/Store-001/products/SKU12345/sales" with the following payload:
-      """
+      """asciidoc
+      [source, json]
+      -----
       {
           "requestId": "abc123-e89b-12d3-a456-426614174000",
           "quantity": 5,
           "soldAt": "2024-12-07T12:00:00Z"
       }
+      -----
       """
     Then the API should respond with status code 201
     And the response body should contain:
-      """
+          """asciidoc
+      [source, json]
+      -----
       {
           "requestId": "abc123-e89b-12d3-a456-426614174000",
           "locationId": "Store-001",
@@ -304,6 +312,7 @@ Background:
           "quantitySold": 5.0,
           "soldAt": "2024-12-07T12:00:00"
       }
+      -----
       """
     And the stock level of "SKU12345" in "Store-001" should be updated to 45
 

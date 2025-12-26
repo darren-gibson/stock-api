@@ -28,6 +28,7 @@ class ApiCallStepDefinitions : KoinComponent {
         val cleanPayload = payload.removeAsciiDocs()
         TestContext.lastRequestBody = cleanPayload
         response = sendPostRequest(url, cleanPayload)
+        TestContext.lastResponseBody = response.bodyAsText()
     }
 
     suspend fun sendPostRequest(
@@ -60,6 +61,7 @@ class ApiCallStepDefinitions : KoinComponent {
                         }
                     }
                 }
+            TestContext.lastResponseBody = response.bodyAsText()
             return@runBlocking response
         }
 
@@ -67,6 +69,7 @@ class ApiCallStepDefinitions : KoinComponent {
     fun iSendAGETRequestToWithoutAuthentication(url: String): HttpResponse =
         runBlocking {
             response = client.get(url)
+            TestContext.lastResponseBody = response.bodyAsText()
             return@runBlocking response
         }
 
@@ -76,6 +79,7 @@ class ApiCallStepDefinitions : KoinComponent {
         payload: String,
     ) = runBlocking {
         response = sendPutRequest(url, payload.removeAsciiDocs())
+        TestContext.lastResponseBody = response.bodyAsText()
     }
 
     private suspend fun sendPutRequest(
