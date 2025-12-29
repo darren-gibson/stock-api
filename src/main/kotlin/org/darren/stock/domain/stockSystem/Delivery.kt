@@ -2,7 +2,6 @@ package org.darren.stock.domain.stockSystem
 
 import arrow.resilience.retry
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -31,43 +30,35 @@ class IdempotencyContentMismatchException(
 object Delivery {
     private val logger = KotlinLogging.logger {}
 
+    // Simplified recordDelivery: validate up-front, launch parallel delivery operations,
+    // inline small helpers to keep flow linear and easy to follow.
     suspend fun StockSystem.recordDelivery(deliveryRequest: DeliveryRequest) =
         coroutineScope {
             validateRequest(deliveryRequest, locations)
 
-            val deliveryOperations =
-                deliveryRequest.products.mapIndexed { index, product ->
+            deliveryRequest.products
+                .mapIndexed { index, product ->
                     async {
                         val stockPot = getStockPot(deliveryRequest.locationId, product.productId)
 
                         val recordDelivery =
-                            buildRecordDelivery(deliveryRequest, product, index)
+                            RecordDelivery(
+                                product.quantity,
+                                deliveryRequest.supplierId,
+                                deliveryRequest.supplierRef,
+                                deliveryRequest.deliveryDate,
+                                "${deliveryRequest.requestId}-$index",
+                            )
 
+                        // Retry only retriable failures and log the actual ask operation inline.
                         retryPolicy.retry<RetriableException, StockPotProtocol.Reply> {
-                            processDeliveryAndReturnResult(stockPot, recordDelivery)
+                            logger.wrapMethod("Recording delivery with requestId=${recordDelivery.requestId}") {
+                                stockPot.ask(recordDelivery).getOrThrow()
+                            }
                         }
                     }
-                }
-            deliveryOperations.awaitAll()
+                }.awaitAll()
         }
-
-    private fun buildRecordDelivery(
-        deliveryRequest: DeliveryRequest,
-        product: ProductQuantity,
-        index: Int,
-    ): RecordDelivery {
-        val recordDelivery =
-            with(deliveryRequest) {
-                RecordDelivery(
-                    product.quantity,
-                    supplierId,
-                    supplierRef,
-                    deliveryDate,
-                    "$requestId-$index",
-                )
-            }
-        return recordDelivery
-    }
 
     suspend fun validateRequest(
         deliveryRequest: DeliveryRequest,
@@ -77,16 +68,6 @@ object Delivery {
 
         deliveryRequest.products.forEach { product ->
             require(product.quantity > 0) { "Delivery quantity must be positive" }
-        }
-    }
-
-    private suspend fun processDeliveryAndReturnResult(
-        stockPot: ActorRef,
-        recordDelivery: RecordDelivery,
-    ): StockPotProtocol.Reply {
-        // TODO: Consider adding a timeout here
-        return logger.wrapMethod("Recording delivery with requestId=${recordDelivery.requestId}") {
-            stockPot.ask(recordDelivery).getOrThrow()
         }
     }
 }
