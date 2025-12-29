@@ -12,7 +12,6 @@ class StockPotEventFactory(
         protocol: StockPotProtocol,
     ): StockPotEvent =
         when (protocol) {
-            is GetValue -> NullStockPotEvent()
             is RecordCount -> createCountEvent(protocol)
             is RecordDelivery -> createDeliveryEvent(protocol)
             is RecordInternalMoveTo -> createInternalMoveToEvent(protocol)

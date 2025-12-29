@@ -47,7 +47,13 @@ class SetStockLevelStepDefinitions : KoinComponent {
         val repo: StockEventRepository by inject()
         val overrideAsAt = LocalDateTime.MIN
 
-        repo.insert(locationId, productId, OverrideStockLevelEvent(quantity, pendingAdjustment, overrideAsAt))
+        // Use the bypass method if available (for test repositories that simulate failures)
+        val testRepo = repo as? org.darren.stock.steps.helpers.TestStockEventRepository
+        if (testRepo != null) {
+            testRepo.insertEventDirectly(locationId, productId, OverrideStockLevelEvent(quantity, pendingAdjustment, overrideAsAt))
+        } else {
+            repo.insert(locationId, productId, OverrideStockLevelEvent(quantity, pendingAdjustment, overrideAsAt))
+        }
     }
 
     @And("the following are the current stock levels:")

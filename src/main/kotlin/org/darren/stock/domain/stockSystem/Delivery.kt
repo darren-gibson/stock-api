@@ -1,9 +1,17 @@
 package org.darren.stock.domain.stockSystem
 
+import arrow.resilience.retry
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.ProductQuantity
+import org.darren.stock.domain.RetriableException
 import org.darren.stock.domain.actors.StockPotProtocol
 import org.darren.stock.domain.actors.StockPotProtocol.RecordDelivery
+import org.darren.stock.util.LoggingHelper.wrapMethod
 import java.time.LocalDateTime
 
 data class DeliveryRequest(
@@ -15,64 +23,70 @@ data class DeliveryRequest(
     val requestId: String,
 )
 
-data class DeliveryDetails(
-    val quantity: Double,
-    val supplierId: String,
-    val supplierRef: String,
-    val deliveryDate: LocalDateTime,
-    val requestId: String,
-)
-
 class IdempotencyContentMismatchException(
     message: String,
     val requestId: String,
 ) : Exception(message)
 
 object Delivery {
-    suspend fun StockSystem.recordDelivery(deliveryRequest: DeliveryRequest) {
-        // Calculate content hash for idempotency checking
-        val contentHash =
-            RecordDelivery(
-                quantity = deliveryRequest.products.sumOf { it.quantity },
-                supplierId = deliveryRequest.supplierId,
-                supplierRef = deliveryRequest.supplierRef,
-                eventTime = deliveryRequest.deliveryDate,
-                requestId = deliveryRequest.requestId,
-            ).contentHash()
+    private val logger = KotlinLogging.logger {}
 
-        locations.ensureLocationsAreTracked(deliveryRequest.locationId)
-        deliveryRequest.products.forEachIndexed { index, product ->
-            val stockPot = getStockPot(deliveryRequest.locationId, product.productId)
-            val deliveryDetails =
-                with(deliveryRequest) {
-                    DeliveryDetails(
-                        product.quantity,
-                        supplierId,
-                        supplierRef,
-                        deliveryDate,
-                        "$requestId-$index",
-                    )
+    suspend fun StockSystem.recordDelivery(deliveryRequest: DeliveryRequest) =
+        coroutineScope {
+            validateRequest(deliveryRequest, locations)
+
+            val deliveryOperations =
+                deliveryRequest.products.mapIndexed { index, product ->
+                    async {
+                        val stockPot = getStockPot(deliveryRequest.locationId, product.productId)
+
+                        val recordDelivery =
+                            buildRecordDelivery(deliveryRequest, product, index)
+
+                        retryPolicy.retry<RetriableException, StockPotProtocol.Reply> {
+                            processDeliveryAndReturnResult(stockPot, recordDelivery)
+                        }
+                    }
                 }
-            val result = processDelivery(stockPot, deliveryDetails)
-            result.getOrThrow().result
+            deliveryOperations.awaitAll()
         }
-        // TODO: These calls should be async
-        // TODO: What happens if the delivery fails?
-    }
 
-    private suspend fun processDelivery(
-        stockPot: ActorRef,
-        deliveryDetails: DeliveryDetails,
-    ): Result<StockPotProtocol.Reply> =
-        stockPot.ask(
-            with(deliveryDetails) {
-                StockPotProtocol.RecordDelivery(
-                    quantity,
+    private fun buildRecordDelivery(
+        deliveryRequest: DeliveryRequest,
+        product: ProductQuantity,
+        index: Int,
+    ): RecordDelivery {
+        val recordDelivery =
+            with(deliveryRequest) {
+                RecordDelivery(
+                    product.quantity,
                     supplierId,
                     supplierRef,
                     deliveryDate,
-                    requestId,
+                    "$requestId-$index",
                 )
-            },
-        )
+            }
+        return recordDelivery
+    }
+
+    suspend fun validateRequest(
+        deliveryRequest: DeliveryRequest,
+        locations: LocationApiClient,
+    ) {
+        locations.ensureLocationsAreTracked(deliveryRequest.locationId)
+
+        deliveryRequest.products.forEach { product ->
+            require(product.quantity > 0) { "Delivery quantity must be positive" }
+        }
+    }
+
+    private suspend fun processDeliveryAndReturnResult(
+        stockPot: ActorRef,
+        recordDelivery: RecordDelivery,
+    ): StockPotProtocol.Reply {
+        // TODO: Consider adding a timeout here
+        return logger.wrapMethod("Recording delivery with requestId=${recordDelivery.requestId}") {
+            stockPot.ask(recordDelivery).getOrThrow()
+        }
+    }
 }

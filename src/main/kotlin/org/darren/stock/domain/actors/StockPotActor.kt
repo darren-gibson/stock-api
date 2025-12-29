@@ -47,10 +47,10 @@ class StockPotActor(
     override suspend fun onReceive(m: StockPotProtocol): Behavior<Reply> {
         logger.debug { "$this, MSG=$m" }
         return when (m) {
-            is GetValue -> processEvent(m)
+            is GetValue -> Behavior.Reply(Reply(stateManager.currentState))
             is RecordInternalMoveTo -> processEvent(m)
             is RecordMove -> handleIdempotentOperation(m) { validateMove(it as RecordMove, stateManager.currentState) }
-            is StockPotRequest -> handleIdempotentOperation(m)
+            is StockPotRequest -> handleIdempotentOperation(m, preProcess = { validateRequest(it as StockPotRequest) })
         }.also { logger.debug { this } }
     }
 
@@ -77,6 +77,15 @@ class StockPotActor(
     ) {
         if (currentState.quantity!! < recordMove.quantity) {
             throw InsufficientStockException()
+        }
+    }
+
+    private fun validateRequest(request: StockPotRequest) {
+        when (request) {
+            is StockPotProtocol.RecordDelivery -> {
+                require(request.quantity > 0) { "Delivery quantity must be positive" }
+            }
+            // Add other validations as needed
         }
     }
 

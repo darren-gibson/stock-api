@@ -36,3 +36,8 @@ enum class IdempotencyStatus {
     /** Events found but content hash differs - reject with conflict */
     CONTENT_MISMATCH,
 }
+
+class RepositoryFailureException(
+    message: String?,
+    cause: Throwable? = null,
+) : RetriableException(message, cause)

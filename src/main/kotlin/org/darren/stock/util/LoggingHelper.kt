@@ -44,4 +44,20 @@ object LoggingHelper {
             is IOException -> logger.warn { "HTTP I/O error: ${e.message}" }
         }
     }
+
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun <R> KLogger.wrapMethod(
+        message: String,
+        wrappedFunction: suspend () -> R,
+    ): R {
+        try {
+            debug { message }
+            val result = wrappedFunction()
+            debug { "$message, result=$result" }
+            return result
+        } catch (e: Throwable) {
+            error(e) { "$message, failed." }
+            throw e
+        }
+    }
 }
