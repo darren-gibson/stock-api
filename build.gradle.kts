@@ -1,9 +1,10 @@
 @file:Suppress("LocalVariableName")
 
 plugins {
-    kotlin("jvm") version "2.2.21"
-    kotlin("plugin.serialization") version "2.2.21"
-    id("io.ktor.plugin") version "3.3.3"
+    val ktorVersion = "3.3.3"
+    kotlin("jvm") version "2.3.0"
+    kotlin("plugin.serialization") version "2.3.0"
+    id("io.ktor.plugin") version ktorVersion
     id("com.diffplug.spotless") version "8.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
     id("com.github.spotbugs") version "6.4.8"
@@ -20,14 +21,15 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm:3.3.3")
-    implementation("io.ktor:ktor-server-netty-jvm:3.3.3")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:3.3.3")
-    implementation("io.ktor:ktor-server-status-pages:3.3.3")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:3.3.3")
-    implementation("io.ktor:ktor-client-core:3.3.3")
-    implementation("io.ktor:ktor-client-cio:3.3.3")
-    implementation("io.ktor:ktor-client-content-negotiation:3.3.3")
+    val ktorVersion = "3.3.3"
+    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
@@ -38,7 +40,11 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.22")
 
     // Actor4k for actor system
-    implementation("io.github.smyrgeorge:actor4k:1.4.5")
+    implementation("io.github.smyrgeorge:actor4k:1.4.6")
+
+    // Arrow KT for functional programming utilities
+    implementation("io.arrow-kt:arrow-core-jvm:2.2.1.1")
+    implementation("io.arrow-kt:arrow-resilience-jvm:2.2.1.1")
 
     // JWT for authentication
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
@@ -50,16 +56,14 @@ dependencies {
     testImplementation("io.cucumber:cucumber-java:7.33.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.33.0")
     testImplementation("org.junit.platform:junit-platform-suite:6.0.1")
-    testImplementation("io.ktor:ktor-server-test-host-jvm:3.3.3")
-    testImplementation("io.ktor:ktor-client-mock:3.3.3")
+    testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     // Ensure Kotlin reflection is available on the test classpath for dynamic module loading
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect:2.2.21")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.21")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:2.3.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.3.0")
     testImplementation("io.insert-koin:koin-test:4.1.1")
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
 
-    // Caffeine for in-memory cache with expiry
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
     // OpenTelemetry API for metrics
     implementation("io.opentelemetry:opentelemetry-api:1.57.0")
     // SDK and testing artifacts used in integration tests
@@ -109,7 +113,7 @@ application {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
 
 spotless {
@@ -131,7 +135,7 @@ detekt {
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    jvmTarget = "22"
+    jvmTarget = "21"
 }
 
 // Configure SpotBugs

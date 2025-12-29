@@ -62,7 +62,7 @@ object KoinModules {
             }
         }
 
-    val actor4kModule =
+    fun actor4kModule(conf: ActorSystem.Conf = ActorSystem.Conf()) =
         module(createdAtStart = true) {
             single<Actor4kInitializer> {
                 object : Actor4kInitializer {
@@ -78,6 +78,7 @@ object KoinModules {
                                     StockPotActor(key, get())
                                 }
                         ActorSystem
+                            .conf(conf)
                             .register(loggerFactory)
                             .register(registry)
                             .start()
@@ -96,6 +97,6 @@ object KoinModules {
             stockSystemModule,
             stockEventRepositoryModule,
             dateTimeProviderModule,
-            actor4kModule,
+            actor4kModule(),
         )
 }

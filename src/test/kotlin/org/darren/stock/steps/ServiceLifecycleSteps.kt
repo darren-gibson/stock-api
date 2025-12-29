@@ -27,6 +27,7 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import java.io.Closeable
 import kotlin.coroutines.ContinuationInterceptor
+import kotlin.time.Duration.Companion.milliseconds
 
 class ServiceLifecycleSteps : KoinComponent {
     private lateinit var testApp: TestApplication
@@ -79,7 +80,13 @@ class ServiceLifecycleSteps : KoinComponent {
                     listOf(
                         // Test-specific small modules that don't belong in a shared test helper
                         module { single { testApp.client.engine } },
-                        actor4kModule,
+                        actor4kModule(
+                            ActorSystem.Conf(
+                                shutdownInitialDelay = 1.milliseconds,
+                                shutdownPollingInterval = 1.milliseconds,
+                                shutdownFinalDelay = 0.milliseconds,
+                            ),
+                        ),
                         module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
                         module { single { ApiCallStepDefinitions() } },
                         module { single { TestDateTimeProvider() } },

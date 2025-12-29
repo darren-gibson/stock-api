@@ -24,7 +24,6 @@ object Delivery {
                 val stockSystem by inject<StockSystem>(StockSystem::class.java)
 
                 val request = call.receive<DeliveryRequestDTO>()
-
                 // Process the delivery (idempotency is handled in the domain layer)
                 with(request) {
                     stockSystem.recordDelivery(

@@ -1,6 +1,7 @@
 package org.darren.stock.steps.helpers
 
 import org.darren.stock.domain.IdempotencyStatus
+import org.darren.stock.domain.RepositoryFailureException
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.actors.events.StockPotEvent
 import org.darren.stock.persistence.InMemoryStockEventRepository
@@ -16,6 +17,9 @@ class TestStockEventRepository(
     private var shouldFail = false
     private var failureCount = 0
     private var maxFailures = 0
+    private val failingProducts = mutableSetOf<String>()
+    private val productFailureCounts = mutableMapOf<String, Int>()
+    private val productMaxFailures = mutableMapOf<String, Int>()
 
     /**
      * Configure the repository to fail for the next N insert operations.
@@ -28,12 +32,34 @@ class TestStockEventRepository(
     }
 
     /**
+     * Configure the repository to fail for inserts of specific products up to N times.
+     * @param products Set of product IDs that should fail on insert
+     * @param maxFailuresPerProduct Maximum number of failures per product
+     */
+    fun failInsertsForProducts(
+        products: Set<String>,
+        maxFailuresPerProduct: Int = Int.MAX_VALUE,
+    ) {
+        failingProducts.clear()
+        failingProducts.addAll(products)
+        productMaxFailures.clear()
+        productFailureCounts.clear()
+        products.forEach { product ->
+            productMaxFailures[product] = maxFailuresPerProduct
+            productFailureCounts[product] = 0
+        }
+    }
+
+    /**
      * Reset the repository to normal operation (no failures).
      */
     fun resetFailureSimulation() {
         shouldFail = false
         failureCount = 0
         maxFailures = 0
+        failingProducts.clear()
+        productFailureCounts.clear()
+        productMaxFailures.clear()
     }
 
     override fun getEvents(
@@ -46,9 +72,18 @@ class TestStockEventRepository(
         product: String,
         event: StockPotEvent,
     ) {
-        if (shouldFail && failureCount < maxFailures) {
-            failureCount++
-            error("Simulated repository failure for testing")
+        if (failingProducts.contains(product) || (shouldFail && failureCount < maxFailures)) {
+            if (failingProducts.contains(product)) {
+                val currentFailures = productFailureCounts.getOrDefault(product, 0)
+                val maxFailuresForProduct = productMaxFailures.getOrDefault(product, Int.MAX_VALUE)
+                if (currentFailures < maxFailuresForProduct) {
+                    productFailureCounts[product] = currentFailures + 1
+                    throw RepositoryFailureException("Simulated repository failure for product $product (attempt ${currentFailures + 1})")
+                }
+            } else {
+                failureCount++
+                throw RepositoryFailureException("Simulated repository failure for testing")
+            }
         }
         delegate.insert(location, product, event)
     }

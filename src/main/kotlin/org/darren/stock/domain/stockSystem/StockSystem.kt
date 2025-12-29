@@ -1,16 +1,21 @@
 package org.darren.stock.domain.stockSystem
 
+import arrow.resilience.Schedule
 import io.github.smyrgeorge.actor4k.actor.ref.ActorRef
 import io.github.smyrgeorge.actor4k.system.ActorSystem
 import kotlinx.coroutines.runBlocking
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.ProductLocation
+import org.darren.stock.domain.RetriableException
 import org.darren.stock.domain.actors.StockPotActor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.time.Duration.Companion.milliseconds
 
 class StockSystem : KoinComponent {
     val locations by inject<LocationApiClient>()
+    val retryPolicy =
+        Schedule.exponential<RetriableException>(100.milliseconds)
 
     suspend fun getStockPot(
         locationId: String,

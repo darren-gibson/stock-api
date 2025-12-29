@@ -23,6 +23,7 @@ class GetStockLevelStepDefinitions : KoinComponent {
     @Then("the current stock level of {string} in {string} will equal {double}")
     @Then("the stock level of {string} in {string} should be updated to {double}")
     @Then("the stock level of {string} in {string} should remain {double}")
+    @Then("the stock level of {string} in {string} should be {double}")
     fun theCurrentStockLevelOfProductInStoreWillEqual(
         productId: String,
         locationId: String,
