@@ -13,7 +13,9 @@ import org.darren.stock.persistence.InMemoryStockEventRepository
  */
 class TestStockEventRepository(
     private val delegate: StockEventRepository = InMemoryStockEventRepository(),
+    private val delayMillis: Long = 0,
 ) : StockEventRepository {
+    private var currentDelayMillis = delayMillis
     private var shouldFail = false
     private var failureCount = 0
     private var maxFailures = 0
@@ -29,6 +31,14 @@ class TestStockEventRepository(
         shouldFail = true
         failureCount = 0
         maxFailures = count
+    }
+
+    /**
+     * Set the delay for repository operations.
+     * @param delayMillis Delay in milliseconds
+     */
+    fun setDelayMillis(delayMillis: Long) {
+        currentDelayMillis = delayMillis
     }
 
     /**
@@ -72,6 +82,9 @@ class TestStockEventRepository(
         product: String,
         event: StockPotEvent,
     ) {
+        if (currentDelayMillis > 0) {
+            Thread.sleep(currentDelayMillis)
+        }
         if (failingProducts.contains(product) || (shouldFail && failureCount < maxFailures)) {
             if (failingProducts.contains(product)) {
                 val currentFailures = productFailureCounts.getOrDefault(product, 0)

@@ -34,8 +34,6 @@ class KoinModulesTest {
                 properties(
                     mapOf(
                         "LOCATION_API" to "http://localhost",
-                        "IDEMPOTENCY_TTL_SECONDS" to "60",
-                        "IDEMPOTENCY_MAX_SIZE" to "100",
                     ),
                 )
                 modules(KoinModules.allModules())
