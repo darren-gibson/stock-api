@@ -13,7 +13,7 @@ These instructions are intended to keep newly generated code consistent with the
 ## Build + runtime
 
 - Build: Gradle Kotlin DSL (`build.gradle.kts`).
-- JVM toolchain: `kotlin { jvmToolchain(23) }`.
+- JVM toolchain: `kotlin { jvmToolchain(25) }`.
 - Server entrypoint: `application { mainClass = "org.darren.stock.ktor.ApplicationKt" }`.
 - Ktor config is in `src/main/resources/application.yaml` (module + port).
 - Koin properties are in `src/main/resources/koin.properties`.
