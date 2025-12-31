@@ -10,7 +10,7 @@ import org.darren.stock.domain.ProductQuantity
 import org.darren.stock.domain.RetriableException
 import org.darren.stock.domain.actors.StockPotProtocol
 import org.darren.stock.domain.actors.StockPotProtocol.RecordDelivery
-import org.darren.stock.util.LoggingHelper.wrapMethod
+import org.darren.stock.util.LoggingHelper.logOperation
 import java.time.LocalDateTime
 
 data class DeliveryRequest(
@@ -52,7 +52,7 @@ object Delivery {
 
                         // Retry only retriable failures and log the actual ask operation inline.
                         retryPolicy.retry<RetriableException, StockPotProtocol.Reply> {
-                            logger.wrapMethod("Recording delivery with requestId=${recordDelivery.requestId}") {
+                            logger.logOperation("Recording delivery with requestId=${recordDelivery.requestId}") {
                                 stockPot.ask(recordDelivery).getOrThrow()
                             }
                         }

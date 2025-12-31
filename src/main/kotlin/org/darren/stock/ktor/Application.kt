@@ -16,11 +16,9 @@ import org.darren.stock.ktor.Status.statusEndpoint
 import org.darren.stock.ktor.StockCount.stockCountEndpoint
 import org.darren.stock.ktor.exception.ExceptionHandlerChain
 import org.koin.core.context.startKoin
-import org.koin.fileProperties
 
 fun main(args: Array<String>) {
     startKoin {
-        fileProperties()
         modules(KoinModules.allModules())
     }
     io.ktor.server.netty.EngineMain

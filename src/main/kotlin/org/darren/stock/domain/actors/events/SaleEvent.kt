@@ -23,7 +23,7 @@ class SaleEvent(
             )
         }
 
-        return state.copy(quantity = newQuantity, lastUpdated = eventDateTime)
+        return state.copy(quantity = newQuantity, lastUpdated = eventDateTime, lastRequestId = requestId)
     }
 
     override fun toString(): String = "SaleEvent(eventDateTime=$eventDateTime, quantity=$quantity, requestId='$requestId', contentHash='$contentHash')"
