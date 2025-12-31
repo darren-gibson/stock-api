@@ -17,14 +17,23 @@ class StockSystem : KoinComponent {
     val retryPolicy =
         Schedule.exponential<RetriableException>(100.milliseconds)
 
+    // Track active stock pots for snapshotting
+    private val activeStockPots = mutableMapOf<String, ActorRef>()
+
     suspend fun getStockPot(
         locationId: String,
         productId: String,
-    ): ActorRef =
-        ActorSystem.get(
-            StockPotActor::class,
-            ProductLocation.of(productId, locationId).toString(),
-        )
+    ): ActorRef {
+        val key = ProductLocation.of(productId, locationId).toString()
+        return activeStockPots.getOrPut(key) {
+            ActorSystem.get(
+                StockPotActor::class,
+                key,
+            )
+        }
+    }
+
+    fun getAllActiveStockPots(): Map<String, ActorRef> = activeStockPots.toMap()
 
     // TODO: Need to consider how to handle the case where a stock pot is no longer needed
     // TODO: Need to reduce to a number of stock pots that are actually needed.
@@ -40,10 +49,7 @@ class StockSystem : KoinComponent {
 
             allPossible.associate { (locationId, productId) ->
                 locationId to
-                    ActorSystem.get(
-                        StockPotActor::class,
-                        ProductLocation.of(productId, locationId).toString(),
-                    )
+                    getStockPot(locationId, productId)
             }
         }
 }

@@ -16,7 +16,7 @@ class MoveEvent(
     override val requestId: String,
     override val contentHash: String,
 ) : StockPotEvent() {
-    override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! - quantity, lastUpdated = eventDateTime)
+    override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! - quantity, lastUpdated = eventDateTime, lastRequestId = requestId)
 
     override fun toString(): String = "MoveEvent(eventDateTime=$eventDateTime, quantity=$quantity, to=$to, reason=$reason, requestId='$requestId', contentHash='$contentHash')"
 }

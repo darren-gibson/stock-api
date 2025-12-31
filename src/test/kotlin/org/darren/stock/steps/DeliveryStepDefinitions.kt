@@ -5,13 +5,11 @@ import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
-import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.client.*
-import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import org.darren.stock.domain.StockEventRepository
+import org.darren.stock.steps.helpers.DeliveryRequestHelper
 import org.darren.stock.steps.helpers.TestDateTimeProvider
 import org.darren.stock.steps.helpers.TestStockEventRepository
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -20,11 +18,10 @@ import org.koin.core.component.inject
 import java.time.LocalDateTime
 
 class DeliveryStepDefinitions : KoinComponent {
-    private val logger = KotlinLogging.logger {}
     private lateinit var response: Any
     private val repository: StockEventRepository by inject()
-    private val client: HttpClient by inject()
     private val dateTimeProvider: TestDateTimeProvider by inject()
+    private val deliveryRequestHelper: DeliveryRequestHelper by inject()
 
     @Given("{string} is due to be delivered by {string} to {string} with a quantity of {double}")
     @Suppress("UnusedParameter", "UNUSED_PARAMETER")
@@ -63,51 +60,8 @@ class DeliveryStepDefinitions : KoinComponent {
         productId2: String,
         locationId: String,
     ) = runBlocking {
-        runDeliveryForProducts(locationId, productId1 to quantity1, productId2 to quantity2)
-    }
-
-    private suspend fun runDeliveryForProducts(
-        locationId: String,
-        vararg products: Pair<String, Double>,
-        deliveredAt: String = dateTimeProvider.nowAsString(),
-    ) {
-        val payload = buildBody(products.toList(), deliveredAt)
-
         response =
-            client.post("/locations/$locationId/deliveries") {
-                setBody(payload)
-                contentType(ContentType.Application.Json)
-                TestContext.getAuthorizationToken()?.let { token ->
-                    headers {
-                        append(HttpHeaders.Authorization, "Bearer $token")
-                    }
-                }
-            }
-        val resp = response
-        assertTrue((resp as HttpResponse).status.isSuccess())
-    }
-
-    private fun buildBody(
-        productQuantities: List<Pair<String, Double>>,
-        deliveredAt: String,
-    ): String {
-        val products =
-            productQuantities.joinToString(",") {
-                """{ "productId": "${it.first}", "quantity": ${it.second} }"""
-            }
-
-        val supplierId = "supplier1"
-        return """
-            {
-                "requestId": "${System.currentTimeMillis()}",
-                "supplierId": "$supplierId",
-                "supplierRef": "xxx",
-                "deliveredAt": "$deliveredAt",
-                "products": [
-                    $products
-                ]
-            }
-            """.trimIndent()
+            deliveryRequestHelper.runDeliveryForProducts(locationId, productId1 to quantity1, productId2 to quantity2)
     }
 
     @When("there is a delivery of {double} {string} to {string}")
@@ -117,7 +71,7 @@ class DeliveryStepDefinitions : KoinComponent {
         productId: String,
         locationId: String,
     ) = runBlocking {
-        runDeliveryForProducts(locationId, productId to quantity)
+        response = deliveryRequestHelper.runDeliveryForProducts(locationId, productId to quantity)
     }
 
     @And("a delivery of {quantity} of {string} to the {string} store that occurred at {dateTime}")
@@ -127,7 +81,12 @@ class DeliveryStepDefinitions : KoinComponent {
         locationId: String,
         dateTime: LocalDateTime,
     ) = runBlocking {
-        runDeliveryForProducts(locationId, productId to quantity, deliveredAt = dateTimeProvider.asString(dateTime))
+        response =
+            deliveryRequestHelper.runDeliveryForProducts(
+                locationId,
+                productId to quantity,
+                deliveredAt = dateTimeProvider.asString(dateTime),
+            )
     }
 
     @When("I attempt a delivery of {double} {string} and {double} {string} to {string}")
@@ -138,32 +97,12 @@ class DeliveryStepDefinitions : KoinComponent {
         productId2: String,
         locationId: String,
     ) = runBlocking {
-        runDeliveryAttemptForProducts(locationId, productId1 to quantity1, productId2 to quantity2)
-    }
-
-    private suspend fun runDeliveryAttemptForProducts(
-        locationId: String,
-        vararg products: Pair<String, Double>,
-        deliveredAt: String = dateTimeProvider.nowAsString(),
-    ) {
-        val payload = buildBody(products.toList(), deliveredAt)
-
-        try {
-            response =
-                client.post("/locations/$locationId/deliveries") {
-                    setBody(payload)
-                    contentType(ContentType.Application.Json)
-                    TestContext.getAuthorizationToken()?.let { token ->
-                        headers {
-                            append(HttpHeaders.Authorization, "Bearer $token")
-                        }
-                    }
-                }
-        } catch (e: Exception) {
-            logger.debug(e) { "Delivery request failed as expected" }
-            response = "failed"
-        }
-        // Do not assert success, as this is for failed deliveries
+        response =
+            deliveryRequestHelper.runDeliveryAttemptForProducts(
+                locationId,
+                productId1 to quantity1,
+                productId2 to quantity2,
+            )
     }
 
     @Given("the repository will fail inserts for {string} up to {int} times")
@@ -178,20 +117,29 @@ class DeliveryStepDefinitions : KoinComponent {
     fun theDeliveryShouldSucceed() =
         runBlocking {
             val resp = response as HttpResponse
-            assertTrue(resp.status.isSuccess(), "Expected delivery to succeed but it failed with status: ${resp.status}. Response: ${resp.bodyAsText()}")
+            assertTrue(
+                resp.status.isSuccess(),
+                "Expected delivery to succeed but it failed with status: ${resp.status}. Response: ${resp.bodyAsText()}",
+            )
         }
 
     @Then("the delivery should fail")
     fun theDeliveryShouldFail() {
         val resp = response
         val failed =
-            if (resp is HttpResponse) {
-                !resp.status.isSuccess()
-            } else if (resp == "failed") {
-                true
-            } else {
-                false
+            when (resp) {
+                is HttpResponse -> {
+                    !resp.status.isSuccess()
+                }
+
+                "failed" -> {
+                    true
+                }
+
+                else -> {
+                    false
+                }
             }
-        assertTrue(failed)
+        assertTrue(failed, "Expected delivery to fail but it succeeded with $resp.")
     }
 }

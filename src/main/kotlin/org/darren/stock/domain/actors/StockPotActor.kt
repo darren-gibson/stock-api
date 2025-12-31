@@ -9,17 +9,18 @@ import org.darren.stock.domain.actors.StockPotProtocol.RecordInternalMoveTo
 import org.darren.stock.domain.actors.StockPotProtocol.RecordMove
 import org.darren.stock.domain.actors.StockPotProtocol.Reply
 import org.darren.stock.domain.actors.StockPotProtocol.StockPotRequest
-import org.darren.stock.domain.actors.events.*
+import org.darren.stock.domain.snapshot.SnapshotStrategyFactory
 
 class StockPotActor(
     key: String,
-    private val repository: StockEventRepository,
+    repository: StockEventRepository,
+    snapshotStrategyFactory: SnapshotStrategyFactory,
 ) : Actor<StockPotProtocol, Reply>(key) {
     private val productLocation = ProductLocation.parse(key)
     private val locationId = productLocation.locationId
     private val productId = productLocation.productId
     private val idempotencyService = IdempotencyService(repository)
-    private val stateManager = StockStateManager(locationId, productId, repository)
+    private val stateManager = StockStateManager(locationId, productId, repository, snapshotStrategyFactory)
     private val logger = KotlinLogging.logger {}
     private val eventFactory = StockPotEventFactory(productId, locationId)
 

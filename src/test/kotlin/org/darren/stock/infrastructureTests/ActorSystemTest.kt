@@ -14,13 +14,13 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.darren.stock.domain.ProductLocation
 import org.darren.stock.domain.actors.StockPotActor
+import org.darren.stock.domain.snapshot.EventCountSnapshotStrategyFactory
+import org.darren.stock.persistence.InMemorySnapshotRepository
 import org.darren.stock.steps.helpers.TestStockEventRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import kotlin.math.log
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -72,7 +72,7 @@ class ActorSystemTest {
             val logger = loggerFactory.getLogger(SimpleActor::class)
 
             val actor =
-                simpleActorOf(Unit, capacity = 0) { state, message ->
+                simpleActorOf(Unit, capacity = 0) { _, message ->
                     val ping = message as Ping
                     logger.info("start $message with state ${ping.count}")
                     delay(100.milliseconds)
@@ -111,7 +111,12 @@ class ActorSystemTest {
                 .factoryFor(SimpleActor::class) { key ->
                     SimpleActor(key)
                 }.factoryFor(StockPotActor::class) { key ->
-                    StockPotActor(key, TestStockEventRepository())
+                    val snapshotStrategyFactory =
+                        EventCountSnapshotStrategyFactory(
+                            InMemorySnapshotRepository(),
+                            5,
+                        )
+                    StockPotActor(key, TestStockEventRepository(), snapshotStrategyFactory)
                 }
         ActorSystem
             .conf(conf)

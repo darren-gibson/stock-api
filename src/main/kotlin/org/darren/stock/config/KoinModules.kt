@@ -13,7 +13,11 @@ import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.actors.IdempotencyService
 import org.darren.stock.domain.actors.StockPotActor
 import org.darren.stock.domain.service.*
+import org.darren.stock.domain.snapshot.EventCountSnapshotStrategyFactory
+import org.darren.stock.domain.snapshot.SnapshotRepository
+import org.darren.stock.domain.snapshot.SnapshotStrategyFactory
 import org.darren.stock.domain.stockSystem.StockSystem
+import org.darren.stock.persistence.InMemorySnapshotRepository
 import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.dsl.module
 import java.time.LocalDateTime
@@ -53,6 +57,16 @@ object KoinModules {
             single<StockEventRepository> { InMemoryStockEventRepository() }
         }
 
+    val snapshotRepositoryModule =
+        module {
+            single<SnapshotRepository> { InMemorySnapshotRepository() }
+        }
+
+    val snapshotStrategyModule =
+        module {
+            single<SnapshotStrategyFactory> { EventCountSnapshotStrategyFactory(get(), 5) }
+        }
+
     val dateTimeProviderModule =
         module {
             single<DateTimeProvider> {
@@ -75,7 +89,7 @@ object KoinModules {
                         val registry =
                             SimpleActorRegistry(loggerFactory)
                                 .factoryFor(StockPotActor::class) { key ->
-                                    StockPotActor(key, get())
+                                    StockPotActor(key, get(), get())
                                 }
                         ActorSystem
                             .conf(conf)
@@ -96,6 +110,8 @@ object KoinModules {
             locationApiModule,
             stockSystemModule,
             stockEventRepositoryModule,
+            snapshotRepositoryModule,
+            snapshotStrategyModule,
             dateTimeProviderModule,
             actor4kModule(),
         )

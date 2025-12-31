@@ -15,7 +15,7 @@ class CountEvent(
     override val requestId: String,
     override val contentHash: String,
 ) : StockPotEvent() {
-    override suspend fun apply(state: StockState) = state.copy(quantity = quantity, lastUpdated = eventDateTime)
+    override suspend fun apply(state: StockState) = state.copy(quantity = quantity, lastUpdated = eventDateTime, lastRequestId = requestId)
 
     override fun toString(): String = "CountEvent(eventTime=$eventDateTime, quantity=$quantity, reason=$reason, requestId='$requestId', contentHash='$contentHash')"
 }

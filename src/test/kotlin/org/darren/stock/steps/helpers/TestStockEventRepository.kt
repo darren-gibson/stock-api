@@ -72,12 +72,12 @@ class TestStockEventRepository(
         productMaxFailures.clear()
     }
 
-    override fun getEvents(
+    override suspend fun getEventsInChronologicalOrder(
         location: String,
         product: String,
-    ): Iterable<StockPotEvent> = delegate.getEvents(location, product)
+    ): Iterable<StockPotEvent> = delegate.getEventsInChronologicalOrder(location, product)
 
-    override fun insert(
+    override suspend fun insert(
         location: String,
         product: String,
         event: StockPotEvent,
@@ -101,9 +101,20 @@ class TestStockEventRepository(
         delegate.insert(location, product, event)
     }
 
-    override fun getEventsByRequestId(requestId: String): Iterable<StockPotEvent> = delegate.getEventsByRequestId(requestId)
+    override suspend fun getEventsByRequestId(requestId: String): Iterable<StockPotEvent> = delegate.getEventsByRequestId(requestId)
 
-    override fun checkIdempotencyStatus(
+    override suspend fun getEventsAfterRequestIdInChronologicalOrder(
+        location: String,
+        product: String,
+        afterRequestId: String,
+    ): Iterable<StockPotEvent> = delegate.getEventsAfterRequestIdInChronologicalOrder(location, product, afterRequestId)
+
+    override suspend fun getLastPersistedRequestId(
+        location: String,
+        product: String,
+    ): String? = delegate.getLastPersistedRequestId(location, product)
+
+    override suspend fun checkIdempotencyStatus(
         requestId: String,
         contentHash: String,
     ): IdempotencyStatus = delegate.checkIdempotencyStatus(requestId, contentHash)
@@ -112,7 +123,7 @@ class TestStockEventRepository(
      * Directly insert an event into the repository, bypassing failure simulation.
      * Used for testing out-of-order event scenarios.
      */
-    fun insertEventDirectly(
+    suspend fun insertEventDirectly(
         location: String,
         product: String,
         event: StockPotEvent,

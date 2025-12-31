@@ -15,7 +15,7 @@ class DeliveryEvent(
     @Serializable(with = DateSerializer::class)
     override val eventDateTime: LocalDateTime,
 ) : StockPotEvent() {
-    override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! + quantity, lastUpdated = eventDateTime)
+    override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! + quantity, lastUpdated = eventDateTime, lastRequestId = requestId)
 
     override fun toString(): String = "DeliveryEvent(eventTime=$eventDateTime, quantity=$quantity, supplierId='$supplierId', supplierRef='$supplierRef', requestId='$requestId', contentHash='$contentHash')"
 }

@@ -46,17 +46,15 @@ object LoggingHelper {
     }
 
     @Suppress("TooGenericExceptionCaught")
-    suspend fun <R> KLogger.wrapMethod(
-        message: String,
-        wrappedFunction: suspend () -> R,
-    ): R {
-        try {
-            debug { message }
-            val result = wrappedFunction()
-            debug { "$message, result=$result" }
-            return result
+    inline fun <T> KLogger.logOperation(
+        operation: String,
+        block: () -> T,
+    ): T {
+        debug { "Starting $operation" }
+        return try {
+            block().also { debug { "Completed $operation" } }
         } catch (e: Throwable) {
-            error(e) { "$message, failed." }
+            error(e) { "Failed $operation" }
             throw e
         }
     }

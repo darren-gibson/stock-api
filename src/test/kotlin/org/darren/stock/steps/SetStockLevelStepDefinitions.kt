@@ -50,7 +50,11 @@ class SetStockLevelStepDefinitions : KoinComponent {
         // Use the bypass method if available (for test repositories that simulate failures)
         val testRepo = repo as? org.darren.stock.steps.helpers.TestStockEventRepository
         if (testRepo != null) {
-            testRepo.insertEventDirectly(locationId, productId, OverrideStockLevelEvent(quantity, pendingAdjustment, overrideAsAt))
+            testRepo.insertEventDirectly(
+                locationId,
+                productId,
+                OverrideStockLevelEvent(quantity, pendingAdjustment, overrideAsAt),
+            )
         } else {
             repo.insert(locationId, productId, OverrideStockLevelEvent(quantity, pendingAdjustment, overrideAsAt))
         }
@@ -60,7 +64,12 @@ class SetStockLevelStepDefinitions : KoinComponent {
     fun theFollowingAreTheCurrentStockLevels(stockLevels: List<StockLevel>) =
         runBlocking {
             stockLevels.forEach { stockLevel ->
-                setStockLevels(stockLevel.productId, stockLevel.locationId, stockLevel.quantity, stockLevel.pendingAdjustment)
+                setStockLevels(
+                    stockLevel.productId,
+                    stockLevel.locationId,
+                    stockLevel.quantity,
+                    stockLevel.pendingAdjustment,
+                )
             }
         }
 

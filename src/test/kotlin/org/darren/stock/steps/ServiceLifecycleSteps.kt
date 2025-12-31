@@ -40,6 +40,10 @@ class ServiceLifecycleSteps : KoinComponent {
     @Before
     fun beforeAllScenarios() =
         runBlocking {
+            // Disable periodic snapshot saving in tests to prevent hanging
+            System.setProperty("stock.snapshot.periodic.enabled", "false")
+            System.setProperty("stock.snapshot.initial.enabled", "false")
+
             // Set default System Administrator token for all tests
             // Individual scenarios can override by calling authentication step definitions
             val defaultToken =

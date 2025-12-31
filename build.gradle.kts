@@ -6,7 +6,8 @@ plugins {
     kotlin("plugin.serialization") version "2.3.0"
     id("io.ktor.plugin") version ktorVersion
     id("com.diffplug.spotless") version "8.1.0"
-    id("io.gitlab.arturbosch.detekt") version "1.23.8"
+    // Temporarily disabled due to Kotlin incompatibility with Java 25
+    // id("io.gitlab.arturbosch.detekt") version "1.23.8"
     id("com.github.spotbugs") version "6.4.8"
     id("com.github.ben-manes.versions") version "0.53.0"
 }
@@ -22,6 +23,7 @@ repositories {
 
 dependencies {
     val ktorVersion = "3.3.3"
+    runtimeOnly("io.ktor:ktor-server-config-yaml-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
@@ -128,15 +130,17 @@ spotless {
     }
 }
 
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config.setFrom("$projectDir/detekt.yml")
-}
+// Temporarily disabled due to Kotlin incompatibility with Java 25
+// detekt {
+//     buildUponDefaultConfig = true
+//     allRules = false
+//     config.setFrom("$projectDir/detekt.yml")
+// }
 
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    jvmTarget = "21"
-}
+// Temporarily disabled due to Kotlin incompatibility with Java 25
+// tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+//     jvmTarget = "21"
+// }
 
 // Configure SpotBugs
 spotbugs {

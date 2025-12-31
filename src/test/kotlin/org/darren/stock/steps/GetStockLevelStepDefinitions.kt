@@ -85,7 +85,8 @@ class GetStockLevelStepDefinitions : KoinComponent {
         }
 
     @Then("the stock levels should be updated as follows:")
-    @And("the stock levels should remain unchanged:")
+    @Then("the stock levels should remain unchanged:")
+    @Then("the current stock level should equal:")
     fun theStockLevelsShouldBeUpdatedAsFollows(expectedStockLevels: List<ExpectedStock>) =
         runBlocking {
             expectedStockLevels.forEach { expected ->

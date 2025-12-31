@@ -15,5 +15,5 @@ class OverrideStockLevelEvent(
     override val requestId: String = ""
     override val contentHash: String = ""
 
-    override suspend fun apply(state: StockState): StockState = state.copy(quantity = quantity, pendingAdjustment = pendingAdjustment)
+    override suspend fun apply(state: StockState): StockState = state.copy(quantity = quantity, pendingAdjustment = pendingAdjustment, lastRequestId = requestId)
 }
