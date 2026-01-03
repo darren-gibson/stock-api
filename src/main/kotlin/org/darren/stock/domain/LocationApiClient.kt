@@ -9,9 +9,11 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.opentelemetry.api.GlobalOpenTelemetry
+import io.opentelemetry.instrumentation.ktor.v3_0.KtorClientTelemetry
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import org.darren.stock.util.LoggingHelper.wrapHttpCallWithLogging
+import org.darren.stock.util.wrapHttpCallWithLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -25,6 +27,9 @@ class LocationApiClient(
     private val engine by inject<HttpClientEngine>()
     private val client =
         HttpClient(engine) {
+            install(KtorClientTelemetry) {
+                setOpenTelemetry(GlobalOpenTelemetry.get())
+            }
             install(ContentNegotiation) {
                 json(
                     Json {
@@ -38,8 +43,6 @@ class LocationApiClient(
         }
 
     suspend fun ensureValidLocation(locationId: String) = getLocation(locationId)
-
-    suspend fun ensureValidLocations(vararg locations: String) = locations.forEach { ensureValidLocation(it) }
 
     suspend fun getLocationsHierarchy(
         locationId: String,
@@ -55,14 +58,14 @@ class LocationApiClient(
     private fun getHierarchyUri(
         depth: Int?,
         locationId: String,
-    ) = "$baseUrl/locations/$locationId/children${if (depth != null) "?depth=$depth" else "" }"
+    ) = "$baseUrl/locations/$locationId/children${if (depth != null) "?depth=$depth" else ""}"
 
     private suspend fun getLocation(locationId: String): LocationDTO {
         val response = wrapHttpCallWithLogging(logger) { client.get("$baseUrl/locations/$locationId") }
-        if (response.status.isSuccess()) {
-            return response.body<LocationDTO>()
+        if (!response.status.isSuccess()) {
+            throw LocationNotFoundException(locationId)
         }
-        throw LocationNotFoundException(locationId)
+        return response.body<LocationDTO>()
     }
 
     suspend fun getPath(locationId: String): Set<LocationDTO> {
@@ -81,8 +84,8 @@ class LocationApiClient(
 
     @Serializable
     data class LocationDTO(
-        val id: String,
-        val roles: Set<String>,
+        val id: String = "",
+        val roles: Set<String> = emptySet(),
         val children: List<LocationDTO> = emptyList(),
     ) {
         val isTracked

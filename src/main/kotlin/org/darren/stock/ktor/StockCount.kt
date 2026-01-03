@@ -1,5 +1,6 @@
 package org.darren.stock.ktor
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -13,10 +14,13 @@ import org.darren.stock.domain.stockSystem.count
 import org.darren.stock.ktor.auth.Permission
 import org.darren.stock.ktor.auth.requiresAuth
 import org.darren.stock.util.DateSerializer
+import org.darren.stock.util.currentTraceId
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object StockCount {
+    val logger = KotlinLogging.logger {}
+
     fun Routing.stockCountEndpoint() {
         route("/locations/{locationId}/products/{productId}/counts") {
             requiresAuth(Permission("stock", "count", "write"), "locationId")
@@ -26,16 +30,17 @@ object StockCount {
                 val productId = call.parameters["productId"]!!
                 val locations by inject<LocationApiClient>(LocationApiClient::class.java)
                 val stockSystem by inject<StockSystem>(StockSystem::class.java)
-
                 val request = call.receive<StockCountRequestDTO>()
 
                 locations.ensureValidLocation(locationId)
+//                delay(10000)
                 with(request) {
                     stockSystem.count(CountRequest(locationId, productId, quantity, reason, countedAt, requestId))
                     call.respond(
                         Created,
                         StockCountResponseDTO(requestId, locationId, productId, quantity, reason, countedAt),
                     )
+                    logger.debug { "=== All done ${currentTraceId()} ===" }
                 }
             }
         }
@@ -46,7 +51,7 @@ object StockCount {
         val requestId: String,
         val reason: StockCountReason,
         val quantity: Double,
-        @Serializable(with = org.darren.stock.util.DateSerializer::class) val countedAt: LocalDateTime,
+        @Serializable(with = DateSerializer::class) val countedAt: LocalDateTime,
     )
 
     @Serializable

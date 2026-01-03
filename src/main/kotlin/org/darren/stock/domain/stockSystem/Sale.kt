@@ -11,17 +11,12 @@ object Sale {
         eventTime: LocalDateTime,
         requestId: String,
     ) {
-        // Calculate content hash for idempotency checking
-        val recordSale =
-            RecordSale(
-                eventTime = eventTime,
-                quantity = quantity,
-                requestId = requestId,
-            )
+        val recordSale = RecordSale(eventTime, quantity, requestId)
 
         locations.ensureLocationsAreTracked(locationId)
         val stockPot = getStockPot(locationId, productId)
-        val result = stockPot.ask(recordSale)
+        val result =
+            stockPot.ask(recordSale)
         result.getOrThrow().result
     }
 }

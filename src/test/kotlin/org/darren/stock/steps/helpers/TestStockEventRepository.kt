@@ -1,5 +1,6 @@
 package org.darren.stock.steps.helpers
 
+import kotlinx.coroutines.delay
 import org.darren.stock.domain.IdempotencyStatus
 import org.darren.stock.domain.RepositoryFailureException
 import org.darren.stock.domain.StockEventRepository
@@ -13,7 +14,7 @@ import org.darren.stock.persistence.InMemoryStockEventRepository
  */
 class TestStockEventRepository(
     private val delegate: StockEventRepository = InMemoryStockEventRepository(),
-    private val delayMillis: Long = 0,
+    delayMillis: Long = 0,
 ) : StockEventRepository {
     private var currentDelayMillis = delayMillis
     private var shouldFail = false
@@ -31,14 +32,6 @@ class TestStockEventRepository(
         shouldFail = true
         failureCount = 0
         maxFailures = count
-    }
-
-    /**
-     * Set the delay for repository operations.
-     * @param delayMillis Delay in milliseconds
-     */
-    fun setDelayMillis(delayMillis: Long) {
-        currentDelayMillis = delayMillis
     }
 
     /**
@@ -83,7 +76,7 @@ class TestStockEventRepository(
         event: StockPotEvent,
     ) {
         if (currentDelayMillis > 0) {
-            Thread.sleep(currentDelayMillis)
+            delay(currentDelayMillis)
         }
         if (failingProducts.contains(product) || (shouldFail && failureCount < maxFailures)) {
             if (failingProducts.contains(product)) {

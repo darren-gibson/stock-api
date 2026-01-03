@@ -1,8 +1,19 @@
 <configuration>
+    <appender name="OTEL" class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender">
+        <captureExperimentalAttributes>false</captureExperimentalAttributes>
+        <captureKeyValuePairAttributes>false</captureKeyValuePairAttributes>
+    </appender>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}: %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{trace_id}:%X{span_id}] - %msg%n</pattern>
         </encoder>
+    </appender>
+
+    <appender name="TEST" class="org.darren.stock.TestLogAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{trace_id}:%X{span_id}] - %msg%n</pattern>
+        </layout>
     </appender>
 
     <!-- Silence noisy Ktor internal DEBUG traces while keeping test-level debug available -->
@@ -10,6 +21,8 @@
     <logger name="io.ktor.server.engine" level="INFO" />
 
     <root level="debug">
+        <appender-ref ref="OTEL" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEST" />
     </root>
 </configuration>

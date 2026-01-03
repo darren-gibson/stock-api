@@ -9,7 +9,6 @@ object Move {
             val toPot = getStockPot(toLocationId, productId)
 
             val recordMove = StockPotProtocol.RecordMove(quantity, toPot, reason, movedAt, requestId)
-            val contentHash = recordMove.contentHash()
 
             val fromPot = getStockPot(fromLocationId, productId)
 

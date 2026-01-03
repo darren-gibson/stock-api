@@ -1,7 +1,5 @@
 package org.darren.stock.domain.snapshot
 
-import org.darren.stock.domain.snapshot.EventCountSnapshotStrategy
-
 class EventCountSnapshotStrategyFactory(
     private val repository: SnapshotRepository,
     private val eventsPerSnapshot: Int,

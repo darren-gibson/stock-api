@@ -10,6 +10,8 @@ import org.darren.stock.domain.actors.StockPotProtocol.RecordMove
 import org.darren.stock.domain.actors.StockPotProtocol.Reply
 import org.darren.stock.domain.actors.StockPotProtocol.StockPotRequest
 import org.darren.stock.domain.snapshot.SnapshotStrategyFactory
+import org.darren.stock.util.currentOpenTelemetryTraceId
+import org.darren.stock.util.putTraceId
 
 class StockPotActor(
     key: String,
@@ -46,6 +48,10 @@ class StockPotActor(
     }
 
     override suspend fun onReceive(m: StockPotProtocol): Behavior<Reply> {
+        // Propagate trace ID to MDC for logging
+        // TODO: Is this really required?
+        currentOpenTelemetryTraceId()?.let { putTraceId(it) }
+
         logger.debug { "$this, MSG=$m" }
         return when (m) {
             is GetValue -> Behavior.Reply(Reply(stateManager.currentState))

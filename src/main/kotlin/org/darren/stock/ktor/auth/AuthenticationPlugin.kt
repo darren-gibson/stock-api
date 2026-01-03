@@ -6,7 +6,6 @@ import io.ktor.server.application.*
 import io.ktor.server.application.hooks.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.pipeline.*
 import org.koin.java.KoinJavaComponent.inject
 
 private val logger = KotlinLogging.logger {}
