@@ -1,11 +1,17 @@
 <configuration>
+    <appender name="OTEL" class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender">
+        <captureExperimentalAttributes>false</captureExperimentalAttributes>
+        <captureKeyValuePairAttributes>false</captureKeyValuePairAttributes>
+    </appender>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}: %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{trace_id}:%X{span_id}] - %msg%n</pattern>
         </encoder>
     </appender>
 
     <root level="debug">
+        <appender-ref ref="OTEL" />
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

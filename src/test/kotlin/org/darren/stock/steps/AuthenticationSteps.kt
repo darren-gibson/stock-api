@@ -61,7 +61,7 @@ class AuthenticationSteps {
         /**
          * Get the public key for token verification (simulates JWKS endpoint).
          */
-        fun getPublicKey() = keyPair.public
+        fun getPublicKey() = keyPair.public!!
     }
 
     private var currentToken: String? = null
@@ -145,6 +145,8 @@ object TestContext {
     var lastRequestBody: String = ""
     var lastResponseBody: String = ""
     var lastResponse: io.ktor.client.statement.HttpResponse? = null
+    var client: io.ktor.client.HttpClient? = null
+    var currentTraceId: String? = null // Tracks the trace ID for the current test scenario
 
     fun setAuthorizationToken(token: String?) {
         authorizationToken = token

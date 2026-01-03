@@ -5,7 +5,6 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals

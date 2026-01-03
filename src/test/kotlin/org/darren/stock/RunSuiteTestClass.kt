@@ -9,8 +9,8 @@ import org.junit.platform.suite.api.Suite
 
 @Suite
 @IncludeEngines("junit-jupiter", "cucumber")
-// @SelectClasses(JupiterTest::class) // This selector is picked up by Jupiter
 @SelectPackages("org.darren.stock") // Use package selector (recommended for cucumber)
 @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @Ignore and not @Skip")
+// @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@FixMe")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "json:build/test-results/results.json")
 class RunSuiteTestClass

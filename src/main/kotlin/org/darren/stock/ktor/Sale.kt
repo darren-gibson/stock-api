@@ -1,5 +1,6 @@
 package org.darren.stock.ktor
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -14,6 +15,8 @@ import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
 
 object Sale {
+    private val logger = KotlinLogging.logger {}
+
     fun Routing.saleEndpoint() {
         route("/locations/{locationId}/products/{productId}/sales") {
             requiresAuth(Permission("stock", "movement", "write"), "locationId")
@@ -26,6 +29,7 @@ object Sale {
                 val request = call.receive<SaleRequestDTO>()
 
                 with(request) {
+                    logger.debug { "Recording sale: requestId=$requestId, locationId=$locationId, productId=$productId, quantity=$quantity" }
                     stockSystem.recordSale(locationId, productId, quantity, soldAt, requestId)
                     call.respond(Created, SaleResponseDTO(requestId, locationId, productId, quantity, soldAt))
                 }

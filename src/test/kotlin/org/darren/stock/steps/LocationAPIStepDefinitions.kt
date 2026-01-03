@@ -122,10 +122,10 @@ class LocationAPIStepDefinitions : KoinComponent {
     private fun getCacheControlForLocation(locationId: String): CacheControl {
         val value = cacheControlByLocation.getOrDefault(locationId, "no-cache")
         value.split("=").let { parts ->
-            when (parts[0]) {
-                "no-cache" -> return NoCache(null)
-                "max-age" -> return MaxAge(parts[1].toInt())
-                else -> return NoCache(null)
+            return when (parts[0]) {
+                "no-cache" -> NoCache(null)
+                "max-age" -> MaxAge(parts[1].toInt())
+                else -> NoCache(null)
             }
         }
     }

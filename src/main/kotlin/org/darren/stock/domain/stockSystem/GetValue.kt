@@ -59,7 +59,7 @@ object GetValue : KoinComponent {
         )
     }
 
-    private fun StockSystem.getAllStockPotAndAllChildrenForLocation(
+    private suspend fun StockSystem.getAllStockPotAndAllChildrenForLocation(
         allLocations: LocationDTO,
         productId: String,
     ): Map<String, ActorRef> {

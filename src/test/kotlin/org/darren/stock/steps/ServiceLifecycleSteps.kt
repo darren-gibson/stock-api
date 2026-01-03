@@ -5,11 +5,12 @@ import io.cucumber.java.Before
 import io.cucumber.java.en.Given
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smyrgeorge.actor4k.system.ActorSystem
-import io.ktor.client.HttpClient
+import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
+import io.opentelemetry.api.trace.Span
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
@@ -32,15 +33,56 @@ import kotlin.time.Duration.Companion.milliseconds
 class ServiceLifecycleSteps : KoinComponent {
     private lateinit var testApp: TestApplication
     private val locationHost = "http://location.api.darren.org"
+    private var isTestSuiteInitialized = false
 
     companion object {
         private val logger = KotlinLogging.logger {}
+
+        init {
+            // Add shutdown hook to close OpenTelemetry SDK once at end of suite
+            Runtime.getRuntime().addShutdownHook(
+                Thread {
+                    try {
+                        val sdk =
+                            io.opentelemetry.api.GlobalOpenTelemetry
+                                .get()
+                        if (sdk is io.opentelemetry.sdk.OpenTelemetrySdk) {
+                            sdk.close()
+                        }
+                    } catch (_: Exception) {
+                        // Ignore errors during final shutdown
+                    }
+                },
+            )
+        }
     }
 
     @Before
     fun beforeAllScenarios() =
         runBlocking {
+            if (!isTestSuiteInitialized) {
+                isTestSuiteInitialized = true
+
+                // Initialize test-specific OpenTelemetry SDK (once for entire suite)
+                // Use minimal configuration with disabled exporters for fast test execution
+                val testOtel =
+                    io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk
+                        .builder()
+                        .addPropertiesSupplier {
+                            mapOf(
+                                "otel.service.name" to "Stock API Tests",
+                                "otel.traces.exporter" to "none",
+                                "otel.metrics.exporter" to "none",
+                                "otel.logs.exporter" to "none",
+                            )
+                        }.build()
+                        .openTelemetrySdk
+                org.darren.stock.ktor
+                    .setOpenTelemetryForTests(testOtel)
+            }
+
             // Disable periodic snapshot saving in tests to prevent hanging
+            // TODO: I don;t think these are used.
             System.setProperty("stock.snapshot.periodic.enabled", "false")
             System.setProperty("stock.snapshot.initial.enabled", "false")
 
@@ -93,6 +135,7 @@ class ServiceLifecycleSteps : KoinComponent {
                         ),
                         module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
                         module { single { ApiCallStepDefinitions() } },
+                        module { single { ObservabilityLoggingStepDefinitions() } },
                         module { single { TestDateTimeProvider() } },
                         module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
                         // JwtConfig remains test-scoped for scenarios
@@ -112,7 +155,20 @@ class ServiceLifecycleSteps : KoinComponent {
 
     private fun buildKtorTestApp(): TestApplication =
         TestApplication {
-            application { module() }
+            application {
+                module()
+                intercept(io.ktor.server.application.ApplicationCallPipeline.Call) {
+                    val span = Span.current()
+
+                    if (span.spanContext.isValid) {
+                        val traceId = span.spanContext.traceId
+                        val spanId = span.spanContext.spanId
+                        logger.debug { "Trace from OpenTelemetry traceId=$traceId, spanId=$spanId" }
+                    } else {
+                        logger.warn { "OpenTelemetry span is not valid" }
+                    }
+                }
+            }
 
             externalServices {
                 hosts(locationHost) {
@@ -147,6 +203,7 @@ class ServiceLifecycleSteps : KoinComponent {
             if (this@ServiceLifecycleSteps::testApp.isInitialized) {
                 testApp.stop()
             }
+
             // Attempt to cancel and close any test-specific coroutine scope (created by TestKoinModules)
             try {
                 val koin = getKoin()
@@ -161,7 +218,13 @@ class ServiceLifecycleSteps : KoinComponent {
             }
 
             stopKoin()
+
             // TODO: Consider whether ActorSystem should be a Koin-managed singleton instead
             ActorSystem.shutdown()
         }
+
+    @Given("the application is running")
+    fun theApplicationIsRunning() {
+        // For documentation purposes only
+    }
 }

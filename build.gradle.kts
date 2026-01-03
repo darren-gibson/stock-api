@@ -33,6 +33,12 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
+    // OpenTelemetry integration
+    implementation("io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:2.23.0-alpha")
+    implementation("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.57.0")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.57.0")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.23.0-alpha")
+    implementation("io.opentelemetry:opentelemetry-exporter-logging:1.57.0") // console exporter
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     runtimeOnly("io.insert-koin:koin-core:4.2.0-beta2")
@@ -68,6 +74,8 @@ dependencies {
 
     // OpenTelemetry API for metrics
     implementation("io.opentelemetry:opentelemetry-api:1.57.0")
+    // MDC propagation for coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.10.1")
     // SDK and testing artifacts used in integration tests
     testImplementation("io.opentelemetry:opentelemetry-sdk:1.57.0")
     testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.57.0")
@@ -153,6 +161,16 @@ spotbugs {
 dependencies {
     // Find security-focused bug patterns
     add("spotbugsPlugins", "com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
+}
+
+project(":").setEnvironmentVariablesForOpenTelemetry()
+
+fun Project.setEnvironmentVariablesForOpenTelemetry() {
+    tasks.withType<JavaExec> {
+        environment("OTEL_METRICS_EXPORTER", "none")
+        environment("OTEL_TRACES_EXPORTER", "logging")
+        environment("OTEL_PROPAGATORS", "tracecontext,baggage")
+    }
 }
 
 // Dependency-Check is executed in CI (see .GitHub/workflows/security.yml)
