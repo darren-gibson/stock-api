@@ -21,6 +21,11 @@ jobs:
     name: OWASP Dependency-Check
     runs-on: ubuntu-latest
     needs: semgrep
+
+    concurrency:
+      group: dependency-check-${{ github.ref }}
+      cancel-in-progress: false
+
     steps:
       - uses: actions/checkout@v4
 
@@ -28,14 +33,14 @@ jobs:
         id: dc-cache
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/dependency-check-${{ github.workflow }}-${{ github.job }}
-          key: dependency-check-${{ github.workflow }}-${{ github.job }}
+          path: ${{ runner.temp }}/dependency-check-security-${{ github.job }}
+          key: dependency-check-security-${{ github.job }}
 
       - name: Run OWASP Dependency-Check
         run: |
           mkdir -p build/reports
 
-          DATA_DIR="$RUNNER_TEMP/dependency-check-${{ github.workflow }}-${{ github.job }}"
+          DATA_DIR="$RUNNER_TEMP/dependency-check-security-${{ github.job }}"
           mkdir -p "$DATA_DIR"
 
           NOUPDATE=""
@@ -46,7 +51,7 @@ jobs:
           docker run --rm \
             -v "${{ github.workspace }}":/src \
             -v "$DATA_DIR":/usr/share/dependency-check/data \
-            owasp/dependency-check:latest \
+            owasp/dependency-check:12.1.9 \
             --project "stock-api" \
             --scan /src \
             --format HTML \
