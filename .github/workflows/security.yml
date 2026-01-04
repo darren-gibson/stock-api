@@ -23,17 +23,24 @@ jobs:
     needs: semgrep
     steps:
       - uses: actions/checkout@v4
+
+      - name: Cache Dependency-Check DB
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/dependency-check-${{ github.workflow }}-${{ github.job }}
+          key: dependency-check-${{ github.workflow }}
+
       - name: Run OWASP Dependency-Check (PR / Push)
         run: |
           mkdir -p build/reports
-          
-          DATA_DIR="$RUNNER_TEMP/dependency-check-${{ github.workflow }}-${{ github.run_id }}-${{ github.job }}"
+
+          DATA_DIR="$RUNNER_TEMP/dependency-check-${{ github.workflow }}-${{ github.job }}"
           mkdir -p "$DATA_DIR"
-          
+
           docker run --rm \
             -v "${{ github.workspace }}":/src \
             -v "$DATA_DIR":/usr/share/dependency-check/data \
-            owasp/dependency-check:latest  \
+            owasp/dependency-check:latest \
             --project "stock-api" \
             --scan /src \
             --format HTML \
