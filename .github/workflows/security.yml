@@ -23,7 +23,7 @@ jobs:
     needs: semgrep
     steps:
       - uses: actions/checkout@v4
-      - name: Run OWASP Dependency-Check (Docker)
+      - name: Run OWASP Dependency-Check (PR / Push)
         run: |
           mkdir -p build/reports
           
@@ -33,17 +33,19 @@ jobs:
           docker run --rm \
             -v "${{ github.workspace }}":/src \
             -v "$DATA_DIR":/usr/share/dependency-check/data \
-            owasp/dependency-check:12.1.9 \
+            owasp/dependency-check:latest  \
             --project "stock-api" \
             --scan /src \
             --format HTML \
-            --out /src/build/reports
+            --out /src/build/reports \
+            --noupdate
+
       - name: Upload dependency-check report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
-          path: build/reports/dependency-check-report.html
+          path: build/reports/
 
   spotbugs:
     name: SpotBugs (FindSecBugs)
@@ -54,7 +56,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '23'
+          java-version: '21'
           distribution: 'temurin'
       - name: Run SpotBugs
         run: ./gradlew spotbugsMain --no-daemon
@@ -74,7 +76,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '23'
+          java-version: '25'
           distribution: 'temurin'
       - name: Run build
         run: ./gradlew spotlessCheck detekt build --no-daemon
