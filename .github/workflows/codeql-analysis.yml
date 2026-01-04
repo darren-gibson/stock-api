@@ -15,6 +15,9 @@ on:
 jobs:
   analyze:
     name: Analyze (CodeQL)
+    # Temporarily disabled: CodeQL Kotlin interceptor fails on Kotlin 2.3.0 (KotlinVersionTooRecentError).
+    # TODO: Remove this guard and re-enable when CodeQL supports Kotlin >= 2.3.0.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
