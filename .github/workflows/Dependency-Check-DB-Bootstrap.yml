@@ -1,0 +1,29 @@
+name: Dependency-Check DB Bootstrap
+
+on:
+  schedule:
+    # Runs daily at 03:00 UTC (time itself is not important)
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-db:
+    name: Build OWASP Dependency-Check Database
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Restore Dependency-Check DB cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/dependency-check-db
+          key: dependency-check-db
+
+      - name: Update Dependency-Check DB (update-only)
+        run: |
+          DATA_DIR="$RUNNER_TEMP/dependency-check-db"
+          mkdir -p "$DATA_DIR"
+
+          docker run --rm \
+            -v "$DATA_DIR":/usr/share/dependency-check/data \
+            owasp/dependency-check:12.1.9 \
+            --updateonly
