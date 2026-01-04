@@ -25,17 +25,23 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Cache Dependency-Check DB
+        id: dc-cache
         uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/dependency-check-${{ github.workflow }}-${{ github.job }}
-          key: dependency-check-${{ github.workflow }}
+          key: dependency-check-${{ github.workflow }}-${{ github.job }}
 
-      - name: Run OWASP Dependency-Check (PR / Push)
+      - name: Run OWASP Dependency-Check
         run: |
           mkdir -p build/reports
 
           DATA_DIR="$RUNNER_TEMP/dependency-check-${{ github.workflow }}-${{ github.job }}"
           mkdir -p "$DATA_DIR"
+
+          NOUPDATE=""
+          if [ "${{ steps.dc-cache.outputs.cache-hit }}" = "true" ]; then
+            NOUPDATE="--noupdate"
+          fi
 
           docker run --rm \
             -v "${{ github.workspace }}":/src \
@@ -45,7 +51,7 @@ jobs:
             --scan /src \
             --format HTML \
             --out /src/build/reports \
-            --noupdate
+            $NOUPDATE
 
       - name: Upload dependency-check report
         if: always()
