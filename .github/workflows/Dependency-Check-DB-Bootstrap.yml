@@ -24,6 +24,7 @@ jobs:
           mkdir -p "$DATA_DIR"
 
           docker run --rm \
+            -e NVD_API_KEY="${{ secrets.NVD_API_KEY }}" \
             -v "$DATA_DIR":/usr/share/dependency-check/data \
             owasp/dependency-check:12.1.9 \
             --updateonly
