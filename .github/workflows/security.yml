@@ -26,10 +26,13 @@ jobs:
       - name: Run OWASP Dependency-Check (Docker)
         run: |
           mkdir -p build/reports
-          mkdir -p "$RUNNER_TEMP/dependency-check-data"
+          
+          DATA_DIR="$RUNNER_TEMP/dependency-check-${{ github.workflow }}-${{ github.run_id }}-${{ github.job }}"
+          mkdir -p "$DATA_DIR"
+          
           docker run --rm \
             -v "${{ github.workspace }}":/src \
-            -v "$RUNNER_TEMP/dependency-check-data":/usr/share/dependency-check/data \
+            -v "$DATA_DIR":/usr/share/dependency-check/data \
             owasp/dependency-check:12.1.9 \
             --project "stock-api" \
             --scan /src \
