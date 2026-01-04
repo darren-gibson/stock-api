@@ -34,11 +34,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y graphviz
+          python3 -m pip install --user --upgrade pip
+          python3 -m pip install --user "git+https://github.com/asciitosvg/asciitosvg.git"
           npm config set prefix "$HOME/.npm-global"
           npm install -g @mermaid-js/mermaid-cli@10.9.1
-          chmod +x ./a2s || true
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
-          echo "$PWD" >> "$GITHUB_PATH"
 
       - name: Run Spotless check
         run: ./gradlew spotlessCheck --no-daemon --stacktrace
