@@ -23,8 +23,6 @@ class ApiCallStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
     private val client: HttpClient by inject()
 
-    // TODO: Apply DRY principle to reduce duplication
-
     @When("I send a POST request to {string} with the following payload:")
     @When("I send a POST request to {string} with the payload:")
     fun iSendAPOSTRequestToWithTheFollowingPayload(
@@ -35,9 +33,7 @@ class ApiCallStepDefinitions : KoinComponent {
         val cleanPayload = payload.removeAsciiDocs()
         TestContext.lastRequestBody = cleanPayload
         response = sendPostRequest(url, cleanPayload)
-        TestContext.lastResponse = response
-        TestContext.lastResponseBody = response.bodyAsText()
-        captureTraceIdFromLogs()
+        captureResponse(response)
     }
 
     private fun captureTraceIdFromLogs() {
@@ -52,6 +48,20 @@ class ApiCallStepDefinitions : KoinComponent {
         }
     }
 
+    private suspend fun captureResponse(response: HttpResponse) {
+        TestContext.lastResponse = response
+        TestContext.lastResponseBody = response.bodyAsText()
+        captureTraceIdFromLogs()
+    }
+
+    private fun HttpRequestBuilder.applyAuthHeader() {
+        TestContext.getAuthorizationToken()?.let { token ->
+            headers {
+                append(HttpHeaders.Authorization, "Bearer $token")
+            }
+        }
+    }
+
     suspend fun sendPostRequest(
         url: String,
         payload: String,
@@ -59,11 +69,7 @@ class ApiCallStepDefinitions : KoinComponent {
         client.post(url) {
             contentType(ContentType.Application.Json)
             setBody(payload)
-            TestContext.getAuthorizationToken()?.let { token ->
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer $token")
-                }
-            }
+            applyAuthHeader()
         }
 
     @Then("the API should respond with status code {int}")
@@ -80,20 +86,10 @@ class ApiCallStepDefinitions : KoinComponent {
     ) = runBlocking {
         response =
             client.get(url) {
-                getStandardHeaders()
+                applyAuthHeader()
                 headers.remove(headerToOmit)
             }
-        TestContext.lastResponseBody = response.bodyAsText()
-        captureTraceIdFromLogs()
-        return@runBlocking response
-    }
-
-    private fun HttpRequestBuilder.getStandardHeaders() {
-        TestContext.getAuthorizationToken()?.let { token ->
-            headers {
-                append(HttpHeaders.Authorization, "Bearer $token")
-            }
-        }
+        captureResponse(response)
     }
 
     @When("I send a GET request to {string}")
@@ -101,12 +97,10 @@ class ApiCallStepDefinitions : KoinComponent {
         runBlocking {
             response =
                 client.get(url) {
-                    getStandardHeaders()
+                    applyAuthHeader()
                 }
-            TestContext.lastResponseBody = response.bodyAsText()
-            TestContext.lastResponse = response
-            captureTraceIdFromLogs()
-            return@runBlocking response
+            captureResponse(response)
+            response
         }
 
     @When("I send a GET request to {string} with header {string} -> {string}")
@@ -118,24 +112,17 @@ class ApiCallStepDefinitions : KoinComponent {
         runBlocking {
             response =
                 client.get(url) {
-                    TestContext.getAuthorizationToken()?.let { token ->
-                        headers {
-                            append(HttpHeaders.Authorization, "Bearer $token")
-                            append(headerName, headerValue)
-                        }
-                    }
+                    applyAuthHeader()
+                    headers.append(headerName, headerValue)
                 }
-            TestContext.lastResponse = response
-            TestContext.lastResponseBody = response.bodyAsText()
             // For traceparent header, extract the trace ID directly from the header value
             if (headerName == "traceparent") {
                 val parts = headerValue.split("-")
                 if (parts.size >= 2) {
                     TestContext.currentTraceId = parts[1] // trace ID is the second part
                 }
-            } else {
-                captureTraceIdFromLogs()
             }
+            captureResponse(response)
         }
     }
 
@@ -144,7 +131,7 @@ class ApiCallStepDefinitions : KoinComponent {
         runBlocking {
             response = client.get(url)
             TestContext.lastResponseBody = response.bodyAsText()
-            return@runBlocking response
+            response
         }
 
     @When("I send a PUT request to {string} with the following payload:")
@@ -153,7 +140,7 @@ class ApiCallStepDefinitions : KoinComponent {
         payload: String,
     ) = runBlocking {
         response = sendPutRequest(url, payload.removeAsciiDocs())
-        TestContext.lastResponseBody = response.bodyAsText()
+        captureResponse(response)
     }
 
     private suspend fun sendPutRequest(
@@ -163,11 +150,7 @@ class ApiCallStepDefinitions : KoinComponent {
         client.post(url) {
             contentType(ContentType.Application.Json)
             setBody(payload)
-            TestContext.getAuthorizationToken()?.let { token ->
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer $token")
-                }
-            }
+            applyAuthHeader()
         }
 
     @And("the response headers should contain:")
