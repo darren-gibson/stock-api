@@ -81,11 +81,6 @@ class ServiceLifecycleSteps : KoinComponent {
                     .setOpenTelemetryForTests(testOtel)
             }
 
-            // Disable periodic snapshot saving in tests to prevent hanging
-            // TODO: I don;t think these are used.
-            System.setProperty("stock.snapshot.periodic.enabled", "false")
-            System.setProperty("stock.snapshot.initial.enabled", "false")
-
             // Set default System Administrator token for all tests
             // Individual scenarios can override by calling authentication step definitions
             val defaultToken =

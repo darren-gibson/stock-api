@@ -40,16 +40,16 @@ class StockSystem : KoinComponent {
     // TODO: Need to reduce to a number of stock pots that are actually needed.
     // What about Stores with child locations of aisles, modules, shelves, etc? The numbers will
     // soon mount up.
-    // TODO: Should not be blocking here
     suspend fun getAllActiveStockPotsFor(
         locationIds: Set<String>,
         productId: String,
-    ): Map<String, ActorRef> {
-        val allPossible = locationIds.map { loc -> loc to productId }.toSet()
+    ): Map<String, ActorRef> =
+        kotlinx.coroutines.coroutineScope {
+            val allPossible = locationIds.map { loc -> loc to productId }.toSet()
 
-        return allPossible.associate { (locationId, productId) ->
-            locationId to
-                getStockPot(locationId, productId)
+            allPossible.associate { (locationId, productId) ->
+                locationId to
+                    getStockPot(locationId, productId)
+            }
         }
-    }
 }
