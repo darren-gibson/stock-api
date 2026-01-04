@@ -48,7 +48,7 @@ jobs:
           export GOPATH="$HOME/go"
           export GOBIN="$GOPATH/bin"
           echo "$GOBIN" >> "$GITHUB_PATH"
-          go install github.com/asciitosvg/asciitosvg@latest
+          go install github.com/asciitosvg/asciitosvg/cmd/a2s@latest
 
       - name: Run Spotless check
         run: ./gradlew spotlessCheck --no-daemon --stacktrace
