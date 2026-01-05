@@ -33,10 +33,7 @@ jobs:
       - name: Install diagram toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y graphviz \
-            libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 \
-            libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
-            libxrandr2 libgbm1 libasound2 libpango-1.0-0 libcairo2
+          sudo apt-get install -y graphviz chromium-browser
           npm config set prefix "$HOME/.npm-global"
           npm install -g @mermaid-js/mermaid-cli@10.9.1
           echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
