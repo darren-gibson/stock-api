@@ -1,6 +1,6 @@
 package org.darren.stock.domain.actors
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.Location
 import org.darren.stock.domain.ProductLocation
@@ -56,7 +56,7 @@ class StockStateManagerTest {
 
     @Test
     fun `initializeState recreates state from events when no snapshot exists`() =
-        runBlocking {
+        runTest {
             // Given: some events in the repository (using non-sequential requestIds)
             val event1 = DeliveryEvent(10.0, "sup1", "ref1", "abc123", "hash1", LocalDateTime.of(2023, 1, 1, 10, 0))
             val event2 = SaleEvent(LocalDateTime.of(2023, 1, 1, 11, 0), 5.0, "xyz789", "hash2")
@@ -74,7 +74,7 @@ class StockStateManagerTest {
 
     @Test
     fun `initializeState loads from valid snapshot and replays subsequent events`() =
-        runBlocking {
+        runTest {
             // Given: a snapshot and some events after it (using non-sequential requestIds)
             val snapshotTime = LocalDateTime.of(2023, 1, 1, 10, 0)
             val snapshotState = StockState(Location(locationId), productId, 10.0, 0.0, snapshotTime, "abc123")
@@ -94,7 +94,7 @@ class StockStateManagerTest {
 
     @Test
     fun `processEvent handles in-order event correctly`() =
-        runBlocking {
+        runTest {
             // Given: initialized state
             stateManager.initializeState()
 
@@ -110,7 +110,7 @@ class StockStateManagerTest {
 
     @Test
     fun `processEvent recreates state for out-of-order event`() =
-        runBlocking {
+        runTest {
             // Given: state with later event (using non-sequential requestIds to prove ordering is by time, not requestId)
             val laterEvent = DeliveryEvent(10.0, "sup1", "ref1", "xyz789", "hash2", LocalDateTime.of(2023, 1, 1, 12, 0))
             eventRepository.insert(locationId, productId, laterEvent)
@@ -134,7 +134,7 @@ class StockStateManagerTest {
 
     @Test
     fun `processEvent persists event to repository`() =
-        runBlocking {
+        runTest {
             // Given: initialized state
             stateManager.initializeState()
 
@@ -150,7 +150,7 @@ class StockStateManagerTest {
 
     @Test
     fun `lastRequestId is set to last persisted request, not lexicographically highest requestId`() =
-        runBlocking {
+        runTest {
             // Given: events where last persisted has lexicographically lower requestId
             val event1 = DeliveryEvent(10.0, "sup1", "ref1", "z-high-lex", "hash1", LocalDateTime.of(2023, 1, 1, 10, 0))
             val event2 = SaleEvent(LocalDateTime.of(2023, 1, 1, 11, 0), 3.0, "a-low-lex", "hash2")
@@ -168,7 +168,7 @@ class StockStateManagerTest {
 
     @Test
     fun `initializeState with no snapshot sets lastRequestId to last persisted request, not chronologically last`() =
-        runBlocking {
+        runTest {
             // Given: events received in non-chronological order
             // Sale T0, req-AAA (received first)
             val eventAAA = SaleEvent(LocalDateTime.of(2023, 1, 1, 10, 0), 5.0, "req-AAA", "hash1")
@@ -199,7 +199,7 @@ class StockStateManagerTest {
 
 //    @Test
 //    fun `automatic snapshots are taken every N events`() =
-//        runBlocking {
+//        runTest {
 //            // Given: initialized state with event count snapshot strategy (every 3 events)
 //            val snapshotStrategy = EventCountSnapshotStrategy(3)
 //            val testSnapshotManager =

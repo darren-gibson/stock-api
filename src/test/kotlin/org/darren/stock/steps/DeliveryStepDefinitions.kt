@@ -7,7 +7,7 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.steps.helpers.DeliveryRequestHelper
 import org.darren.stock.steps.helpers.TestDateTimeProvider
@@ -59,7 +59,7 @@ class DeliveryStepDefinitions : KoinComponent {
         quantity2: Double,
         productId2: String,
         locationId: String,
-    ) = runBlocking {
+    ) = runTest {
         response =
             deliveryRequestHelper.runDeliveryForProducts(locationId, productId1 to quantity1, productId2 to quantity2)
     }
@@ -70,7 +70,7 @@ class DeliveryStepDefinitions : KoinComponent {
         quantity: Double,
         productId: String,
         locationId: String,
-    ) = runBlocking {
+    ) = runTest {
         response = deliveryRequestHelper.runDeliveryForProducts(locationId, productId to quantity)
     }
 
@@ -80,7 +80,7 @@ class DeliveryStepDefinitions : KoinComponent {
         productId: String,
         locationId: String,
         dateTime: LocalDateTime,
-    ) = runBlocking {
+    ) = runTest {
         response =
             deliveryRequestHelper.runDeliveryForProducts(
                 locationId,
@@ -96,7 +96,7 @@ class DeliveryStepDefinitions : KoinComponent {
         quantity2: Double,
         productId2: String,
         locationId: String,
-    ) = runBlocking {
+    ) = runTest {
         response =
             deliveryRequestHelper.runDeliveryAttemptForProducts(
                 locationId,
@@ -115,7 +115,7 @@ class DeliveryStepDefinitions : KoinComponent {
 
     @Then("the delivery should succeed")
     fun theDeliveryShouldSucceed() =
-        runBlocking {
+        runTest {
             val resp = response as HttpResponse
             assertTrue(
                 resp.status.isSuccess(),

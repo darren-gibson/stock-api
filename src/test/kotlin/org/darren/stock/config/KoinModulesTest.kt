@@ -2,6 +2,7 @@ package org.darren.stock.config
 
 import io.github.smyrgeorge.actor4k.system.ActorSystem
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertNotNull

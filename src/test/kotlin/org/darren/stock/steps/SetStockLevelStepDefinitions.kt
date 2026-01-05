@@ -3,9 +3,12 @@ package org.darren.stock.steps
 import io.cucumber.java.DataTableType
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.actors.events.OverrideStockLevelEvent
+import org.darren.stock.steps.helpers.getOptionalString
+import org.darren.stock.steps.helpers.getRequiredDouble
+import org.darren.stock.steps.helpers.getRequiredString
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
@@ -17,7 +20,7 @@ class SetStockLevelStepDefinitions : KoinComponent {
         locationId: String,
         quantity: Double,
         productId: String,
-    ) = runBlocking {
+    ) = runTest {
         theStockLevelOfProductInStoreIs(productId, locationId, quantity)
     }
 
@@ -27,7 +30,7 @@ class SetStockLevelStepDefinitions : KoinComponent {
         productId: String,
         locationId: String,
         quantity: Double,
-    ) = runBlocking {
+    ) = runTest {
         setStockLevels(productId, locationId, quantity)
     }
 
@@ -43,7 +46,7 @@ class SetStockLevelStepDefinitions : KoinComponent {
         locationId: String,
         quantity: Double,
         pendingAdjustment: Double = 0.0,
-    ) = runBlocking {
+    ) = runTest {
         val repo: StockEventRepository by inject()
         val overrideAsAt = LocalDateTime.MIN
 
@@ -62,7 +65,7 @@ class SetStockLevelStepDefinitions : KoinComponent {
 
     @And("the following are the current stock levels:")
     fun theFollowingAreTheCurrentStockLevels(stockLevels: List<StockLevel>) =
-        runBlocking {
+        runTest {
             stockLevels.forEach { stockLevel ->
                 setStockLevels(
                     stockLevel.productId,
@@ -76,10 +79,10 @@ class SetStockLevelStepDefinitions : KoinComponent {
     @DataTableType
     fun stockLevelTransformer(row: Map<String?, String>): StockLevel =
         StockLevel(
-            row["Location Id"]!!,
-            row["Product"]!!,
-            row["Stock Level"]!!.toDouble(),
-            row["Pending Adjustment"]?.toDouble() ?: 0.0,
+            row.getRequiredString("Location Id"),
+            row.getRequiredString("Product"),
+            row.getRequiredDouble("Stock Level"),
+            row.getOptionalString("Pending Adjustment")?.toDouble() ?: 0.0,
         )
 
     data class StockLevel(

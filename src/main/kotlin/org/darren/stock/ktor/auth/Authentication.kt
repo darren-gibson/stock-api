@@ -9,6 +9,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.util.*
 import kotlinx.serialization.Serializable
+import org.darren.stock.ktor.exception.ErrorCodes.UNAUTHORIZED
 import java.security.PublicKey
 
 private val logger = KotlinLogging.logger {}
@@ -16,6 +17,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * Authentication principal representing an authenticated colleague. Contains user identity and
  * authorization context extracted from JWT token.
+ * Note: locations list is immutable and should not be modified by callers.
  */
 data class ColleaguePrincipal(
     val sub: String,
@@ -91,12 +93,12 @@ suspend fun ApplicationCall.authenticate(config: JwtConfig): ColleaguePrincipal?
     val authHeader = request.headers[HttpHeaders.Authorization]
 
     if (authHeader == null) {
-        respond(HttpStatusCode.Unauthorized, AuthErrorDTO("Unauthorized"))
+        respond(HttpStatusCode.Unauthorized, AuthErrorDTO(UNAUTHORIZED))
         return null
     }
 
     if (!authHeader.startsWith("Bearer ")) {
-        respond(HttpStatusCode.Unauthorized, AuthErrorDTO("Unauthorized"))
+        respond(HttpStatusCode.Unauthorized, AuthErrorDTO(UNAUTHORIZED))
         return null
     }
 

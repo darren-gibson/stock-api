@@ -10,27 +10,29 @@ object LoggingHelper {
     suspend fun wrapHttpCallWithLogging(
         logger: KLogger,
         block: suspend () -> HttpResponse,
-    ): HttpResponse =
-        try {
-            val response = block()
-            logger.debug { "call to ${response.call.request.url} = ${response.status}, ${response.headers}" }
-            response
-        } catch (e: ResponseException) {
-            logHttpException(logger, e)
-            throw e
-        } catch (e: HttpRequestTimeoutException) {
-            logHttpException(logger, e)
-            throw e
-        } catch (e: ConnectTimeoutException) {
-            logHttpException(logger, e)
-            throw e
-        } catch (e: SocketTimeoutException) {
-            logHttpException(logger, e)
-            throw e
-        } catch (e: IOException) {
-            logHttpException(logger, e)
-            throw e
-        }
+    ): HttpResponse {
+        val response =
+            try {
+                block()
+            } catch (e: ResponseException) {
+                logHttpException(logger, e)
+                throw e
+            } catch (e: HttpRequestTimeoutException) {
+                logHttpException(logger, e)
+                throw e
+            } catch (e: ConnectTimeoutException) {
+                logHttpException(logger, e)
+                throw e
+            } catch (e: SocketTimeoutException) {
+                logHttpException(logger, e)
+                throw e
+            } catch (e: IOException) {
+                logHttpException(logger, e)
+                throw e
+            }
+        logger.debug { "call to ${response.call.request.url} = ${response.status}, ${response.headers}" }
+        return response
+    }
 
     private fun logHttpException(
         logger: KLogger,

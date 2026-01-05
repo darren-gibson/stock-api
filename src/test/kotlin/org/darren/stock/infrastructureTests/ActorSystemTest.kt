@@ -11,6 +11,7 @@ import io.github.smyrgeorge.actor4k.system.registry.SimpleActorRegistry
 import io.github.smyrgeorge.actor4k.util.SimpleLoggerFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 import org.darren.stock.domain.ProductLocation
 import org.darren.stock.domain.actors.StockPotActor
@@ -45,14 +46,14 @@ class ActorSystemTest {
 
     @Test
     fun `test actor system starts and shuts down when there's a simple actor`() {
-        runBlocking {
+        runTest {
             ActorSystem.get(SimpleActor::class, "test-actor")
         }
     }
 
     @Test
     fun `test actor system starts and shuts down when there's a StockPot Actor`() {
-        runBlocking {
+        runTest {
             ActorSystem.get(StockPotActor::class, ProductLocation.of("LOC1", "PROD1").toString())
         }
     }
@@ -60,7 +61,7 @@ class ActorSystemTest {
     @Test
     @Timeout(value = 1)
     fun `actors are shutdown by the ActorSystem`() =
-        runBlocking {
+        runTest {
             val actor = ActorSystem.get(SimpleActor::class, "test-actor")
 
             actor.tell(Ping(1))
@@ -80,7 +81,7 @@ class ActorSystemTest {
     @Disabled("Disabled slow test")
     @Test
     fun `Create a simple actor with simpleActorOf`(): Unit =
-        runBlocking {
+        runTest {
             val logger = loggerFactory.getLogger(SimpleActor::class)
 
             val actor =

@@ -12,7 +12,11 @@ import org.darren.stock.domain.stockSystem.Move.recordMovement
 import org.darren.stock.domain.stockSystem.MoveCommand
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.PermissionConstants.Actions.WRITE
+import org.darren.stock.ktor.auth.PermissionConstants.Operations.MOVEMENT
+import org.darren.stock.ktor.auth.PermissionConstants.Resources.STOCK
 import org.darren.stock.ktor.auth.requiresAuth
+import org.darren.stock.ktor.exception.ErrorCodes.LOCATION_NOT_TRACKED
 import org.darren.stock.util.DateSerializer
 import org.koin.java.KoinJavaComponent.inject
 import java.time.LocalDateTime
@@ -20,7 +24,7 @@ import java.time.LocalDateTime
 object Move {
     fun Routing.moveEndpoint() {
         route("/locations/{sourceLocationId}/{productId}/movements") {
-            requiresAuth(Permission("stock", "movement", "write"), "sourceLocationId")
+            requiresAuth(Permission(STOCK, MOVEMENT, WRITE), "sourceLocationId")
 
             post {
                 val sourceId = call.parameters["sourceLocationId"]!!
@@ -57,7 +61,7 @@ object Move {
                     }
                 } catch (e: LocationNotTrackedException) {
                     if (e.locationId == request.destinationLocationId) {
-                        call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
+                        call.respond(BadRequest, ErrorDTO(LOCATION_NOT_TRACKED))
                     } else {
                         throw e
                     }

@@ -9,6 +9,9 @@ import kotlinx.serialization.Serializable
 import org.darren.stock.domain.stockSystem.Sale.recordSale
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.PermissionConstants.Actions.WRITE
+import org.darren.stock.ktor.auth.PermissionConstants.Operations.MOVEMENT
+import org.darren.stock.ktor.auth.PermissionConstants.Resources.STOCK
 import org.darren.stock.ktor.auth.requiresAuth
 import org.darren.stock.util.DateSerializer
 import org.koin.java.KoinJavaComponent.inject
@@ -19,7 +22,7 @@ object Sale {
 
     fun Routing.saleEndpoint() {
         route("/locations/{locationId}/products/{productId}/sales") {
-            requiresAuth(Permission("stock", "movement", "write"), "locationId")
+            requiresAuth(Permission(STOCK, MOVEMENT, WRITE), "locationId")
 
             post {
                 val locationId = call.parameters["locationId"]!!

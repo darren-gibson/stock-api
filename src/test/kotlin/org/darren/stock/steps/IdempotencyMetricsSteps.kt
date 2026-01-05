@@ -6,7 +6,7 @@ import io.cucumber.java.en.When
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
@@ -28,14 +28,14 @@ class IdempotencyMetricsSteps : KoinComponent {
 
     @When("I make a delivery request with requestId {string}")
     fun makeDeliveryRequest(requestId: String) =
-        runBlocking {
+        runTest {
             val response = makeDeliveryRequest("test-location", requestId)
             TestContext.lastResponse = response
         }
 
     @When("I make the same delivery request again with requestId {string}")
     fun makeSameDeliveryRequestAgain(requestId: String) =
-        runBlocking {
+        runTest {
             val response = makeDeliveryRequest("test-location", requestId)
             TestContext.lastResponse = response
         }

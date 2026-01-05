@@ -5,8 +5,10 @@ import io.cucumber.java.en.And
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.ktor.client.statement.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.darren.stock.steps.helpers.TestDateTimeProvider
+import org.darren.stock.steps.helpers.getRequiredDouble
+import org.darren.stock.steps.helpers.getRequiredString
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -19,7 +21,7 @@ class StockMovementStepDefinitions : KoinComponent {
 
     @When("I initiate a stock movement transaction with the following details:")
     fun iInitiateAStockMovementTransactionWithTheFollowingDetails(stockMovements: List<StockMovement>) =
-        runBlocking {
+        runTest {
             stockMovements.forEach { movement ->
                 with(movement) {
                     performStockMove(from, to, product, quantity)
@@ -29,7 +31,7 @@ class StockMovementStepDefinitions : KoinComponent {
 
     @Then("the move request should fail with an InsufficientStock exception")
     fun theMoveRequestShouldFailWithAnInsufficientStockException() =
-        runBlocking {
+        runTest {
             apiCallStepDefinitions.theAPIShouldRespondWithStatusCode(400)
             apiCallStepDefinitions.theResponseBodyShouldContain("""{"status":"InsufficientStock"}""")
         }
@@ -37,11 +39,11 @@ class StockMovementStepDefinitions : KoinComponent {
     @DataTableType
     fun locationEntryTransformer(row: Map<String?, String>) =
         StockMovement(
-            row["source"]!!,
-            row["destination"]!!,
-            row["product"]!!,
-            row["quantity"]!!.toDouble(),
-            row["reason"]!!,
+            row.getRequiredString("source"),
+            row.getRequiredString("destination"),
+            row.getRequiredString("product"),
+            row.getRequiredDouble("quantity"),
+            row.getRequiredString("reason"),
         )
 
     @And("{double} {string} is moved from {string} to {string}")
@@ -50,7 +52,7 @@ class StockMovementStepDefinitions : KoinComponent {
         product: String,
         from: String,
         to: String,
-    ) = runBlocking {
+    ) = runTest {
         performStockMove(from, to, product, quantity)
     }
 

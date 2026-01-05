@@ -16,6 +16,7 @@ class MoveEvent(
     override val requestId: String,
     override val contentHash: String,
 ) : StockPotEvent() {
+    // Safe: quantity is guaranteed non-null - either initialized to 0.0 or set by prior event
     override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! - quantity, lastUpdated = eventDateTime, lastRequestId = requestId)
 
     override fun toString(): String = "MoveEvent(eventDateTime=$eventDateTime, quantity=$quantity, to=$to, reason=$reason, requestId='$requestId', contentHash='$contentHash')"

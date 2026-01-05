@@ -14,7 +14,7 @@ import io.ktor.server.testing.*
 import io.opentelemetry.api.trace.Span
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.darren.stock.config.KoinModules.actor4kModule
 import org.darren.stock.config.TestKoinModules
@@ -62,11 +62,11 @@ class ServiceLifecycleSteps : KoinComponent {
 
     @Before
     fun beforeAllScenarios(scenario: Scenario) =
-        runBlocking {
+        runTest {
             // Skip automatic service start for scenarios that want manual control
             if (scenario.sourceTagNames.contains(MANUAL_SERVICE_START_TAG)) {
                 logger.info { "===> Skipping automatic service start for ${scenario.name} (has $MANUAL_SERVICE_START_TAG tag) <==" }
-                return@runBlocking
+                return@runTest
             }
 
             initializeTestSuiteOnce()
@@ -97,11 +97,11 @@ class ServiceLifecycleSteps : KoinComponent {
     }
 
     private fun initializeAndStartServiceOnce() =
-        runBlocking {
+        runTest {
             // Only initialize once per suite, subsequent calls just ensure it's started
             if (this@ServiceLifecycleSteps::testApp.isInitialized) {
                 testApp.start()
-                return@runBlocking
+                return@runTest
             }
 
             // Set default System Administrator token for all tests
@@ -216,14 +216,14 @@ class ServiceLifecycleSteps : KoinComponent {
 
     @Given("the service is running")
     fun theServiceIsRunning() =
-        runBlocking {
+        runTest {
             initializeTestSuiteOnce()
             initializeAndStartServiceOnce()
         }
 
     @After
     fun shutdownTestServerAfterScenario() =
-        runBlocking {
+        runTest {
             if (this@ServiceLifecycleSteps::testApp.isInitialized) {
                 testApp.stop()
             }

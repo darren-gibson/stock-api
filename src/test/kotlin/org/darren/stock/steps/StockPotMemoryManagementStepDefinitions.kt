@@ -8,6 +8,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smyrgeorge.actor4k.system.ActorSystem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 import org.darren.stock.steps.helpers.ActorSystemTestConfig
 import org.darren.stock.steps.helpers.ActorSystemTestConfig.Overrides
@@ -26,7 +27,7 @@ class StockPotMemoryManagementStepDefinitions {
 
     @When("I wait for {int} milliseconds")
     fun iWaitForMilliseconds(durationMs: Int) =
-        runBlocking {
+        runTest {
             logger.info { "Waiting for $durationMs milliseconds" }
             delay(durationMs.toLong())
         }
@@ -49,7 +50,7 @@ class StockPotMemoryManagementStepDefinitions {
     fun theStockPotShouldRemainInMemory(
         product: String,
         location: String,
-    ) = runBlocking {
+    ) = runTest {
         val activeActors = ActorSystem.registry.size()
         logger.info { "Checking StockPot for '$product' at '$location' remains in memory: $activeActors active actors" }
         assertEquals(1, activeActors, "Expected StockPot for '$product' at '$location' to remain in memory")

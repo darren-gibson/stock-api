@@ -9,15 +9,17 @@ import io.ktor.http.*
 import io.ktor.http.CacheControl.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.darren.stock.steps.helpers.CacheControlConstants.MAX_AGE
+import org.darren.stock.steps.helpers.CacheControlConstants.NO_CACHE
+import org.darren.stock.steps.helpers.TestLocationRoles.TRACKED_INVENTORY_LOCATION
+import org.darren.stock.steps.helpers.TestLocationRoles.ZONE
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class LocationAPIStepDefinitions : KoinComponent {
-    private val trackedInventoryRoleName = "TrackedInventoryLocation"
-
     companion object {
         private val logger = KotlinLogging.logger {}
     }
@@ -37,7 +39,7 @@ class LocationAPIStepDefinitions : KoinComponent {
     @Given("the following locations exist:")
     @Given("the following tracked locations are defined in the Location API:")
     fun theFollowingLocationsAreDefinedInTheLocationAPI(locationsToDefine: List<SimpleLocation>) =
-        runBlocking {
+        runTest {
             locations.putAll(locationsToDefine.map { it.id to it })
         }
 
@@ -45,13 +47,13 @@ class LocationAPIStepDefinitions : KoinComponent {
     @Given("{string} is a Distribution Centre")
     @Given("{string} is a tracked location")
     fun is_a_store(locationId: String): Unit =
-        runBlocking {
+        runTest {
             createLocationForTest(locationId, "Shop")
         }
 
     @Given("{string} is an untracked location")
     fun isAnUntrackedLocation(locationId: String): Unit =
-        runBlocking {
+        runTest {
             createUntrackedLocationForTest(locationId, "Shop")
         }
 
@@ -59,7 +61,7 @@ class LocationAPIStepDefinitions : KoinComponent {
         locationId: String,
         role: String,
     ) {
-        locations[locationId] = SimpleLocation(locationId, listOf(role, trackedInventoryRoleName))
+        locations[locationId] = SimpleLocation(locationId, listOf(role, TRACKED_INVENTORY_LOCATION))
     }
 
     private fun createUntrackedLocationForTest(
@@ -120,11 +122,11 @@ class LocationAPIStepDefinitions : KoinComponent {
     }
 
     private fun getCacheControlForLocation(locationId: String): CacheControl {
-        val value = cacheControlByLocation.getOrDefault(locationId, "no-cache")
+        val value = cacheControlByLocation.getOrDefault(locationId, NO_CACHE)
         value.split("=").let { parts ->
             return when (parts[0]) {
-                "no-cache" -> NoCache(null)
-                "max-age" -> MaxAge(parts[1].toInt())
+                NO_CACHE -> NoCache(null)
+                MAX_AGE -> MaxAge(parts[1].toInt())
                 else -> NoCache(null)
             }
         }
@@ -160,7 +162,7 @@ class LocationAPIStepDefinitions : KoinComponent {
             if (row.containsKey("Roles")) {
                 row["Roles"]?.split(",")?.map { it.trim() } ?: emptyList()
             } else {
-                listOf(trackedInventoryRoleName)
+                listOf(TRACKED_INVENTORY_LOCATION)
             }
 
         return SimpleLocation(row["Location Id"]!!, roles, row["Parent Location Id"])
@@ -186,7 +188,7 @@ class LocationAPIStepDefinitions : KoinComponent {
             listOf(
                 SimpleLocation(
                     locationId,
-                    listOf("Zone", trackedInventoryRoleName),
+                    listOf(ZONE, TRACKED_INVENTORY_LOCATION),
                 ),
             ),
         )
@@ -203,7 +205,7 @@ class LocationAPIStepDefinitions : KoinComponent {
     @Given("the Location API responds to get location requests with the following cache-control header:")
     fun theLocationAPIRespondsToGetLocationRequestsWithTheFollowingCacheControlHeader(setting: List<CacheControlSetting>) {
         cacheControlByLocation.putAll(setting.map { it.id to it.header })
-        setting.forEach { createLocationForTest(it.id, trackedInventoryRoleName) }
+        setting.forEach { createLocationForTest(it.id, TRACKED_INVENTORY_LOCATION) }
     }
 
     @DataTableType

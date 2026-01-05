@@ -5,7 +5,7 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.ktor.http.*
 import io.ktor.server.response.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.darren.stock.TestLogAppender
 import org.junit.jupiter.api.Assertions.*
 import org.koin.core.component.KoinComponent
@@ -18,7 +18,7 @@ class ObservabilityLoggingStepDefinitions : KoinComponent {
 
     @When("I send a GET request to {string} which triggers an outbound location lookup")
     fun iSendAGETThatTriggersOutboundLookup(url: String) =
-        runBlocking {
+        runTest {
             // Install a responder that captures the inbound traceparent header on the external service
             serviceHelper.getLocationByIdResponder = { call ->
                 capturedOutboundHeader = call.request.headers["traceparent"]

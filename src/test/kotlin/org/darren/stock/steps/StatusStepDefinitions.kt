@@ -7,7 +7,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
@@ -19,7 +19,7 @@ class StatusStepDefinitions : KoinComponent {
 
     @When("I send a GET request to the {string} endpoint")
     fun iSendAGETRequestToTheEndpoint(endpoint: String) =
-        runBlocking {
+        runTest {
             response = client.request(endpoint)
         }
 
@@ -34,7 +34,7 @@ class StatusStepDefinitions : KoinComponent {
 
     @And("the response body should indicate the service is healthy")
     fun theResponseBodyShouldIndicateTheServiceIsHealthy() =
-        runBlocking {
+        runTest {
             val responseBody: String = response.body()
             assertTrue(responseBody.contains("Healthy"), "Response body does not indicate the service is healthy, body=$responseBody")
         }

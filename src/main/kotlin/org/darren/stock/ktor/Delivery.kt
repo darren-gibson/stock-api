@@ -9,6 +9,9 @@ import org.darren.stock.domain.ProductQuantity
 import org.darren.stock.domain.stockSystem.Delivery.recordDelivery
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.PermissionConstants.Actions.WRITE
+import org.darren.stock.ktor.auth.PermissionConstants.Operations.MOVEMENT
+import org.darren.stock.ktor.auth.PermissionConstants.Resources.STOCK
 import org.darren.stock.ktor.auth.requiresAuth
 import org.darren.stock.util.DateSerializer
 import org.koin.java.KoinJavaComponent.inject
@@ -17,7 +20,7 @@ import java.time.LocalDateTime
 object Delivery {
     fun Routing.deliveryEndpoint() {
         route("/locations/{locationId}/deliveries") {
-            requiresAuth(Permission("stock", "movement", "write"), "locationId")
+            requiresAuth(Permission(STOCK, MOVEMENT, WRITE), "locationId")
 
             post {
                 val locationId = call.parameters["locationId"]!!

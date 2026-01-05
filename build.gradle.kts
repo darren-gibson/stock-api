@@ -82,6 +82,8 @@ dependencies {
     testImplementation("net.javacrumbs.json-unit:json-unit:5.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
+    // Coroutines test utilities
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
     // SpotBugs FindSecBugs plugin for security-focused bug patterns
     // Note: spotbugsPlugins configuration is used by the SpotBugs Gradle plugin
     // See: https://spotbugs.github.io/ and https://find-sec-bugs.github.io/
