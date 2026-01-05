@@ -44,16 +44,15 @@ Follow [semantic versioning](https://semver.org/):
 
 ### Via API Endpoint
 ```bash
-curl http://localhost:8080/info
+curl http://localhost:8080/_status
 ```
 
-Response:
+Response (example):
 ```json
 {
-  "service": "Stock API",
+  "status": "Healthy",
   "version": "1.2.3",
-  "buildTime": "2026-01-05T10:30:00Z",
-  "status": "running"
+  "buildTime": "2026-01-05T10:30:00Z"
 }
 ```
 

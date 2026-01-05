@@ -9,3 +9,18 @@ Feature: Service Health Check
     When I send a GET request to the "_status" endpoint
     Then the response status code should be 200
     And the response body should indicate the service is healthy
+
+  Scenario: Status endpoint exposes version metadata
+    Given the service is running
+    When I send a GET request to the "/_status" endpoint
+    Then the response status code should be 200
+    And the response body should indicate the service is healthy
+    And the response body should include version and build time metadata
+    And the response body should match JSON:
+      """
+      {
+        "status": "Healthy",
+        "version": "${json-unit.any-string}",
+        "buildTime": "<timestamp>"
+      }
+      """
