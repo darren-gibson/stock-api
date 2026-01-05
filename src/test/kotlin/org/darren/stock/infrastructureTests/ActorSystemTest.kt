@@ -17,10 +17,8 @@ import org.darren.stock.domain.actors.StockPotActor
 import org.darren.stock.domain.snapshot.EventCountSnapshotStrategyFactory
 import org.darren.stock.persistence.InMemorySnapshotRepository
 import org.darren.stock.steps.helpers.TestStockEventRepository
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
+import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -28,9 +26,7 @@ class ActorSystemTest {
     class SimpleActor(
         key: String,
     ) : Actor<ActorProtocol, ActorProtocol.Response>(key) {
-        override suspend fun onReceive(m: ActorProtocol): Behavior<ActorProtocol.Response> {
-            TODO("Not yet implemented")
-        }
+        override suspend fun onReceive(m: ActorProtocol): Behavior<ActorProtocol.Response> = Behavior.None()
     }
 
     @BeforeEach
@@ -60,6 +56,22 @@ class ActorSystemTest {
             ActorSystem.get(StockPotActor::class, ProductLocation.of("LOC1", "PROD1").toString())
         }
     }
+
+    @Test
+    @Timeout(value = 1)
+    fun `actors are shutdown by the ActorSystem`() =
+        runBlocking {
+            val actor = ActorSystem.get(SimpleActor::class, "test-actor")
+
+            actor.tell(Ping(1))
+            assertEquals(1, ActorSystem.registry.size())
+
+            while (ActorSystem.registry.size() > 0) {
+                delay(10.milliseconds)
+            }
+
+            assertEquals(0, ActorSystem.registry.size())
+        }
 
     data class Ping(
         val count: Int,
@@ -96,6 +108,8 @@ class ActorSystemTest {
     private fun start(
         conf: ActorSystem.Conf =
             ActorSystem.Conf(
+                registryCleanupEvery = 25.milliseconds,
+                actorExpiresAfter = 10.milliseconds,
                 shutdownInitialDelay = 0.milliseconds,
                 shutdownPollingInterval = 1.milliseconds,
                 shutdownFinalDelay = 0.milliseconds,
@@ -105,6 +119,8 @@ class ActorSystemTest {
         runBlocking {
             withTimeout(2.seconds) { ActorSystem.shutdown() }
         }
+        ActorSystem
+            .conf(conf) // need to do before the registry is created, otherwise settings are ignored.
         val loggerFactory = SimpleLoggerFactory()
         val registry =
             SimpleActorRegistry(loggerFactory)
@@ -118,8 +134,8 @@ class ActorSystemTest {
                         )
                     StockPotActor(key, TestStockEventRepository(), snapshotStrategyFactory)
                 }
+
         ActorSystem
-            .conf(conf)
             .register(loggerFactory)
             .register(registry)
             .start()

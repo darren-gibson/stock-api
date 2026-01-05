@@ -21,6 +21,7 @@ import org.darren.stock.persistence.InMemorySnapshotRepository
 import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.dsl.module
 import java.time.LocalDateTime
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -85,6 +86,7 @@ object KoinModules {
                         runBlocking {
                             withTimeout(2.seconds) { ActorSystem.shutdown() }
                         }
+                        ActorSystem.conf(conf) // need to configure before the registry is created
                         val loggerFactory = SimpleLoggerFactory()
                         val registry =
                             SimpleActorRegistry(loggerFactory)
@@ -92,7 +94,6 @@ object KoinModules {
                                     StockPotActor(key, get(), get())
                                 }
                         ActorSystem
-                            .conf(conf)
                             .register(loggerFactory)
                             .register(registry)
                             .start()
