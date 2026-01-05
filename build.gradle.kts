@@ -1,5 +1,8 @@
 @file:Suppress("LocalVariableName")
 
+import java.time.Instant
+import java.util.concurrent.TimeUnit
+
 plugins {
     val ktorVersion = "3.3.3"
     kotlin("jvm") version "2.3.0"
@@ -15,7 +18,7 @@ plugins {
 // Note: OWASP Dependency-Check will be run from CI via the official GitHub Action
 
 group = "org.darren"
-version = "1.0-SNAPSHOT"
+version = project.findProperty("releaseVersion") as String? ?: calculateVersion()
 
 repositories {
     mavenCentral()
@@ -94,6 +97,17 @@ tasks.test {
     useJUnitPlatform()
     // Disable Ktor's development auto-reload during tests to avoid dynamic module loading
     systemProperty("io.ktor.development", "false")
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Implementation-Title" to project.name,
+            "Implementation-Version" to project.version,
+            "Built-By" to System.getProperty("user.name"),
+            "Built-Date" to Instant.now().toString(),
+        )
+    }
 }
 
 // Generates living documentation from Cucumber test results
@@ -176,3 +190,69 @@ fun Project.setEnvironmentVariablesForOpenTelemetry() {
 }
 
 // Dependency-Check is executed in CI (see .GitHub/workflows/security.yml)
+
+/**
+ * Calculate project version dynamically based on Git state.
+ * - In CI with RELEASE_VERSION env var: use that version (e.g., "1.2.3")
+ * - With Git tag (v1.2.3): use the tag version
+ * - Otherwise: use base version + commit hash (e.g., "1.0.0-dev-abc1234")
+ */
+fun calculateVersion(): String {
+    // Check if running in CI with explicit version
+    val ciVersion = System.getenv("RELEASE_VERSION")
+    if (!ciVersion.isNullOrBlank()) {
+        return ciVersion
+    }
+
+    // Try to get version from Git tag
+    try {
+        val tagVersion = "git describe --exact-match --tags HEAD".runCommand()
+        if (!tagVersion.isNullOrBlank()) {
+            // Remove 'v' prefix if present (e.g., v1.2.3 -> 1.2.3)
+            return tagVersion.removePrefix("v").trim()
+        }
+    } catch (e: Exception) {
+        // No tag on current commit, continue to dev version
+    }
+
+    // Development version: base + short commit hash
+    val baseVersion = "1.0.0"
+    return try {
+        val commitHash = "git rev-parse --short=7 HEAD".runCommand()
+        val isDirty = "git diff --quiet".runCommand(ignoreExitCode = true) == null
+        val suffix = if (isDirty) "$commitHash-dirty" else commitHash
+        "$baseVersion-dev-$suffix"
+    } catch (e: Exception) {
+        "$baseVersion-SNAPSHOT"
+    }
+}
+
+/**
+ * Run a shell command and return its output.
+ */
+fun String.runCommand(
+    workingDir: File = file("."),
+    ignoreExitCode: Boolean = false,
+): String? =
+    try {
+        val parts = this.split("\\s".toRegex())
+        val proc =
+            ProcessBuilder(*parts.toTypedArray())
+                .directory(workingDir)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
+                .start()
+
+        proc.waitFor(10, TimeUnit.SECONDS)
+        val exitCode = proc.exitValue()
+        if (!ignoreExitCode && exitCode != 0) {
+            null
+        } else {
+            proc.inputStream
+                .bufferedReader()
+                .readText()
+                .trim()
+        }
+    } catch (e: Exception) {
+        null
+    }

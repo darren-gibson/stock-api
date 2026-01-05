@@ -20,6 +20,7 @@ import kotlinx.serialization.json.Json
 import org.darren.stock.config.KoinModules
 import org.darren.stock.ktor.Delivery.deliveryEndpoint
 import org.darren.stock.ktor.GetStock.getStockEndpoint
+import org.darren.stock.ktor.Info.infoEndpoint
 import org.darren.stock.ktor.Move.moveEndpoint
 import org.darren.stock.ktor.Sale.saleEndpoint
 import org.darren.stock.ktor.Status.statusEndpoint
@@ -29,6 +30,19 @@ import org.koin.core.context.startKoin
 import org.slf4j.MDC
 
 fun main(args: Array<String>) {
+    // Set version system property from build
+    val version = object {}.javaClass.getPackage()?.implementationVersion ?: "dev"
+    System.setProperty("app.version", version)
+    System.setProperty(
+        "app.buildTime",
+        java.time.Instant
+            .now()
+            .toString(),
+    )
+
+    val logger = KotlinLogging.logger {}
+    logger.info { "Starting Stock API version $version" }
+
     startKoin {
         modules(KoinModules.allModules())
     }
@@ -57,6 +71,7 @@ fun Application.module() {
     }
     install(StatusPages) { handleExceptions() }
     routing {
+        infoEndpoint()
         moveEndpoint()
         statusEndpoint()
         stockCountEndpoint()
