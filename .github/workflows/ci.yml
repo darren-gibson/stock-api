@@ -33,10 +33,13 @@ jobs:
       - name: Install diagram toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y graphviz chromium-browser
+          sudo apt-get install -y graphviz chromium-browser chromium-sandbox
           npm config set prefix "$HOME/.npm-global"
           npm install -g @mermaid-js/mermaid-cli@10.9.1
           echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
+          # Set up SUID sandbox for chromium
+          export CHROME_DEVEL_SANDBOX=/usr/lib/chromium-browser/chrome-sandbox
+          echo "CHROME_DEVEL_SANDBOX=$CHROME_DEVEL_SANDBOX" >> "$GITHUB_ENV"
 
       - name: Install Go toolchain
         uses: actions/setup-go@v6
@@ -61,8 +64,6 @@ jobs:
         run: ./gradlew build --no-daemon --stacktrace
 
       - name: Validate Cukedoctor output (fail on errors)
-        env:
-          PUPPETEER_ARGS: --no-sandbox --disable-setuid-sandbox
         run: |
           set -o pipefail
           echo "Running cukedoctor and checking for warnings..."
