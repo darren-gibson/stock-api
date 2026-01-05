@@ -78,7 +78,7 @@ dependencies {
     // OpenTelemetry API for metrics
     implementation("io.opentelemetry:opentelemetry-api:1.57.0")
     // MDC propagation for coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.10.2")
     // SDK and testing artifacts used in integration tests
     testImplementation("io.opentelemetry:opentelemetry-sdk:1.57.0")
     testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.57.0")
@@ -86,7 +86,7 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:3.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
     // Coroutines test utilities
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     // SpotBugs FindSecBugs plugin for security-focused bug patterns
     // Note: spotbugsPlugins configuration is used by the SpotBugs Gradle plugin
     // See: https://spotbugs.github.io/ and https://find-sec-bugs.github.io/
