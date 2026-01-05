@@ -64,11 +64,12 @@ jobs:
         run: |
           set -o pipefail
           echo "Running cukedoctor and checking for warnings..."
-          OUTPUT=$(JAVA_TOOL_OPTIONS="--enable-native-access=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED" ./gradlew cukedoctor --no-daemon --stacktrace 2>&1)
-          echo "$OUTPUT"
-          if echo "$OUTPUT" | grep -Ei "\b(SEVERE|ERROR)\b"; then
+          JAVA_TOOL_OPTIONS="--enable-native-access=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED" ./gradlew cukedoctor --no-daemon --stacktrace 2>&1 | tee /tmp/cukedoctor.log
+          if grep -Ei "\b(SEVERE|ERROR)\b" /tmp/cukedoctor.log; then
             echo "Cukedoctor produced errors — failing CI."
             exit 1
+          else
+            echo "Cukedoctor completed successfully with no errors."
           fi
 
       - name: Upload generated docs
