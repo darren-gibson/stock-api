@@ -61,6 +61,8 @@ jobs:
         run: ./gradlew build --no-daemon --stacktrace
 
       - name: Validate Cukedoctor output (fail on errors)
+        env:
+          PUPPETEER_ARGS: --no-sandbox --disable-setuid-sandbox
         run: |
           set -o pipefail
           echo "Running cukedoctor and checking for warnings..."
