@@ -2,6 +2,7 @@ package org.darren.stock.steps
 
 import io.cucumber.java.After
 import io.cucumber.java.Before
+import io.cucumber.java.Scenario
 import io.cucumber.java.en.Given
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smyrgeorge.actor4k.system.ActorSystem
@@ -20,6 +21,7 @@ import org.darren.stock.config.TestKoinModules
 import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.ktor.auth.JwtConfig
 import org.darren.stock.ktor.module
+import org.darren.stock.steps.helpers.ActorSystemTestConfig
 import org.darren.stock.steps.helpers.TestDateTimeProvider
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
@@ -37,6 +39,7 @@ class ServiceLifecycleSteps : KoinComponent {
 
     companion object {
         private val logger = KotlinLogging.logger {}
+        private const val MANUAL_SERVICE_START_TAG = "@manual-service-start"
 
         init {
             // Add shutdown hook to close OpenTelemetry SDK once at end of suite
@@ -58,27 +61,47 @@ class ServiceLifecycleSteps : KoinComponent {
     }
 
     @Before
-    fun beforeAllScenarios() =
+    fun beforeAllScenarios(scenario: Scenario) =
         runBlocking {
-            if (!isTestSuiteInitialized) {
-                isTestSuiteInitialized = true
+            // Skip automatic service start for scenarios that want manual control
+            if (scenario.sourceTagNames.contains(MANUAL_SERVICE_START_TAG)) {
+                logger.info { "===> Skipping automatic service start for ${scenario.name} (has $MANUAL_SERVICE_START_TAG tag) <==" }
+                return@runBlocking
+            }
 
-                // Initialize test-specific OpenTelemetry SDK (once for entire suite)
-                // Use minimal configuration with disabled exporters for fast test execution
-                val testOtel =
-                    io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk
-                        .builder()
-                        .addPropertiesSupplier {
-                            mapOf(
-                                "otel.service.name" to "Stock API Tests",
-                                "otel.traces.exporter" to "none",
-                                "otel.metrics.exporter" to "none",
-                                "otel.logs.exporter" to "none",
-                            )
-                        }.build()
-                        .openTelemetrySdk
-                org.darren.stock.ktor
-                    .setOpenTelemetryForTests(testOtel)
+            initializeTestSuiteOnce()
+            initializeAndStartServiceOnce()
+        }
+
+    private fun initializeTestSuiteOnce() {
+        if (!isTestSuiteInitialized) {
+            isTestSuiteInitialized = true
+
+            // Initialize test-specific OpenTelemetry SDK (once for entire suite)
+            // Use minimal configuration with disabled exporters for fast test execution
+            val testOtel =
+                io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk
+                    .builder()
+                    .addPropertiesSupplier {
+                        mapOf(
+                            "otel.service.name" to "Stock API Tests",
+                            "otel.traces.exporter" to "none",
+                            "otel.metrics.exporter" to "none",
+                            "otel.logs.exporter" to "none",
+                        )
+                    }.build()
+                    .openTelemetrySdk
+            org.darren.stock.ktor
+                .setOpenTelemetryForTests(testOtel)
+        }
+    }
+
+    private fun initializeAndStartServiceOnce() =
+        runBlocking {
+            // Only initialize once per suite, subsequent calls just ensure it's started
+            if (this@ServiceLifecycleSteps::testApp.isInitialized) {
+                testApp.start()
+                return@runBlocking
             }
 
             // Set default System Administrator token for all tests
@@ -111,9 +134,21 @@ class ServiceLifecycleSteps : KoinComponent {
         }
 
     private fun registerTestKoinModules(client: HttpClient) {
+        logger.info { "===> Registering test Koin modules <==" }
         startKoin {
             // Provide properties used by production modules
             properties(mapOf("LOCATION_API" to locationHost))
+
+            val actorConf =
+                ActorSystemTestConfig.applyTo(
+                    ActorSystem.Conf(
+                        shutdownInitialDelay = 1.milliseconds,
+                        shutdownPollingInterval = 1.milliseconds,
+                        shutdownFinalDelay = 0.milliseconds,
+                    ),
+                )
+
+            logger.info { "===> Actor system configuration: expiresAfter=${actorConf.actorExpiresAfter}, cleanupEvery=${actorConf.registryCleanupEvery} <==" }
 
             // Load only test modules to provide test-scoped bindings (avoid duplicate production bindings)
             modules(
@@ -121,13 +156,7 @@ class ServiceLifecycleSteps : KoinComponent {
                     listOf(
                         // Test-specific small modules that don't belong in a shared test helper
                         module { single { testApp.client.engine } },
-                        actor4kModule(
-                            ActorSystem.Conf(
-                                shutdownInitialDelay = 1.milliseconds,
-                                shutdownPollingInterval = 1.milliseconds,
-                                shutdownFinalDelay = 0.milliseconds,
-                            ),
-                        ),
+                        actor4kModule(actorConf),
                         module { single<ServiceLifecycleSteps> { this@ServiceLifecycleSteps } },
                         module { single { ApiCallStepDefinitions() } },
                         module { single { ObservabilityLoggingStepDefinitions() } },
@@ -188,8 +217,8 @@ class ServiceLifecycleSteps : KoinComponent {
     @Given("the service is running")
     fun theServiceIsRunning() =
         runBlocking {
-            assertTrue(this@ServiceLifecycleSteps::testApp.isInitialized)
-            testApp.start()
+            initializeTestSuiteOnce()
+            initializeAndStartServiceOnce()
         }
 
     @After
@@ -213,6 +242,7 @@ class ServiceLifecycleSteps : KoinComponent {
             }
 
             stopKoin()
+            ActorSystemTestConfig.clearOverrides()
 
             // TODO: Consider whether ActorSystem should be a Koin-managed singleton instead
             ActorSystem.shutdown()

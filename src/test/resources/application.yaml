@@ -4,6 +4,10 @@ ktor:
     port-test: 8081
     host: 0.0.0.0
     environment: test
+
+stockPot:
+  unloadAfterInactivity: 5m
+  unloadCheckInterval: 30s
 #  application:
 #    - modules:
 #        - org.darren.stock.ktor.ApplicationKt.module
