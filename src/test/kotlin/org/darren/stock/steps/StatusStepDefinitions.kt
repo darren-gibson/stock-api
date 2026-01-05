@@ -7,10 +7,10 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.coroutines.test.runTest
 import net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -81,9 +81,10 @@ class StatusStepDefinitions : KoinComponent {
         runTest {
             val actualBody: String = response.body()
             val timestampMatcher = "${'$'}{json-unit.regex}^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z$"
-            val normalizedExpected = expectedJson
-                .trimIndent()
-                .replace("<timestamp>", timestampMatcher)
+            val normalizedExpected =
+                expectedJson
+                    .trimIndent()
+                    .replace("<timestamp>", timestampMatcher)
 
             println("STATUS_RESPONSE_BODY=" + actualBody)
             assertJsonEquals(normalizedExpected, actualBody)
