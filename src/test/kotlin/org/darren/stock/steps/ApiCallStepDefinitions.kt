@@ -7,7 +7,7 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
 import org.darren.stock.TestLogAppender
 import org.darren.stock.steps.helpers.removeAsciiDocs
@@ -28,7 +28,7 @@ class ApiCallStepDefinitions : KoinComponent {
     fun iSendAPOSTRequestToWithTheFollowingPayload(
         url: String,
         payload: String,
-    ) = runBlocking {
+    ) = runTest {
         TestLogAppender.events.clear()
         val cleanPayload = payload.removeAsciiDocs()
         TestContext.lastRequestBody = cleanPayload
@@ -83,7 +83,7 @@ class ApiCallStepDefinitions : KoinComponent {
     fun iSendAGETRequestToWithoutAXCorrelationIdHeader(
         url: String,
         headerToOmit: String,
-    ) = runBlocking {
+    ) = runTest {
         response =
             client.get(url) {
                 applyAuthHeader()
@@ -92,15 +92,19 @@ class ApiCallStepDefinitions : KoinComponent {
         captureResponse(response)
     }
 
+    private suspend fun sendGetRequest(url: String): HttpResponse {
+        response =
+            client.get(url) {
+                applyAuthHeader()
+            }
+        captureResponse(response)
+        return response
+    }
+
     @When("I send a GET request to {string}")
-    fun iSendAGETRequestTo(url: String): HttpResponse =
-        runBlocking {
-            response =
-                client.get(url) {
-                    applyAuthHeader()
-                }
-            captureResponse(response)
-            response
+    fun iSendAGETRequestTo(url: String) =
+        runTest {
+            sendGetRequest(url)
         }
 
     @When("I send a GET request to {string} with header {string} -> {string}")
@@ -109,7 +113,7 @@ class ApiCallStepDefinitions : KoinComponent {
         headerName: String,
         headerValue: String,
     ) {
-        runBlocking {
+        runTest {
             response =
                 client.get(url) {
                     applyAuthHeader()
@@ -126,19 +130,23 @@ class ApiCallStepDefinitions : KoinComponent {
         }
     }
 
+    private suspend fun sendGetRequestWithoutAuth(url: String): HttpResponse {
+        response = client.get(url)
+        TestContext.lastResponseBody = response.bodyAsText()
+        return response
+    }
+
     @When("I send a GET request to {string} without authentication")
-    fun iSendAGETRequestToWithoutAuthentication(url: String): HttpResponse =
-        runBlocking {
-            response = client.get(url)
-            TestContext.lastResponseBody = response.bodyAsText()
-            response
+    fun iSendAGETRequestToWithoutAuthentication(url: String) =
+        runTest {
+            sendGetRequestWithoutAuth(url)
         }
 
     @When("I send a PUT request to {string} with the following payload:")
     fun iSendAPUTRequestToWithTheFollowingPayload(
         url: String,
         payload: String,
-    ) = runBlocking {
+    ) = runTest {
         response = sendPutRequest(url, payload.removeAsciiDocs())
         captureResponse(response)
     }
@@ -168,7 +176,7 @@ class ApiCallStepDefinitions : KoinComponent {
 
     @And("the response body should contain:")
     fun theResponseBodyShouldContain(expectedResult: String) =
-        runBlocking {
+        runTest {
             val actualBody = response.bodyAsText()
 
             assertThat(actualBody, jsonEquals(expectedResult.removeAsciiDocs().ignoreTimestamps()))

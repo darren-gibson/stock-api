@@ -14,7 +14,8 @@ object Move {
 
             // TODO: Make Duration a configurable timeout
             val result = fromPot.ask(recordMove)
-            result.getOrThrow().result
+            // Execute for side effects; must complete successfully
+            result.getOrThrow()
         }
     }
 }

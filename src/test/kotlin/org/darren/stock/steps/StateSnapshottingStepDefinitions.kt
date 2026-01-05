@@ -9,7 +9,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.*
 import org.darren.stock.domain.actors.events.DeliveryEvent
@@ -37,9 +37,6 @@ class StateSnapshottingStepDefinitions : KoinComponent {
     private val scenarioContext = ScenarioContext() // Scenario context to store data between steps
     private val logger = KotlinLogging.logger {}
 
-    // Small helper to avoid repeating `runBlocking` at many call sites and improve readability
-    private fun <T> runTest(block: suspend () -> T): T = runBlocking { block() }
-
     @Serializable
     private data class GetStock(
         val locationId: String,
@@ -50,27 +47,26 @@ class StateSnapshottingStepDefinitions : KoinComponent {
         @Serializable(with = DateSerializer::class) val lastUpdated: LocalDateTime,
     )
 
-    private fun getStockData(
+    private suspend fun getStockData(
         locationId: String,
         productId: String = "default-product",
-    ): GetStock =
-        runTest {
-            val client: HttpClient by inject()
-            val url = "/locations/$locationId/products/$productId"
-            val response =
-                client.get(url) {
-                    TestContext.getAuthorizationToken()?.let { token ->
-                        headers {
-                            append(HttpHeaders.Authorization, "Bearer $token")
-                        }
+    ): GetStock {
+        val client: HttpClient by inject()
+        val url = "/locations/$locationId/products/$productId"
+        val response =
+            client.get(url) {
+                TestContext.getAuthorizationToken()?.let { token ->
+                    headers {
+                        append(HttpHeaders.Authorization, "Bearer $token")
                     }
                 }
-            if (response.status != HttpStatusCode.OK) {
-                val body = response.body<String>()
-                throw RuntimeException("Failed to get stock: ${response.status}, body: $body")
             }
-            response.body<GetStock>()
+        if (response.status != HttpStatusCode.OK) {
+            val body = response.body<String>()
+            throw RuntimeException("Failed to get stock: ${response.status}, body: $body")
         }
+        return response.body<GetStock>()
+    }
 
     @Given("the stock system is configured with snapshotting enabled")
     fun configureSnapshottingEnabled() {
@@ -253,7 +249,7 @@ class StateSnapshottingStepDefinitions : KoinComponent {
     }
 
     // Helper: assert runtime stock matches saved snapshot data (including pending adjustments)
-    private fun assertSnapshotMatchesRuntime(snapshotData: Map<String, StockState>) {
+    private suspend fun assertSnapshotMatchesRuntime(snapshotData: Map<String, StockState>) {
         snapshotData.forEach { (actorKey, snapshot) ->
             val productLocation = ProductLocation.parse(actorKey)
             val actualStockData = getStockData(productLocation.locationId, productLocation.productId)

@@ -8,8 +8,11 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
+import org.darren.stock.steps.helpers.getOptionalString
+import org.darren.stock.steps.helpers.getRequiredDouble
+import org.darren.stock.steps.helpers.getRequiredString
 import org.darren.stock.util.DateSerializer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.component.KoinComponent
@@ -27,7 +30,7 @@ class GetStockLevelStepDefinitions : KoinComponent {
         productId: String,
         locationId: String,
         expectedQuantity: Double,
-    ) = runBlocking {
+    ) = runTest {
         val actualStock = getStockLevel(locationId, productId).quantity
         assertEquals(expectedQuantity, actualStock)
     }
@@ -65,29 +68,28 @@ class GetStockLevelStepDefinitions : KoinComponent {
         @Serializable(with = DateSerializer::class) val lastUpdated: LocalDateTime,
     )
 
-    private fun getStockLevelFromApi(
+    private suspend fun getStockLevelFromApi(
         locationId: String,
         productId: String,
-    ): HttpResponse =
-        runBlocking {
-            val client: HttpClient by inject()
-            val url = "/locations/$locationId/products/$productId"
-            response =
-                client.get(url) {
-                    TestContext.getAuthorizationToken()?.let { token ->
-                        headers {
-                            append(HttpHeaders.Authorization, "Bearer $token")
-                        }
+    ): HttpResponse {
+        val client: HttpClient by inject()
+        val url = "/locations/$locationId/products/$productId"
+        response =
+            client.get(url) {
+                TestContext.getAuthorizationToken()?.let { token ->
+                    headers {
+                        append(HttpHeaders.Authorization, "Bearer $token")
                     }
                 }
-            return@runBlocking response
-        }
+            }
+        return response
+    }
 
     @Then("the stock levels should be updated as follows:")
     @Then("the stock levels should remain unchanged:")
     @Then("the current stock level should equal:")
     fun theStockLevelsShouldBeUpdatedAsFollows(expectedStockLevels: List<ExpectedStock>) =
-        runBlocking {
+        runTest {
             expectedStockLevels.forEach { expected ->
                 val actual = getStockLevel(expected.location, expected.product)
                 assertEquals(
@@ -105,7 +107,7 @@ class GetStockLevelStepDefinitions : KoinComponent {
 
     @Then("the total stock levels should be updated as follows:")
     fun theTotalStockLevelsShouldBeUpdatedAsFollows(expectedStockLevels: List<ExpectedStock>) =
-        runBlocking {
+        runTest {
             expectedStockLevels.forEach { expected ->
                 val actual = getTotalStockLevel(expected.location, expected.product)
                 assertEquals(expected.quantity, actual, "Total stock level for ${expected.product} in ${expected.location} does not match")
@@ -122,17 +124,17 @@ class GetStockLevelStepDefinitions : KoinComponent {
     @DataTableType
     fun expectedStockTransformer(row: Map<String?, String>) =
         ExpectedStock(
-            row["Location Id"]!!,
-            row["Product"]!!,
-            row["Stock Level"]!!.toDouble(),
-            row["Pending Adjustment"]?.toDouble() ?: 0.0,
+            row.getRequiredString("Location Id"),
+            row.getRequiredString("Product"),
+            row.getRequiredDouble("Stock Level"),
+            row.getOptionalString("Pending Adjustment")?.toDouble() ?: 0.0,
         )
 
     @When("I get the stock level for {string} in {string} multiple times")
     fun iGetTheStockLevelForInMultipleTimes(
         productId: String,
         locationId: String,
-    ) = runBlocking {
+    ) = runTest {
         repeat(5) {
             getStockLevel(locationId, productId)
         }

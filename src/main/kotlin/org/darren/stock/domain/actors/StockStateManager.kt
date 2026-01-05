@@ -31,7 +31,7 @@ class StockStateManager(
             currentState = snapshotState
             logger.debug { "Loaded state from snapshot: $currentState, lastEventTime: $lastEventTime, lastRequestId: $lastRequestId" }
 
-            // Replay any events that occurred after the snapshot
+            // Safe: snapshots are only created from states that have processed at least one event with a requestId
             replayEventsAfterSnapshot(snapshotState.lastRequestId!!)
         } else {
             logger.debug { "No valid snapshot found (snapshotData=$snapshotState), recreating state from events" }

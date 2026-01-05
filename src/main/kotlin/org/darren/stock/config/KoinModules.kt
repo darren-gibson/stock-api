@@ -34,17 +34,17 @@ interface Actor4kInitializer
  * Separated from main() to improve testability and maintainability.
  */
 object KoinModules {
-    val httpClientModule =
+    private val httpClientModule =
         module {
             single<HttpClientEngine> { CIO.create() }
         }
 
-    val locationApiModule =
+    private val locationApiModule =
         module {
             single { LocationApiClient(getProperty("LOCATION_API")) }
         }
 
-    val stockSystemModule =
+    private val stockSystemModule =
         module {
             single<StockSystem> { StockSystem() }
             single<StockReader> { StockSystemReader(get()) }
@@ -53,22 +53,22 @@ object KoinModules {
             single<IdempotencyService> { IdempotencyService(get()) }
         }
 
-    val stockEventRepositoryModule =
+    private val stockEventRepositoryModule =
         module {
             single<StockEventRepository> { InMemoryStockEventRepository() }
         }
 
-    val snapshotRepositoryModule =
+    private val snapshotRepositoryModule =
         module {
             single<SnapshotRepository> { InMemorySnapshotRepository() }
         }
 
-    val snapshotStrategyModule =
+    private val snapshotStrategyModule =
         module {
             single<SnapshotStrategyFactory> { EventCountSnapshotStrategyFactory(get(), 5) }
         }
 
-    val dateTimeProviderModule =
+    private val dateTimeProviderModule =
         module {
             single<DateTimeProvider> {
                 object : DateTimeProvider {

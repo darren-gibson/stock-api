@@ -5,6 +5,16 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import kotlinx.serialization.Serializable
+import org.darren.stock.ktor.auth.PermissionConstants.Actions.READ
+import org.darren.stock.ktor.auth.PermissionConstants.Actions.WRITE
+import org.darren.stock.ktor.auth.PermissionConstants.Operations.COUNT
+import org.darren.stock.ktor.auth.PermissionConstants.Operations.LEVEL
+import org.darren.stock.ktor.auth.PermissionConstants.Operations.MOVEMENT
+import org.darren.stock.ktor.auth.PermissionConstants.Operations.PERMISSION
+import org.darren.stock.ktor.auth.PermissionConstants.Resources.JOB
+import org.darren.stock.ktor.auth.PermissionConstants.Resources.STOCK
+import org.darren.stock.ktor.exception.ErrorCodes.PERMISSION_DENIED
+import org.darren.stock.ktor.exception.ErrorCodes.UNAUTHORIZED
 
 private val logger = KotlinLogging.logger {}
 
@@ -46,35 +56,35 @@ object JobPermissions {
         mapOf(
             "Regional Stock Auditor" to
                 listOf(
-                    Permission("stock", "count", "read"),
-                    Permission("stock", "level", "read"),
-                    Permission("stock", "movement", "read"),
+                    Permission(STOCK, COUNT, READ),
+                    Permission(STOCK, LEVEL, READ),
+                    Permission(STOCK, MOVEMENT, READ),
                 ),
             "Store Stock Controller" to
                 listOf(
-                    Permission("stock", "count", "read"),
-                    Permission("stock", "count", "write"),
-                    Permission("stock", "level", "read"),
-                    Permission("stock", "movement", "read"),
-                    Permission("stock", "movement", "write"),
+                    Permission(STOCK, COUNT, READ),
+                    Permission(STOCK, COUNT, WRITE),
+                    Permission(STOCK, LEVEL, READ),
+                    Permission(STOCK, MOVEMENT, READ),
+                    Permission(STOCK, MOVEMENT, WRITE),
                 ),
             "Warehouse Manager" to
                 listOf(
-                    Permission("stock", "count", "read"),
-                    Permission("stock", "count", "write"),
-                    Permission("stock", "level", "read"),
-                    Permission("stock", "movement", "read"),
-                    Permission("stock", "movement", "write"),
+                    Permission(STOCK, COUNT, READ),
+                    Permission(STOCK, COUNT, WRITE),
+                    Permission(STOCK, LEVEL, READ),
+                    Permission(STOCK, MOVEMENT, READ),
+                    Permission(STOCK, MOVEMENT, WRITE),
                 ),
             "System Administrator" to
                 listOf(
-                    Permission("stock", "count", "read"),
-                    Permission("stock", "count", "write"),
-                    Permission("stock", "level", "read"),
-                    Permission("stock", "movement", "read"),
-                    Permission("stock", "movement", "write"),
-                    Permission("job", "permission", "read"),
-                    Permission("job", "permission", "write"),
+                    Permission(STOCK, COUNT, READ),
+                    Permission(STOCK, COUNT, WRITE),
+                    Permission(STOCK, LEVEL, READ),
+                    Permission(STOCK, MOVEMENT, READ),
+                    Permission(STOCK, MOVEMENT, WRITE),
+                    Permission(JOB, PERMISSION, READ),
+                    Permission(JOB, PERMISSION, WRITE),
                 ),
         )
 
@@ -101,14 +111,14 @@ suspend fun ApplicationCall.authorize(
     val principal = attributes.getOrNull(ColleaguePrincipalKey)
 
     if (principal == null) {
-        respond(HttpStatusCode.Unauthorized, AuthzErrorDTO("Unauthorized"))
+        respond(HttpStatusCode.Unauthorized, AuthzErrorDTO(UNAUTHORIZED))
         return false
     }
 
     // Check if job has the required permission
     if (!JobPermissions.hasPermission(principal.job, permission)) {
         logger.warn { "Permission denied for ${principal.job}: missing $permission" }
-        respond(HttpStatusCode.Forbidden, AuthzErrorDTO("PermissionDenied"))
+        respond(HttpStatusCode.Forbidden, AuthzErrorDTO(PERMISSION_DENIED))
         return false
     }
 
@@ -119,7 +129,7 @@ suspend fun ApplicationCall.authorize(
                 "Location scope violation: ${principal.job} attempted to access $requestLocation, " +
                     "but is scoped to ${principal.locations}"
             }
-            respond(HttpStatusCode.Forbidden, AuthzErrorDTO("PermissionDenied"))
+            respond(HttpStatusCode.Forbidden, AuthzErrorDTO(PERMISSION_DENIED))
             return false
         }
     }

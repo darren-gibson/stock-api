@@ -6,7 +6,7 @@ import io.cucumber.java.en.When
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.steps.helpers.TestStockEventRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -43,7 +43,7 @@ class IdempotencyStepDefinitions : KoinComponent {
         location: String,
         quantity: Double,
         countedAt: String,
-    ) = runBlocking {
+    ) = runTest {
         // Make an explicit POST request to the stock count endpoint with an out-of-order timestamp
         val payload =
             """
@@ -76,7 +76,7 @@ class IdempotencyStepDefinitions : KoinComponent {
         location: String,
         quantity: Double,
         soldAt: String,
-    ) = runBlocking {
+    ) = runTest {
         // Make an explicit POST request to the sales endpoint with an out-of-order timestamp
         val payload =
             """

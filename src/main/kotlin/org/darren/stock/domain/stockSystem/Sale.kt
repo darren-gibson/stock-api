@@ -17,6 +17,7 @@ object Sale {
         val stockPot = getStockPot(locationId, productId)
         val result =
             stockPot.ask(recordSale)
-        result.getOrThrow().result
+        // Execute for side-effects; return value intentionally unused but method must complete
+        result.getOrThrow()
     }
 }

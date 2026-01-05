@@ -53,9 +53,10 @@ object GetValue : KoinComponent {
 
         return StockLevel(
             state,
-            location.children.map {
-                convertToStockLevel(it, productId, stockCountByLocation)
-            },
+            location.children
+                .map {
+                    convertToStockLevel(it, productId, stockCountByLocation)
+                }.toList(),
         )
     }
 
@@ -73,6 +74,6 @@ object GetValue : KoinComponent {
             if (location.isTracked) {
                 yield(location.id)
             }
-            yieldAll(location.children.flatMap(::getTrackedLocationIds))
+            yieldAll(location.children.flatMap(::getTrackedLocationIds).toList())
         }
 }

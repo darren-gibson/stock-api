@@ -16,6 +16,7 @@ class InMemoryStockEventRepository : StockEventRepository {
             .mapIndexed { i, e -> Pair(Pair(i, e.eventDateTime), e) }
             .sortedWith(compareBy({ it.first.second }, { it.first.first }))
             .map { it.second }
+            .toList()
     }
 
     override suspend fun insert(
@@ -30,7 +31,6 @@ class InMemoryStockEventRepository : StockEventRepository {
         events.values
             .flatten()
             .filter { getIdempotencyData(it).first == requestId }
-            .map { it }
 
     override suspend fun getEventsAfterRequestIdInChronologicalOrder(
         location: String,
@@ -52,7 +52,7 @@ class InMemoryStockEventRepository : StockEventRepository {
         }
 
         // Return events after the found event
-        return sortedEvents.drop(afterIndex + 1)
+        return sortedEvents.drop(afterIndex + 1).toList()
     }
 
     override suspend fun getLastPersistedRequestId(
@@ -67,7 +67,7 @@ class InMemoryStockEventRepository : StockEventRepository {
         requestId: String,
         contentHash: String,
     ): IdempotencyStatus {
-        val allEvents = events.values.flatten()
+        val allEvents = events.values.flatten().toList()
         val idempotentEvents = allEvents.filter { it.requestId.isNotEmpty() }
         val matchingRequestIdEvents = idempotentEvents.filter { it.requestId == requestId }
 

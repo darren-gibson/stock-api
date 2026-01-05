@@ -18,6 +18,7 @@ internal class InternalMoveToEvent(
     override val requestId: String = ""
     override val contentHash: String = ""
 
+    // Safe: quantity is guaranteed non-null - either initialized to 0.0 or set by prior event
     override suspend fun apply(state: StockState) = state.copy(quantity = state.quantity!! + quantity, lastUpdated = eventDateTime, lastRequestId = requestId)
 
     override fun toString(): String = "InternalMoveToEvent(eventDateTime=$eventDateTime, productId='$productId', quantity=$quantity, from='$from', reason=$reason)"

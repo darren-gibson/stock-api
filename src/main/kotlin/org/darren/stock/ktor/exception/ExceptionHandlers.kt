@@ -18,6 +18,11 @@ import org.darren.stock.domain.stockSystem.IdempotencyContentMismatchException
 import org.darren.stock.ktor.ErrorDTO
 import org.darren.stock.ktor.InvalidValuesDTO
 import org.darren.stock.ktor.MissingFieldsDTO
+import org.darren.stock.ktor.exception.ErrorCodes.BAD_REQUEST
+import org.darren.stock.ktor.exception.ErrorCodes.IDEMPOTENCY_CONTENT_MISMATCH
+import org.darren.stock.ktor.exception.ErrorCodes.INSUFFICIENT_STOCK
+import org.darren.stock.ktor.exception.ErrorCodes.LOCATION_NOT_FOUND
+import org.darren.stock.ktor.exception.ErrorCodes.LOCATION_NOT_TRACKED
 import org.koin.java.KoinJavaComponent.inject
 
 /**
@@ -39,7 +44,7 @@ object LocationNotFoundHandler : ExceptionHandler {
         cause: Throwable,
     ): Boolean {
         if (cause is LocationNotFoundException) {
-            call.respond(NotFound, ErrorDTO("LocationNotFound"))
+            call.respond(NotFound, ErrorDTO(LOCATION_NOT_FOUND))
             return true
         }
         return false
@@ -63,10 +68,10 @@ object LocationNotTrackedHandler : ExceptionHandler {
             if (firstTrackedParent != null) {
                 val newLocation = call.request.path().replace("/${cause.locationId}/", "/${firstTrackedParent.id}/")
                 call.response.headers.append(HttpHeaders.Location, newLocation)
-                call.respond(HttpStatusCode.SeeOther, ErrorDTO("LocationNotTracked"))
+                call.respond(HttpStatusCode.SeeOther, ErrorDTO(LOCATION_NOT_TRACKED))
             } else {
                 logger.warn { "Location ${cause.locationId} has no tracked parent, returning 400" }
-                call.respond(BadRequest, ErrorDTO("LocationNotTracked"))
+                call.respond(BadRequest, ErrorDTO(LOCATION_NOT_TRACKED))
             }
             return true
         }
@@ -83,7 +88,7 @@ object InsufficientStockHandler : ExceptionHandler {
         cause: Throwable,
     ): Boolean {
         if (cause is InsufficientStockException) {
-            call.respond(BadRequest, ErrorDTO("InsufficientStock"))
+            call.respond(BadRequest, ErrorDTO(INSUFFICIENT_STOCK))
             return true
         }
         return false
@@ -99,7 +104,7 @@ object IdempotencyContentMismatchHandler : ExceptionHandler {
         cause: Throwable,
     ): Boolean {
         if (cause is IdempotencyContentMismatchException) {
-            call.respond(HttpStatusCode.Conflict, ErrorDTO("IdempotencyContentMismatch"))
+            call.respond(HttpStatusCode.Conflict, ErrorDTO(IDEMPOTENCY_CONTENT_MISMATCH))
             return true
         }
         return false
@@ -127,7 +132,7 @@ object BadRequestHandler : ExceptionHandler {
                 return true
             }
 
-            call.respond(BadRequest, ErrorDTO("BadRequest"))
+            call.respond(BadRequest, ErrorDTO(BAD_REQUEST))
             return true
         }
         return false

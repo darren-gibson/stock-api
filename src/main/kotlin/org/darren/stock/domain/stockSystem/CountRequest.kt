@@ -20,5 +20,6 @@ suspend fun StockSystem.count(request: CountRequest) =
         val stockPot = getStockPot(request.location, request.product)
         val reply = stockPot.ask(recordCount).getOrThrow()
 
+        // Return result if present, otherwise null
         reply.result
     }

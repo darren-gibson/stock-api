@@ -14,6 +14,7 @@ class SaleEvent(
     override val contentHash: String,
 ) : StockPotEvent() {
     override suspend fun apply(state: StockState): StockState {
+        // Safe: quantity is guaranteed non-null - either initialized to 0.0 or set by prior event
         val newQuantity = state.quantity!! - quantity
         if (newQuantity < 0) {
             return state.copy(

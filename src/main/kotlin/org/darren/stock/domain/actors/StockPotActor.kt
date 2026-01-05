@@ -76,6 +76,7 @@ class StockPotActor(
         recordMove: RecordMove,
         currentState: StockState,
     ) {
+        // Safe: quantity is guaranteed non-null after first event (Delivery, Count, or Override)
         if (currentState.quantity!! < recordMove.quantity) {
             throw InsufficientStockException()
         }

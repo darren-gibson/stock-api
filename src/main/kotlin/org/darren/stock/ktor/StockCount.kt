@@ -12,6 +12,9 @@ import org.darren.stock.domain.stockSystem.CountRequest
 import org.darren.stock.domain.stockSystem.StockSystem
 import org.darren.stock.domain.stockSystem.count
 import org.darren.stock.ktor.auth.Permission
+import org.darren.stock.ktor.auth.PermissionConstants.Actions.WRITE
+import org.darren.stock.ktor.auth.PermissionConstants.Operations.COUNT
+import org.darren.stock.ktor.auth.PermissionConstants.Resources.STOCK
 import org.darren.stock.ktor.auth.requiresAuth
 import org.darren.stock.util.DateSerializer
 import org.darren.stock.util.currentTraceId
@@ -23,7 +26,7 @@ object StockCount {
 
     fun Routing.stockCountEndpoint() {
         route("/locations/{locationId}/products/{productId}/counts") {
-            requiresAuth(Permission("stock", "count", "write"), "locationId")
+            requiresAuth(Permission(STOCK, COUNT, WRITE), "locationId")
 
             post {
                 val locationId = call.parameters["locationId"]!!

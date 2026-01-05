@@ -4,7 +4,7 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.javacrumbs.jsonunit.JsonMatchers.jsonEquals
 import org.darren.stock.steps.helpers.SaleRequestHelper
 import org.hamcrest.MatcherAssert.assertThat
@@ -22,7 +22,7 @@ class SaleStepDefinitions : KoinComponent {
         quantity: Double,
         productId: String,
         locationId: String,
-    ) = runBlocking {
+    ) = runTest {
         response = saleRequestHelper.performSale(locationId, productId, quantity)
         assertTrue(response.status.isSuccess(), "Failed to create sale: ${response.status} ${response.bodyAsText()}")
     }
@@ -33,7 +33,7 @@ class SaleStepDefinitions : KoinComponent {
         locationId: String,
         status: Int,
         expectedError: String,
-    ) = runBlocking {
+    ) = runTest {
         val expectedStatus = HttpStatusCode.fromValue(status)
         val response = saleRequestHelper.performSale(locationId, productId, 1.0)
         assertEquals(expectedStatus, response.status)

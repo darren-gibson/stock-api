@@ -5,7 +5,7 @@ import arrow.resilience.retry
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -17,7 +17,7 @@ class ArrowKtTest {
 
     @Test
     fun `schedule can run suspended tasks`() =
-        runBlocking {
+        runTest {
             val result =
                 retryPolicy.retry {
                     suspendedFunction(2)
@@ -27,7 +27,7 @@ class ArrowKtTest {
 
     @Test
     fun `retriable tasks can be run in parallel`() =
-        runBlocking {
+        runTest {
             val results = mutableListOf<Long>()
 
             listOf(
