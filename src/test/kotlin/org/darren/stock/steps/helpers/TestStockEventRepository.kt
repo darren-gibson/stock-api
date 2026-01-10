@@ -112,6 +112,8 @@ class TestStockEventRepository(
         contentHash: String,
     ): IdempotencyStatus = delegate.checkIdempotencyStatus(requestId, contentHash)
 
+    override suspend fun isHealthy(): Boolean = delegate.isHealthy()
+
     /**
      * Directly insert an event into the repository, bypassing failure simulation.
      * Used for testing out-of-order event scenarios.

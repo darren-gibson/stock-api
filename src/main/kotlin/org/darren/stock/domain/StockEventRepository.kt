@@ -2,7 +2,7 @@ package org.darren.stock.domain
 
 import org.darren.stock.domain.actors.events.StockPotEvent
 
-interface StockEventRepository {
+interface StockEventRepository : HealthProbe {
     /**
      * Get all events for a location and product in chronological order.
      * Events are returned ordered by eventDateTime.

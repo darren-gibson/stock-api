@@ -1,8 +1,9 @@
 package org.darren.stock.domain.snapshot
 
+import org.darren.stock.domain.HealthProbe
 import org.darren.stock.domain.StockState
 
-interface SnapshotRepository {
+interface SnapshotRepository : HealthProbe {
     suspend fun saveActorState(
         actorKey: String,
         state: StockState,

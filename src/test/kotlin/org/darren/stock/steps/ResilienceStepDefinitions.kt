@@ -248,65 +248,69 @@ class ResilienceStepDefinitions : KoinComponent {
     @Then("the logs should contain evidence of circuit breaker state change")
     fun theLogsShouldContainEvidenceOfCircuitBreakerStateChange() {
         // Look for evidence of circuit breaker opening or any resilience-related logs
+        val snapshot = TestLogAppender.events.toList()
         val circuitBreakerLogs =
-            TestLogAppender.events.filter { event ->
+            snapshot.filter { event ->
                 event.contains("Circuit breaker", ignoreCase = true) ||
                     event.contains("opened", ignoreCase = true) ||
                     event.contains("failing fast", ignoreCase = true) ||
                     event.contains("Server error", ignoreCase = true) ||
                     event.contains("arrow", ignoreCase = true)
             }
-        logger.warn { "State change logs: ${circuitBreakerLogs.size}, Total: ${TestLogAppender.events.size}" }
+        logger.warn { "State change logs: ${circuitBreakerLogs.size}, Total: ${snapshot.size}" }
         assertTrue(
-            circuitBreakerLogs.isNotEmpty() || TestLogAppender.events.isNotEmpty(),
-            "Expected circuit breaker logs. Events captured: ${TestLogAppender.events.size}",
+            circuitBreakerLogs.isNotEmpty() || snapshot.isNotEmpty(),
+            "Expected circuit breaker logs. Events captured: ${snapshot.size}",
         )
     }
 
     @Then("the logs should contain evidence of circuit breaker opening")
     fun theLogsShouldContainEvidenceOfCircuitBreakerOpening() {
         // Check for circuit breaker opening evidence
+        val openingSnapshot = TestLogAppender.events.toList()
         val openingLogs =
-            TestLogAppender.events.filter { event ->
+            openingSnapshot.filter { event ->
                 event.contains("Circuit breaker", ignoreCase = true) ||
                     event.contains("opened", ignoreCase = true) ||
                     event.contains("failing fast", ignoreCase = true) ||
                     event.contains("Server error", ignoreCase = true)
             }
-        logger.warn { "Opening logs: ${openingLogs.size}, All events: ${TestLogAppender.events.size}" }
+        logger.warn { "Opening logs: ${openingLogs.size}, All events: ${openingSnapshot.size}" }
         assertTrue(
             openingLogs.isNotEmpty(),
-            "Expected circuit breaker opening logs. Available events: ${TestLogAppender.events.joinToString("\n")}",
+            "Expected circuit breaker opening logs. Available events: ${openingSnapshot.joinToString("\n")}",
         )
     }
 
     @Then("the logs should contain evidence of circuit breaker recovery")
     fun theLogsShouldContainEvidenceOfCircuitBreakerRecovery() {
         // Verify circuit breaker recovery is logged
+        val recoverySnapshot = TestLogAppender.events.toList()
         val recoveryLogs =
-            TestLogAppender.events.filter { event ->
+            recoverySnapshot.filter { event ->
                 event.contains("succeeded", ignoreCase = true) ||
                     event.contains("recovered", ignoreCase = true) ||
                     event.contains("normal operation", ignoreCase = true)
             }
         assertTrue(
-            recoveryLogs.isNotEmpty() || TestLogAppender.events.any { it.contains("stock", ignoreCase = true) },
-            "Expected circuit breaker recovery or normal operation logs. Available events: ${TestLogAppender.events.joinToString("\n")}",
+            recoveryLogs.isNotEmpty() || recoverySnapshot.any { it.contains("stock", ignoreCase = true) },
+            "Expected circuit breaker recovery or normal operation logs. Available events: ${recoverySnapshot.joinToString("\n")}",
         )
     }
 
     @Then("the logs should contain evidence of retries and circuit breaker opening")
     fun theLogsShouldContainEvidenceOfRetriesAndCircuitBreakerOpening() {
         // Verify logs contain evidence of circuit opening
+        val circuitSnapshot = TestLogAppender.events.toList()
         val circuitLogs =
-            TestLogAppender.events.filter { event ->
+            circuitSnapshot.filter { event ->
                 event.contains("Circuit breaker", ignoreCase = true) ||
                     event.contains("opened", ignoreCase = true) ||
                     event.contains("failing fast", ignoreCase = true)
             }
         assertTrue(
             circuitLogs.isNotEmpty(),
-            "Expected circuit breaker opening and retry evidence. Available events: ${TestLogAppender.events.joinToString("\n")}",
+            "Expected circuit breaker opening and retry evidence. Available events: ${circuitSnapshot.joinToString("\n")}",
         )
     }
 

@@ -1,34 +1,105 @@
 @section-Status @asciidoc @order-1
-Feature: Service Health Check
-  As a user of the service
-  I want to verify the health status of the service
-  So that I know the service is running and operational
+Feature: Service Health Probes
+  ==== Overview
 
-  Scenario: Verify the _status API endpoint returns 200 OK
-    Given the service is running
-    When I send a GET request to the "_status" endpoint
-    Then the response status code should be 200
-    And the response body should indicate the service is healthy
+  The service exposes three standard health probe endpoints for container lifecycle management.
+  These probes follow the
+  https://github.com/microprofile/microprofile-health[MicroProfile Health specification],
+  which is the de facto standard used by cloud platforms and container orchestration systems
+  for reporting liveness, readiness, and startup status.
 
-  Scenario: Status endpoint exposes version metadata
+  Each probe is a simple HTTP endpoint that returns:
+  * A response status code (200 for UP, 503 for DOWN, 500 for processing errors)
+  * A JSON body with overall `status` and an array of individual health check `checks`
+
+  ==== Health Probe Endpoints
+
+  * `GET /health/live` : Liveness Probe – Is the process alive and running?
+  * `GET /health/ready` : Readiness Probe – Can the service accept traffic? Checks critical dependencies.
+  * `GET /health/started` : Startup Probe – Has the application finished starting?
+
+  Background:
     Given the service is running
-    When I send a GET request to the "/_status" endpoint
+
+  Scenario: Liveness probe reports UP when process is running
+    When I send a GET request to the "/health/live" endpoint
     Then the response status code should be 200
-    And the response body should indicate the service is healthy
-    And the response body should include version and build time metadata
     And the response body should match JSON:
-      """
+      """asciidoc
+      [source, json]
+      -----
       {
-        "status": "Healthy",
-        "version": "${json-unit.any-string}",
-        "buildTime": "<timestamp>"
+        "status": "UP",
+        "checks": []
       }
+      -----
       """
 
-  Scenario: Status endpoint reports unhealthy when Location API is down
-    Given the service is running
-    And the Location API health check will fail
-    When I send a GET request to the "/_status" endpoint
+  Scenario: Readiness probe reports UP when dependencies are healthy
+    When I send a GET request to the "/health/ready" endpoint
+    Then the response status code should be 200
+    And the response body should match JSON:
+      """asciidoc
+      [source, json]
+      -----
+      {
+        "status": "UP",
+        "checks": [
+          {
+            "name": "locationApi",
+            "status": "UP"
+          },
+          {
+            "name": "eventRepository",
+            "status": "UP"
+          },
+          {
+            "name": "snapshotRepository",
+            "status": "UP"
+          }
+        ]
+      }
+      -----
+      """
+
+  Scenario: Readiness probe reports DOWN when Location API is unavailable
+    Given the Location API health check will fail
+    When I send a GET request to the "/health/ready" endpoint
     Then the response status code should be 503
-    And the response body should indicate the service is unhealthy
-    And the response body should include version and build time metadata
+    And the response body should match JSON:
+      """asciidoc
+      [source, json]
+      -----
+      {
+        "status": "DOWN",
+        "checks": [
+          {
+            "name": "locationApi",
+            "status": "DOWN"
+          },
+          {
+            "name": "eventRepository",
+            "status": "UP"
+          },
+          {
+            "name": "snapshotRepository",
+            "status": "UP"
+          }
+        ]
+      }
+      -----
+      """
+
+  Scenario: Startup probe reports UP when application is ready
+    When I send a GET request to the "/health/started" endpoint
+    Then the response status code should be 200
+    And the response body should match JSON:
+      """asciidoc
+      [source, json]
+      -----
+      {
+        "status": "UP",
+        "checks": []
+      }
+      -----
+      """

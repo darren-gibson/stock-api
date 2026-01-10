@@ -23,7 +23,7 @@ Feature: Logging
     And "DC02" is a Distribution Centre
 
   Scenario: Trace context is propagated internally
-    When I send a GET request to "/_status" with header "traceparent" -> "00-12345678901234567890123456789012-1234567890123456-01"
+    When I send a GET request to "/health/live" with header "traceparent" -> "00-12345678901234567890123456789012-1234567890123456-01"
     Then the API should respond with status code 200
     And the response header "traceparent" should not be present
 
@@ -133,11 +133,11 @@ Feature: Logging
     And logs emitted by the actor(s) handling the move should contain the request's trace id
 
   Scenario: Structured log contains trace id field
-    When I send a GET request to "/_status"
+    When I send a GET request to "/health/live"
     Then the API should respond with status code 200
     And at least one structured log event produced during the request should contain a traceId field
 
   Scenario: Logs include span id alongside trace id
-    When I send a GET request to "/_status"
+    When I send a GET request to "/health/live"
     Then the API should respond with status code 200
     And logs produced while processing the request should include a span id value
