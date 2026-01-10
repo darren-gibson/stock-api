@@ -35,19 +35,20 @@ object Status {
     private fun Routing.readyProbe() {
         get("/health/ready") {
             logger.info { "Readiness probe check requested, traceId=${currentTraceId()}" }
-            
-            val locationApiHealthy = runCatching {
-                val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-                locations.isHealthy()
-            }.onFailure { logger.warn(it) { "Failed to check Location API health" } }.getOrDefault(false)
-            
+
+            val locationApiHealthy =
+                runCatching {
+                    val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+                    locations.isHealthy()
+                }.onFailure { logger.warn(it) { "Failed to check Location API health" } }.getOrDefault(false)
+
             if (!locationApiHealthy) {
                 logger.warn { "Downstream Location API health check failed" }
             }
-            
+
             val probeStatus = if (locationApiHealthy) ProbeStatus.UP else ProbeStatus.DOWN
             val httpStatus = if (locationApiHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
-            
+
             call.respond(
                 httpStatus,
                 HealthProbeResponse(
@@ -98,5 +99,3 @@ object Status {
         val status: ProbeStatus,
     )
 }
-
-
