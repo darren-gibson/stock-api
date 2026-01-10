@@ -38,35 +38,29 @@ object Status {
         get("/health/ready") {
             logger.info { "Readiness probe check requested, traceId=${currentTraceId()}" }
 
-            val locationApiHealthy =
-                runCatching {
-                    val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-                    locations.isHealthy()
-                }.onFailure { logger.warn(it) { "Failed to check Location API health" } }.getOrDefault(false)
+            // Define checks declaratively and evaluate in a DRY, uniform way
+            val checks =
+                runHealthChecks(
+                    listOf(
+                        "locationApi" to
+                            suspend {
+                                val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+                                locations.isHealthy()
+                            },
+                        "eventRepository" to
+                            suspend {
+                                val eventRepo by inject<StockEventRepository>(StockEventRepository::class.java)
+                                eventRepo.isHealthy()
+                            },
+                        "snapshotRepository" to
+                            suspend {
+                                val snapshotRepo by inject<SnapshotRepository>(SnapshotRepository::class.java)
+                                snapshotRepo.isHealthy()
+                            },
+                    ),
+                )
 
-            val eventRepoHealthy =
-                runCatching {
-                    val eventRepo by inject<StockEventRepository>(StockEventRepository::class.java)
-                    eventRepo.isHealthy()
-                }.onFailure { logger.warn(it) { "Failed to check event repository health" } }.getOrDefault(false)
-
-            val snapshotRepoHealthy =
-                runCatching {
-                    val snapshotRepo by inject<SnapshotRepository>(SnapshotRepository::class.java)
-                    snapshotRepo.isHealthy()
-                }.onFailure { logger.warn(it) { "Failed to check snapshot repository health" } }.getOrDefault(false)
-
-            if (!locationApiHealthy) {
-                logger.warn { "Downstream Location API health check failed" }
-            }
-            if (!eventRepoHealthy) {
-                logger.warn { "Event repository health check failed" }
-            }
-            if (!snapshotRepoHealthy) {
-                logger.warn { "Snapshot repository health check failed" }
-            }
-
-            val allHealthy = locationApiHealthy && eventRepoHealthy && snapshotRepoHealthy
+            val allHealthy = checks.all { it.status == ProbeStatus.UP }
             val probeStatus = if (allHealthy) ProbeStatus.UP else ProbeStatus.DOWN
             val httpStatus = if (allHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
 
@@ -74,15 +68,7 @@ object Status {
                 httpStatus,
                 HealthProbeResponse(
                     status = probeStatus,
-                    checks =
-                        listOf(
-                            HealthCheck(name = "locationApi", status = if (locationApiHealthy) ProbeStatus.UP else ProbeStatus.DOWN),
-                            HealthCheck(name = "eventRepository", status = if (eventRepoHealthy) ProbeStatus.UP else ProbeStatus.DOWN),
-                            HealthCheck(
-                                name = "snapshotRepository",
-                                status = if (snapshotRepoHealthy) ProbeStatus.UP else ProbeStatus.DOWN,
-                            ),
-                        ),
+                    checks = checks,
                 ),
             )
         }
@@ -121,4 +107,21 @@ object Status {
         val name: String,
         val status: ProbeStatus,
     )
+
+    // Helper to run health checks uniformly with logging and error safety
+    private suspend fun runHealthChecks(
+        checks: List<Pair<String, suspend () -> Boolean>>,
+    ): List<HealthCheck> =
+        checks.map { (name, check) ->
+            val ok =
+                runCatching { check() }
+                    .onFailure { logger.warn(it) { "Health check '$name' failed with exception" } }
+                    .getOrDefault(false)
+
+            if (!ok) {
+                logger.warn { "Health check '$name' reported DOWN" }
+            }
+
+            HealthCheck(name = name, status = if (ok) ProbeStatus.UP else ProbeStatus.DOWN)
+        }
 }

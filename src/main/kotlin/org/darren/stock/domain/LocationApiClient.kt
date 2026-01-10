@@ -15,7 +15,8 @@ class LocationApiClient(
     private val baseUrl: String,
     engine: HttpClientEngine,
     resilienceManager: ApiResilienceManager,
-) : ResilientApiClient(engine) {
+) : ResilientApiClient(engine),
+    HealthProbe {
     private var currentResilienceConfig: ApiResilienceConfig = resilienceManager.currentConfig()
 
     init {
@@ -53,7 +54,7 @@ class LocationApiClient(
             if (!location.isTracked) throw LocationNotTrackedException(it)
         }
 
-    suspend fun isHealthy(): Boolean =
+    override suspend fun isHealthy(): Boolean =
         runCatching {
             val response: HttpResponse =
                 wrapHttpCallWithLogging(logger) {
