@@ -8,15 +8,34 @@ import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.util.currentTraceId
 import org.koin.java.KoinJavaComponent.inject
-import java.time.Instant
 
 object Status {
     private val logger = KotlinLogging.logger {}
 
     fun Routing.statusEndpoint() {
-        get("/_status") {
+        liveProbe()
+        readyProbe()
+        startupProbe()
+    }
+
+    private fun Routing.liveProbe() {
+        get("/health/live") {
             val locations by inject<LocationApiClient>(LocationApiClient::class.java)
-            logger.info { "Status check requested, traceId=${currentTraceId()}" }
+            logger.info { "Liveness probe check requested, traceId=${currentTraceId()}" }
+            call.respond(
+                HttpStatusCode.OK,
+                HealthProbeResponse(
+                    status = "UP",
+                    checks = emptyList(),
+                ),
+            )
+        }
+    }
+
+    private fun Routing.readyProbe() {
+        get("/health/ready") {
+            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+            logger.info { "Readiness probe check requested, traceId=${currentTraceId()}" }
             val downstreamHealthy = locations.isHealthy()
             if (!downstreamHealthy) {
                 logger.warn { "Downstream Location API health check failed" }
@@ -24,29 +43,50 @@ object Status {
             val httpStatus = if (downstreamHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
             call.respond(
                 httpStatus,
-                StatusDTO(
-                    status =
-                        if (downstreamHealthy) {
-                            StatusDTO.StatusCode.Healthy
-                        } else {
-                            StatusDTO.StatusCode.Unhealthy
-                        },
-                    version = System.getProperty("app.version") ?: "unknown",
-                    buildTime = System.getProperty("app.buildTime") ?: Instant.now().toString(),
+                if (downstreamHealthy) {
+                    HealthProbeResponse(
+                        status = "UP",
+                        checks = emptyList(),
+                    )
+                } else {
+                    HealthProbeResponse(
+                        status = "DOWN",
+                        checks =
+                            listOf(
+                                HealthCheck(
+                                    name = "locationApi",
+                                    status = "DOWN",
+                                ),
+                            ),
+                    )
+                },
+            )
+        }
+    }
+
+    private fun Routing.startupProbe() {
+        get("/health/started") {
+            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+            logger.info { "Startup probe check requested, traceId=${currentTraceId()}" }
+            call.respond(
+                HttpStatusCode.OK,
+                HealthProbeResponse(
+                    status = "UP",
+                    checks = emptyList(),
                 ),
             )
         }
     }
 
     @Serializable
-    private data class StatusDTO(
-        val status: StatusCode,
-        val version: String,
-        val buildTime: String,
-    ) {
-        enum class StatusCode {
-            Healthy,
-            Unhealthy,
-        }
-    }
+    private data class HealthProbeResponse(
+        val status: String,
+        val checks: List<HealthCheck>,
+    )
+
+    @Serializable
+    private data class HealthCheck(
+        val name: String,
+        val status: String,
+    )
 }
