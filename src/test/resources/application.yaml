@@ -8,6 +8,20 @@ ktor:
 stockPot:
   unloadAfterInactivity: 5m
   unloadCheckInterval: 30s
+
+resilience:
+  apis:
+    location:
+      backoff:
+        maxAttempts: 3
+        initialDelay: 100ms
+        maxDelay: 2s
+        multiplier: 2.0
+      failFast:
+        failureThreshold: 5
+        quietPeriod: 60s
+        testAfterQuietPeriod: true
+
 #  application:
 #    - modules:
 #        - org.darren.stock.ktor.ApplicationKt.module

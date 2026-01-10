@@ -4,6 +4,7 @@ import io.ktor.client.*
 import org.darren.stock.domain.DateTimeProvider
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
+import org.darren.stock.domain.resilience.ApiResilienceManager
 import org.darren.stock.domain.service.*
 import org.darren.stock.domain.snapshot.EventCountSnapshotStrategyFactory
 import org.darren.stock.domain.snapshot.SnapshotRepository
@@ -31,7 +32,7 @@ object TestKoinModules {
                 single<StockEventRepository> { TestStockEventRepository() }
 
                 // Provide a deterministic location API host for tests
-                single { LocationApiClient("http://location.api.darren.org") }
+                single { LocationApiClient("http://location.api.darren.org", get(), get<ApiResilienceManager>()) }
 
                 // Stock system used by domain services
                 single<StockSystem> {

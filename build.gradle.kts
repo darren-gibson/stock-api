@@ -56,6 +56,7 @@ dependencies {
     // Arrow KT for functional programming utilities
     implementation("io.arrow-kt:arrow-core-jvm:2.2.1.1")
     implementation("io.arrow-kt:arrow-resilience-jvm:2.2.1.1")
+    implementation("io.arrow-kt:arrow-resilience-ktor-client:2.2.1.1")
 
     // JWT for authentication
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
@@ -96,6 +97,17 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     // Disable Ktor's development auto-reload during tests to avoid dynamic module loading
+    systemProperty("io.ktor.development", "false")
+}
+
+// Run only fast tests (exclude @Slow) while still skipping @Ignore/@Skip via runner defaults
+tasks.register<Test>("fastTest") {
+    description = "Runs the test suite excluding @Slow scenarios"
+    group = "verification"
+    useJUnitPlatform()
+    // Cucumber respects this system property to filter tags at runtime
+    systemProperty("io.cucumber.filter.tags", "not @Slow and not @Ignore and not @Skip")
+    // Keep the same env settings as the regular test task
     systemProperty("io.ktor.development", "false")
 }
 

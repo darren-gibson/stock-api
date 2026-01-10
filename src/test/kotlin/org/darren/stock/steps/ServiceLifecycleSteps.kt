@@ -8,7 +8,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.smyrgeorge.actor4k.system.ActorSystem
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.opentelemetry.api.trace.Span
@@ -23,7 +25,6 @@ import org.darren.stock.ktor.auth.JwtConfig
 import org.darren.stock.ktor.module
 import org.darren.stock.steps.helpers.ActorSystemTestConfig
 import org.darren.stock.steps.helpers.TestDateTimeProvider
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -162,6 +163,33 @@ class ServiceLifecycleSteps : KoinComponent {
                         module { single { ObservabilityLoggingStepDefinitions() } },
                         module { single { TestDateTimeProvider() } },
                         module { single<DateTimeProvider> { get<TestDateTimeProvider>() } },
+                        // Test-scoped resilience manager with per-scenario override support
+                        module {
+                            single<org.darren.stock.domain.resilience.ApiResilienceManager> {
+                                val override =
+                                    org.darren.stock.steps.helpers.ResilienceConfigManager
+                                        .getOverrideConfig()
+                                val config =
+                                    override
+                                        ?: org.darren.stock.domain.resilience.ApiResilienceConfig(
+                                            backoff =
+                                                org.darren.stock.domain.resilience.BackoffConfig(
+                                                    maxAttempts = 3,
+                                                    initialDelay = kotlin.time.Duration.parse("100ms"),
+                                                    maxDelay = kotlin.time.Duration.parse("2s"),
+                                                    multiplier = 2.0,
+                                                ),
+                                            failFast =
+                                                org.darren.stock.domain.resilience.FailFastConfig(
+                                                    failureThreshold = 5,
+                                                    quietPeriod = kotlin.time.Duration.parse("60s"),
+                                                    testAfterQuietPeriod = true,
+                                                ),
+                                        )
+                                org.darren.stock.domain.resilience
+                                    .ApiResilienceManager(config)
+                            }
+                        },
                         // JwtConfig remains test-scoped for scenarios
                         module {
                             single {
@@ -200,6 +228,7 @@ class ServiceLifecycleSteps : KoinComponent {
                         get("/locations/{id}") { getLocationByIdResponder(call) }
                         get("/locations/{id}/children") { getChildrenByIdResponder(call) }
                         get("/locations/{id}/path") { getPathResponder(call) }
+                        get("/health") { healthResponder(call) }
                     }
                 }
             }
@@ -213,6 +242,9 @@ class ServiceLifecycleSteps : KoinComponent {
 
     var getPathResponder: suspend (call: RoutingCall) -> Unit =
         { logger.warn { "getPathResponder not set" } }
+
+    var healthResponder: suspend (call: RoutingCall) -> Unit =
+        { it.respond(HttpStatusCode.OK) }
 
     @Given("the service is running")
     fun theServiceIsRunning() =

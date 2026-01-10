@@ -1,12 +1,15 @@
 package org.darren.stock.steps
 
 import io.cucumber.java.en.And
+import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.response.respond
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -20,6 +23,7 @@ import org.koin.core.component.inject
 class StatusStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
     private val client: HttpClient by inject()
+    private val serviceHelper: ServiceLifecycleSteps by inject()
 
     @When("I send a GET request to the {string} endpoint")
     fun iSendAGETRequestToTheEndpoint(endpoint: String) =
@@ -80,7 +84,7 @@ class StatusStepDefinitions : KoinComponent {
     fun theResponseBodyShouldMatchJson(expectedJson: String) =
         runTest {
             val actualBody: String = response.body()
-            val timestampMatcher = "${'$'}{json-unit.regex}^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z$"
+            val timestampMatcher = $$"${json-unit.regex}^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z$"
             val normalizedExpected =
                 expectedJson
                     .trimIndent()
@@ -88,5 +92,20 @@ class StatusStepDefinitions : KoinComponent {
 
             println("STATUS_RESPONSE_BODY=" + actualBody)
             assertJsonEquals(normalizedExpected, actualBody)
+        }
+
+    @And("the response body should indicate the service is unhealthy")
+    fun theResponseBodyShouldIndicateTheServiceIsUnhealthy() =
+        runTest {
+            val bodyText: String = response.body()
+            val payload = Json.parseToJsonElement(bodyText).jsonObject
+            val status = payload["status"]?.jsonPrimitive?.content ?: ""
+            assertEquals("Unhealthy", status, "Status field did not report Unhealthy: body=$bodyText")
+        }
+
+    @Given("the Location API health check will fail")
+    fun theLocationApiHealthCheckWillFail() =
+        runTest {
+            serviceHelper.healthResponder = { it.respond(HttpStatusCode.ServiceUnavailable) }
         }
 }
