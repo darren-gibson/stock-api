@@ -24,4 +24,6 @@ class InMemorySnapshotRepository : SnapshotRepository {
     override suspend fun getAllActorStates(): Map<String, StockState> {
         return actorStates.toMap() // defensive copy
     }
+
+    override suspend fun isHealthy(): Boolean = true
 }

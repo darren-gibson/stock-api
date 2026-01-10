@@ -48,6 +48,14 @@ Feature: Service Health Probes
           {
             "name": "locationApi",
             "status": "UP"
+          },
+          {
+            "name": "eventRepository",
+            "status": "UP"
+          },
+          {
+            "name": "snapshotRepository",
+            "status": "UP"
           }
         ]
       }
@@ -68,6 +76,14 @@ Feature: Service Health Probes
           {
             "name": "locationApi",
             "status": "DOWN"
+          },
+          {
+            "name": "eventRepository",
+            "status": "UP"
+          },
+          {
+            "name": "snapshotRepository",
+            "status": "UP"
           }
         ]
       }

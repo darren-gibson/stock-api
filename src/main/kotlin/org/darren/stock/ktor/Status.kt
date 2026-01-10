@@ -7,6 +7,8 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.StockEventRepository
+import org.darren.stock.domain.snapshot.SnapshotRepository
 import org.darren.stock.util.currentTraceId
 import org.koin.java.KoinJavaComponent.inject
 
@@ -42,12 +44,31 @@ object Status {
                     locations.isHealthy()
                 }.onFailure { logger.warn(it) { "Failed to check Location API health" } }.getOrDefault(false)
 
+            val eventRepoHealthy =
+                runCatching {
+                    val eventRepo by inject<StockEventRepository>(StockEventRepository::class.java)
+                    eventRepo.isHealthy()
+                }.onFailure { logger.warn(it) { "Failed to check event repository health" } }.getOrDefault(false)
+
+            val snapshotRepoHealthy =
+                runCatching {
+                    val snapshotRepo by inject<SnapshotRepository>(SnapshotRepository::class.java)
+                    snapshotRepo.isHealthy()
+                }.onFailure { logger.warn(it) { "Failed to check snapshot repository health" } }.getOrDefault(false)
+
             if (!locationApiHealthy) {
                 logger.warn { "Downstream Location API health check failed" }
             }
+            if (!eventRepoHealthy) {
+                logger.warn { "Event repository health check failed" }
+            }
+            if (!snapshotRepoHealthy) {
+                logger.warn { "Snapshot repository health check failed" }
+            }
 
-            val probeStatus = if (locationApiHealthy) ProbeStatus.UP else ProbeStatus.DOWN
-            val httpStatus = if (locationApiHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
+            val allHealthy = locationApiHealthy && eventRepoHealthy && snapshotRepoHealthy
+            val probeStatus = if (allHealthy) ProbeStatus.UP else ProbeStatus.DOWN
+            val httpStatus = if (allHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
 
             call.respond(
                 httpStatus,
@@ -55,9 +76,11 @@ object Status {
                     status = probeStatus,
                     checks =
                         listOf(
+                            HealthCheck(name = "locationApi", status = if (locationApiHealthy) ProbeStatus.UP else ProbeStatus.DOWN),
+                            HealthCheck(name = "eventRepository", status = if (eventRepoHealthy) ProbeStatus.UP else ProbeStatus.DOWN),
                             HealthCheck(
-                                name = "locationApi",
-                                status = probeStatus,
+                                name = "snapshotRepository",
+                                status = if (snapshotRepoHealthy) ProbeStatus.UP else ProbeStatus.DOWN,
                             ),
                         ),
                 ),

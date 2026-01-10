@@ -25,6 +25,8 @@ class TestSnapshotRepository : SnapshotRepository {
 
     override suspend fun getAllActorStates(): Map<String, StockState> = delegate.getAllActorStates()
 
+    override suspend fun isHealthy(): Boolean = delegate.isHealthy()
+
     fun reset() {
         savedStatesByKey.clear()
     }

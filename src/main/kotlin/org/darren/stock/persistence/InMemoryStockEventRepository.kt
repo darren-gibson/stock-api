@@ -79,4 +79,6 @@ class InMemoryStockEventRepository : StockEventRepository {
     }
 
     private fun getIdempotencyData(event: StockPotEvent): Pair<String, String> = event.requestId to event.contentHash
+
+    override suspend fun isHealthy(): Boolean = true
 }
