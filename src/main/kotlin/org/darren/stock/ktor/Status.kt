@@ -43,23 +43,16 @@ object Status {
             val httpStatus = if (downstreamHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
             call.respond(
                 httpStatus,
-                if (downstreamHealthy) {
-                    HealthProbeResponse(
-                        status = "UP",
-                        checks = emptyList(),
-                    )
-                } else {
-                    HealthProbeResponse(
-                        status = "DOWN",
-                        checks =
-                            listOf(
-                                HealthCheck(
-                                    name = "locationApi",
-                                    status = "DOWN",
-                                ),
+                HealthProbeResponse(
+                    status = if (downstreamHealthy) "UP" else "DOWN",
+                    checks =
+                        listOf(
+                            HealthCheck(
+                                name = "locationApi",
+                                status = if (downstreamHealthy) "UP" else "DOWN",
                             ),
-                    )
-                },
+                        ),
+                ),
             )
         }
     }

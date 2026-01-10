@@ -44,7 +44,12 @@ Feature: Service Health Probes
       -----
       {
         "status": "UP",
-        "checks": []
+        "checks": [
+          {
+            "name": "locationApi",
+            "status": "UP"
+          }
+        ]
       }
       -----
       """
