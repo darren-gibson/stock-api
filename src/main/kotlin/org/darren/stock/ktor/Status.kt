@@ -21,7 +21,6 @@ object Status {
 
     private fun Routing.liveProbe() {
         get("/health/live") {
-            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
             logger.info { "Liveness probe check requested, traceId=${currentTraceId()}" }
             call.respond(
                 HttpStatusCode.OK,
@@ -35,14 +34,20 @@ object Status {
 
     private fun Routing.readyProbe() {
         get("/health/ready") {
-            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
             logger.info { "Readiness probe check requested, traceId=${currentTraceId()}" }
-            val downstreamHealthy = locations.isHealthy()
-            if (!downstreamHealthy) {
+            
+            val locationApiHealthy = runCatching {
+                val locations by inject<LocationApiClient>(LocationApiClient::class.java)
+                locations.isHealthy()
+            }.onFailure { logger.warn(it) { "Failed to check Location API health" } }.getOrDefault(false)
+            
+            if (!locationApiHealthy) {
                 logger.warn { "Downstream Location API health check failed" }
             }
-            val probeStatus = if (downstreamHealthy) ProbeStatus.UP else ProbeStatus.DOWN
-            val httpStatus = if (downstreamHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
+            
+            val probeStatus = if (locationApiHealthy) ProbeStatus.UP else ProbeStatus.DOWN
+            val httpStatus = if (locationApiHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
+            
             call.respond(
                 httpStatus,
                 HealthProbeResponse(
@@ -61,7 +66,6 @@ object Status {
 
     private fun Routing.startupProbe() {
         get("/health/started") {
-            val locations by inject<LocationApiClient>(LocationApiClient::class.java)
             logger.info { "Startup probe check requested, traceId=${currentTraceId()}" }
             call.respond(
                 HttpStatusCode.OK,
@@ -94,4 +98,5 @@ object Status {
         val status: ProbeStatus,
     )
 }
+
 
