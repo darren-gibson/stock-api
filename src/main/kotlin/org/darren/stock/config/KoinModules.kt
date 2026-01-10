@@ -12,6 +12,10 @@ import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.domain.StockEventRepository
 import org.darren.stock.domain.actors.IdempotencyService
 import org.darren.stock.domain.actors.StockPotActor
+import org.darren.stock.domain.resilience.ApiResilienceConfig
+import org.darren.stock.domain.resilience.ApiResilienceManager
+import org.darren.stock.domain.resilience.BackoffConfig
+import org.darren.stock.domain.resilience.FailFastConfig
 import org.darren.stock.domain.service.*
 import org.darren.stock.domain.snapshot.EventCountSnapshotStrategyFactory
 import org.darren.stock.domain.snapshot.SnapshotRepository
@@ -21,7 +25,7 @@ import org.darren.stock.persistence.InMemorySnapshotRepository
 import org.darren.stock.persistence.InMemoryStockEventRepository
 import org.koin.dsl.module
 import java.time.LocalDateTime
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -41,7 +45,35 @@ object KoinModules {
 
     private val locationApiModule =
         module {
-            single { LocationApiClient(getProperty("LOCATION_API")) }
+            single<ApiResilienceManager> {
+                ApiResilienceManager(
+                    ApiResilienceConfig(
+                        backoff =
+                            BackoffConfig(
+                                maxAttempts = getProperty("resilience.apis.location.backoff.maxAttempts", "3").toInt(),
+                                initialDelay = Duration.parse(getProperty("resilience.apis.location.backoff.initialDelay", "100ms")),
+                                maxDelay = Duration.parse(getProperty("resilience.apis.location.backoff.maxDelay", "2s")),
+                                multiplier =
+                                    getProperty("resilience.apis.location.backoff.multiplier", "2.0")
+                                        .toDouble(),
+                            ),
+                        failFast =
+                            FailFastConfig(
+                                failureThreshold =
+                                    getProperty("resilience.apis.location.failFast.failureThreshold", "5")
+                                        .toInt(),
+                                quietPeriod =
+                                    Duration.parse(
+                                        getProperty("resilience.apis.location.failFast.quietPeriod", "60s"),
+                                    ),
+                                testAfterQuietPeriod =
+                                    getProperty("resilience.apis.location.failFast.testAfterQuietPeriod", "true")
+                                        .toBoolean(),
+                            ),
+                    ),
+                )
+            }
+            single<LocationApiClient> { LocationApiClient(getProperty("LOCATION_API"), get(), get()) }
         }
 
     private val stockSystemModule =

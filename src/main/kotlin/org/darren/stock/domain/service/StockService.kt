@@ -16,7 +16,7 @@ import java.time.LocalDateTime
  */
 class StockService(
     private val stockReader: StockReader,
-    private val locationValidator: org.darren.stock.domain.service.LocationValidator,
+    private val locationValidator: LocationValidator,
 ) {
     private val logger = KotlinLogging.logger {}
 

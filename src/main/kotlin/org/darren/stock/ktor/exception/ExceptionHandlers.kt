@@ -3,6 +3,7 @@ package org.darren.stock.ktor.exception
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.BadGateway
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.*
@@ -12,6 +13,7 @@ import io.ktor.server.response.*
 import kotlinx.serialization.SerializationException
 import org.darren.stock.domain.InsufficientStockException
 import org.darren.stock.domain.LocationApiClient
+import org.darren.stock.domain.LocationApiUnavailableException
 import org.darren.stock.domain.LocationNotFoundException
 import org.darren.stock.domain.LocationNotTrackedException
 import org.darren.stock.domain.stockSystem.IdempotencyContentMismatchException
@@ -23,6 +25,7 @@ import org.darren.stock.ktor.exception.ErrorCodes.IDEMPOTENCY_CONTENT_MISMATCH
 import org.darren.stock.ktor.exception.ErrorCodes.INSUFFICIENT_STOCK
 import org.darren.stock.ktor.exception.ErrorCodes.LOCATION_NOT_FOUND
 import org.darren.stock.ktor.exception.ErrorCodes.LOCATION_NOT_TRACKED
+import org.darren.stock.ktor.exception.ErrorCodes.UPSTREAM_SERVICE_UNAVAILABLE
 import org.koin.java.KoinJavaComponent.inject
 
 /**
@@ -33,6 +36,31 @@ interface ExceptionHandler {
         call: ApplicationCall,
         cause: Throwable,
     ): Boolean
+}
+
+/**
+ * Handles upstream availability issues (fail-fast or downstream 5xx) by returning 502.
+ */
+object UpstreamServiceHandler : ExceptionHandler {
+    override suspend fun handle(
+        call: ApplicationCall,
+        cause: Throwable,
+    ): Boolean {
+        val upstream = findUpstreamCause(cause)
+        if (upstream != null) {
+            call.respond(BadGateway, ErrorDTO(UPSTREAM_SERVICE_UNAVAILABLE))
+            return true
+        }
+        return false
+    }
+
+    private tailrec fun findUpstreamCause(throwable: Throwable?): Throwable? {
+        if (throwable == null) return null
+        if (throwable is LocationApiUnavailableException) {
+            return throwable
+        }
+        return findUpstreamCause(throwable.cause)
+    }
 }
 
 /**
@@ -145,6 +173,7 @@ object BadRequestHandler : ExceptionHandler {
 object ExceptionHandlerChain {
     private val handlers =
         listOf(
+            UpstreamServiceHandler,
             LocationNotFoundHandler,
             LocationNotTrackedHandler,
             InsufficientStockHandler,

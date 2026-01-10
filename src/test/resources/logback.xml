@@ -19,8 +19,11 @@
     <!-- Silence noisy Ktor internal DEBUG traces while keeping test-level debug available -->
     <logger name="io.ktor.test" level="INFO" />
     <logger name="io.ktor.server.engine" level="INFO" />
+    <!-- Enable Arrow resilience logging for circuit breaker observability -->
+    <logger name="arrow.resilience" level="DEBUG" />
+    <logger name="io.ktor.client.plugins.HttpRequestRetry" level="TRACE" />
 
-    <root level="debug">
+    <root level="DEBUG">
         <appender-ref ref="OTEL" />
         <appender-ref ref="STDOUT" />
         <appender-ref ref="TEST" />

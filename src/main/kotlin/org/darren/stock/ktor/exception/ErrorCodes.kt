@@ -12,4 +12,5 @@ object ErrorCodes {
     const val BAD_REQUEST = "BadRequest"
     const val UNAUTHORIZED = "Unauthorized"
     const val PERMISSION_DENIED = "PermissionDenied"
+    const val UPSTREAM_SERVICE_UNAVAILABLE = "UpstreamServiceUnavailable"
 }

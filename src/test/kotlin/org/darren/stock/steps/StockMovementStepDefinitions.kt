@@ -56,7 +56,7 @@ class StockMovementStepDefinitions : KoinComponent {
         performStockMove(from, to, product, quantity)
     }
 
-    private suspend fun performStockMove(
+    private fun performStockMove(
         from: String,
         to: String,
         product: String,

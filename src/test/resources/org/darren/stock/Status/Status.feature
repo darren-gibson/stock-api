@@ -24,3 +24,11 @@ Feature: Service Health Check
         "buildTime": "<timestamp>"
       }
       """
+
+  Scenario: Status endpoint reports unhealthy when Location API is down
+    Given the service is running
+    And the Location API health check will fail
+    When I send a GET request to the "/_status" endpoint
+    Then the response status code should be 503
+    And the response body should indicate the service is unhealthy
+    And the response body should include version and build time metadata

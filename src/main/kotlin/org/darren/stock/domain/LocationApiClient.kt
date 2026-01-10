@@ -1,86 +1,79 @@
 package org.darren.stock.domain
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.*
-import io.ktor.client.plugins.cache.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.opentelemetry.api.GlobalOpenTelemetry
-import io.opentelemetry.instrumentation.ktor.v3_0.KtorClientTelemetry
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.isSuccess
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import org.darren.stock.domain.resilience.ApiResilienceConfig
+import org.darren.stock.domain.resilience.ApiResilienceManager
 import org.darren.stock.util.wrapHttpCallWithLogging
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class LocationApiClient(
     private val baseUrl: String,
-) : KoinComponent {
-    companion object {
-        private val logger = KotlinLogging.logger {}
-    }
+    engine: HttpClientEngine,
+    resilienceManager: ApiResilienceManager,
+) : ResilientApiClient(engine) {
+    private var currentResilienceConfig: ApiResilienceConfig = resilienceManager.currentConfig()
 
-    private val engine by inject<HttpClientEngine>()
-    private val client =
-        HttpClient(engine) {
-            install(KtorClientTelemetry) {
-                setOpenTelemetry(GlobalOpenTelemetry.get())
-            }
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true // only depends on the fields we need, enables forward compatibility
-                        coerceInputValues = true // enable case insensitive deserialization
-                        explicitNulls = false
-                    },
-                )
-            }
-            install(HttpCache)
+    init {
+        logger = KotlinLogging.logger {}
+        client = buildClient(currentResilienceConfig)
+        resilienceManager.onConfigChanged {
+            currentResilienceConfig = it
+            updateClient(it)
         }
+    }
 
     suspend fun ensureValidLocation(locationId: String) = getLocation(locationId)
 
     suspend fun getLocationsHierarchy(
         locationId: String,
         depth: Int? = null,
-    ): LocationDTO {
-        val response = wrapHttpCallWithLogging(logger) { client.get(getHierarchyUri(depth, locationId)) }
-        if (response.status.isSuccess()) {
-            return response.body<LocationDTO>()
-        }
-        throw LocationNotFoundException(locationId)
-    }
+    ): LocationDTO =
+        executeRequest(
+            getHierarchyUri(depth, locationId),
+            locationId,
+        )
 
     private fun getHierarchyUri(
         depth: Int?,
         locationId: String,
     ) = "$baseUrl/locations/$locationId/children${if (depth != null) "?depth=$depth" else ""}"
 
-    private suspend fun getLocation(locationId: String): LocationDTO {
-        val response = wrapHttpCallWithLogging(logger) { client.get("$baseUrl/locations/$locationId") }
-        if (!response.status.isSuccess()) {
-            throw LocationNotFoundException(locationId)
-        }
-        return response.body<LocationDTO>()
-    }
+    private suspend fun getLocation(locationId: String): LocationDTO = executeRequest("$baseUrl/locations/$locationId", locationId)
 
-    suspend fun getPath(locationId: String): Set<LocationDTO> {
-        val response = wrapHttpCallWithLogging(logger) { client.get("$baseUrl/locations/$locationId/path") }
-        if (response.status.isSuccess()) {
-            return response.body<Set<LocationDTO>>()
-        }
-        throw LocationNotFoundException(locationId)
-    }
+    suspend fun getPath(locationId: String): Set<LocationDTO> = executeRequest("$baseUrl/locations/$locationId/path", locationId)
 
     suspend fun ensureLocationsAreTracked(vararg locations: String) =
         locations.forEach {
             val location = getLocation(it)
             if (!location.isTracked) throw LocationNotTrackedException(it)
         }
+
+    suspend fun isHealthy(): Boolean =
+        runCatching {
+            val response: HttpResponse =
+                wrapHttpCallWithLogging(logger) {
+                    client.get("$baseUrl/health")
+                }
+            response.status.isSuccess()
+        }.onFailure { logger.warn(it) { "Location API health check failed: ${it.message}" } }
+            .getOrDefault(false)
+
+    override fun getResilienceConfig(): ApiResilienceConfig = currentResilienceConfig
+
+    override fun handleResponseException(
+        status: HttpStatusCode,
+        context: String,
+    ): Nothing {
+        if (status == HttpStatusCode.NotFound) {
+            throw LocationNotFoundException(context)
+        }
+        throw LocationApiUnavailableException(status.toString())
+    }
 
     @Serializable
     data class LocationDTO(
