@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.darren.stock.domain.LocationApiClient
 import org.darren.stock.util.currentTraceId
@@ -25,7 +26,7 @@ object Status {
             call.respond(
                 HttpStatusCode.OK,
                 HealthProbeResponse(
-                    status = "UP",
+                    status = ProbeStatus.UP,
                     checks = emptyList(),
                 ),
             )
@@ -40,16 +41,17 @@ object Status {
             if (!downstreamHealthy) {
                 logger.warn { "Downstream Location API health check failed" }
             }
+            val probeStatus = if (downstreamHealthy) ProbeStatus.UP else ProbeStatus.DOWN
             val httpStatus = if (downstreamHealthy) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable
             call.respond(
                 httpStatus,
                 HealthProbeResponse(
-                    status = if (downstreamHealthy) "UP" else "DOWN",
+                    status = probeStatus,
                     checks =
                         listOf(
                             HealthCheck(
                                 name = "locationApi",
-                                status = if (downstreamHealthy) "UP" else "DOWN",
+                                status = probeStatus,
                             ),
                         ),
                 ),
@@ -64,7 +66,7 @@ object Status {
             call.respond(
                 HttpStatusCode.OK,
                 HealthProbeResponse(
-                    status = "UP",
+                    status = ProbeStatus.UP,
                     checks = emptyList(),
                 ),
             )
@@ -72,14 +74,24 @@ object Status {
     }
 
     @Serializable
+    enum class ProbeStatus {
+        @SerialName("UP")
+        UP,
+
+        @SerialName("DOWN")
+        DOWN,
+    }
+
+    @Serializable
     private data class HealthProbeResponse(
-        val status: String,
+        val status: ProbeStatus,
         val checks: List<HealthCheck>,
     )
 
     @Serializable
     private data class HealthCheck(
         val name: String,
-        val status: String,
+        val status: ProbeStatus,
     )
 }
+
