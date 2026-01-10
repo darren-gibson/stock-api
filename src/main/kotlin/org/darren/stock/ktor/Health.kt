@@ -12,10 +12,10 @@ import org.darren.stock.domain.snapshot.SnapshotRepository
 import org.darren.stock.util.currentTraceId
 import org.koin.java.KoinJavaComponent.inject
 
-object Status {
+object Health {
     private val logger = KotlinLogging.logger {}
 
-    fun Routing.statusEndpoint() {
+    fun Routing.healthEndpoint() {
         liveProbe()
         readyProbe()
         startupProbe()
@@ -38,7 +38,6 @@ object Status {
         get("/health/ready") {
             logger.info { "Readiness probe check requested, traceId=${currentTraceId()}" }
 
-            // Define checks declaratively and evaluate in a DRY, uniform way
             val checks =
                 runHealthChecks(
                     listOf(
@@ -108,7 +107,6 @@ object Status {
         val status: ProbeStatus,
     )
 
-    // Helper to run health checks uniformly with logging and error safety
     private suspend fun runHealthChecks(
         checks: List<Pair<String, suspend () -> Boolean>>,
     ): List<HealthCheck> =

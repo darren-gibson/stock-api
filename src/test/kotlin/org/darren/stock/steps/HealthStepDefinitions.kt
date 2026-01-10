@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class StatusStepDefinitions : KoinComponent {
+class HealthStepDefinitions : KoinComponent {
     private lateinit var response: HttpResponse
     private val client: HttpClient by inject()
     private val serviceHelper: ServiceLifecycleSteps by inject()

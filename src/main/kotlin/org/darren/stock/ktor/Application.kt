@@ -20,9 +20,9 @@ import kotlinx.serialization.json.Json
 import org.darren.stock.config.KoinModules
 import org.darren.stock.ktor.Delivery.deliveryEndpoint
 import org.darren.stock.ktor.GetStock.getStockEndpoint
+import org.darren.stock.ktor.Health.healthEndpoint
 import org.darren.stock.ktor.Move.moveEndpoint
 import org.darren.stock.ktor.Sale.saleEndpoint
-import org.darren.stock.ktor.Status.statusEndpoint
 import org.darren.stock.ktor.StockCount.stockCountEndpoint
 import org.darren.stock.ktor.exception.ExceptionHandlerChain
 import org.koin.core.context.startKoin
@@ -71,7 +71,7 @@ fun Application.module() {
     install(StatusPages) { handleExceptions() }
     routing {
         moveEndpoint()
-        statusEndpoint()
+        healthEndpoint()
         stockCountEndpoint()
         saleEndpoint()
         deliveryEndpoint()

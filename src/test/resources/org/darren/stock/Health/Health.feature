@@ -1,4 +1,4 @@
-@section-Status @asciidoc @order-1
+@section-Health @asciidoc @order-1
 Feature: Service Health Probes
   ==== Overview
 
