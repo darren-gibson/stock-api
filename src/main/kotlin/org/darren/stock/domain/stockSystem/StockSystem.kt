@@ -16,11 +16,28 @@ import kotlin.time.Duration.Companion.milliseconds
  * Central registry for stock pot actors. Delegates actor lifecycle management to Actor4k's
  * ActorSystem, which handles creation, caching, and automatic eviction of inactive actors.
  *
- * Actor lifecycle is configured via Actor4k settings:
+ * ## Concurrency Model
+ *
+ * This class is thread-safe and can be called concurrently from multiple Ktor request handlers.
+ * Actor4k guarantees that:
+ *
+ * 1. **Actor creation is idempotent and thread-safe**: Multiple concurrent calls for the same
+ *    product-location receive the same ActorRef
+ * 2. **Sequential message processing**: Messages sent to an actor are processed sequentially
+ *    within that actor, eliminating race conditions
+ * 3. **Concurrent actor processing**: Different actors process messages concurrently without
+ *    blocking each other
+ *
+ * ## Actor Lifecycle
+ *
+ * Configured via Actor4k settings:
  * - `actorExpiresAfter`: Duration of inactivity before an actor is evicted from memory
  * - `registryCleanupEvery`: Frequency of cleanup checks for expired actors
  *
  * Actors are automatically rehydrated from persisted event streams when accessed after eviction.
+ *
+ * @see StockPotActor
+ * @see docs/CONCURRENCY.md for detailed architecture
  */
 class StockSystem : KoinComponent {
     val locations by inject<LocationApiClient>()

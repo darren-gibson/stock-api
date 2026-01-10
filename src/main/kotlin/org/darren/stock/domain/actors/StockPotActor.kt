@@ -11,6 +11,32 @@ import org.darren.stock.domain.actors.StockPotProtocol.Reply
 import org.darren.stock.domain.actors.StockPotProtocol.StockPotRequest
 import org.darren.stock.domain.snapshot.SnapshotStrategyFactory
 
+/**
+ * Actor managing stock state for a single product-location pair.
+ *
+ * ## Thread Safety
+ *
+ * This actor is thread-safe by design. Actor4k ensures that messages to this actor are processed
+ * sequentially in a single-threaded manner. Multiple actors can process messages concurrently
+ * without interference due to complete state isolation.
+ *
+ * ## Lifecycle
+ *
+ * - **Creation**: Created lazily via `ActorSystem.get()` on first access
+ * - **Activation**: `onBeforeActivate()` rehydrates state from event store and snapshots
+ * - **Message Processing**: `onReceive()` handles messages sequentially in arrival order
+ * - **Shutdown**: `onShutdown()` called during eviction or system shutdown
+ * - **Eviction**: Automatically removed from registry after configured inactivity period
+ * - **Rehydration**: On next access, state is replayed from event store
+ *
+ * ## Message Processing
+ *
+ * All state changes are idempotent and event-sourced. Messages with duplicate `requestId`
+ * are detected via the idempotency service and return the current state without modification.
+ *
+ * @see StockSystem
+ * @see StockStateManager
+ */
 class StockPotActor(
     key: String,
     repository: StockEventRepository,

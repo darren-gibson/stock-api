@@ -109,6 +109,36 @@ object KoinModules {
             }
         }
 
+    /**
+     * Initializes the Actor4k system with structured concurrency management.
+     *
+     * ## Initialization Sequence
+     *
+     * 1. Shutdown any previous ActorSystem instance (for test isolation)
+     * 2. Configure actor lifecycle parameters (expiry, cleanup intervals)
+     * 3. Register the factory for creating [StockPotActor] instances
+     * 4. Start the ActorSystem (begins background cleanup tasks)
+     *
+     * ## Lifecycle Management
+     *
+     * The ActorSystem manages its own CoroutineScope internally for:
+     * - Processing actor messages sequentially
+     * - Running background cleanup tasks
+     * - Coordinating shutdown
+     *
+     * Graceful shutdown is triggered via [ActorSystem.shutdown()], typically called during
+     * application shutdown or between tests via Koin cleanup.
+     *
+     * ## Memory Management
+     *
+     * Inactive actors are automatically evicted based on configuration:
+     * - `actorExpiresAfter`: How long before removing inactive actors from memory
+     * - `registryCleanupEvery`: How often the cleanup task runs
+     *
+     * Evicted actors are recreated on next access with state restored from event history.
+     *
+     * @param conf ActorSystem configuration (expiry, cleanup intervals, etc.)
+     */
     fun actor4kModule(conf: ActorSystem.Conf = ActorSystem.Conf()) =
         module(createdAtStart = true) {
             single<Actor4kInitializer> {

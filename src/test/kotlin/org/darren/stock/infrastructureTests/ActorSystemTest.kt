@@ -23,6 +23,20 @@ import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * Infrastructure tests for Actor4k integration and lifecycle management.
+ *
+ * These tests verify:
+ * - ActorSystem initialization and shutdown
+ * - Actor creation and eviction
+ * - Concurrent message processing
+ * - Test isolation (ActorSystem cleanup between tests)
+ *
+ * Note: Some tests use short timeouts to verify actor eviction behavior quickly.
+ * In production, actors remain active much longer (configurable via application.yaml).
+ *
+ * @see docs/CONCURRENCY.md for concurrency architecture details
+ */
 class ActorSystemTest {
     class SimpleActor(
         key: String,

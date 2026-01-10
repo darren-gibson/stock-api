@@ -39,6 +39,18 @@ java -jar build/libs/stock-api.jar
 
 Idempotency is enforced at the domain layer using actor event sourcing for reliable duplicate detection.
 
+## Concurrency and Actor Model
+
+The API uses the [Actor4k](https://github.com/smyrgeorge/actor4k) library to implement the actor model for thread-safe concurrent access to stock data:
+
+- **Actor per product-location**: Each unique product-location pair has a dedicated actor that manages its state independently
+- **Sequential message processing**: Messages to a single actor are processed sequentially, eliminating race conditions
+- **Concurrent actors**: Multiple actors process messages in parallel without blocking each other
+- **Automatic lifecycle**: Actors are created on-demand and evicted after inactivity (configurable, default 5 minutes)
+- **Event sourcing**: State is persisted as events; actors rehydrate from event history when reactivated
+
+For detailed architecture information, see [docs/CONCURRENCY.md](docs/CONCURRENCY.md).
+
 ## Publishing to GitHub (recommended)
 
 If you have the GitHub CLI (`gh`) configured, run:

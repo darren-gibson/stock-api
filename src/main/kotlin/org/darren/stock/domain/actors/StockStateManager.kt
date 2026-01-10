@@ -8,6 +8,26 @@ import org.darren.stock.domain.snapshot.SnapshotStrategyFactory
 import org.darren.stock.util.LoggingHelper.logOperation
 import java.time.LocalDateTime
 
+/**
+ * Manages the current state and event history for a stock pot.
+ *
+ * ## Thread Safety
+ *
+ * This class is NOT thread-safe on its own and must not be used directly from multiple threads.
+ * However, it is only accessed from within a [StockPotActor], which processes messages sequentially.
+ * This design eliminates the need for explicit locking while maintaining thread safety through
+ * actor isolation.
+ *
+ * ## State Initialization
+ *
+ * When activated, this manager:
+ * 1. Attempts to load a snapshot of the current state
+ * 2. If a snapshot exists, replays events that occurred after the snapshot was created
+ * 3. If no snapshot exists, replays all events from the event store
+ *
+ * This strategy combines fast startup times (via snapshots) with consistency guarantees
+ * (via event replay).
+ */
 class StockStateManager(
     private val locationId: String,
     private val productId: String,
