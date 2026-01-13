@@ -38,10 +38,10 @@ dependencies {
 
     // OpenTelemetry integration
     implementation("io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:2.23.0-alpha")
-    implementation("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.57.0")
-    implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.57.0")
+    implementation("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.58.0")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.58.0")
     implementation("io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.23.0-alpha")
-    implementation("io.opentelemetry:opentelemetry-exporter-logging:1.57.0") // console exporter
+    implementation("io.opentelemetry:opentelemetry-exporter-logging:1.58.0") // console exporter
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     runtimeOnly("io.insert-koin:koin-core:4.2.0-beta2")
@@ -77,12 +77,12 @@ dependencies {
     testImplementation("io.insert-koin:koin-test-junit5:4.1.1")
 
     // OpenTelemetry API for metrics
-    implementation("io.opentelemetry:opentelemetry-api:1.57.0")
+    implementation("io.opentelemetry:opentelemetry-api:1.58.0")
     // MDC propagation for coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.10.2")
     // SDK and testing artifacts used in integration tests
-    testImplementation("io.opentelemetry:opentelemetry-sdk:1.57.0")
-    testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.57.0")
+    testImplementation("io.opentelemetry:opentelemetry-sdk:1.58.0")
+    testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.58.0")
     testImplementation("net.javacrumbs.json-unit:json-unit:5.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
