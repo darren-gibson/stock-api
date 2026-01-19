@@ -44,8 +44,8 @@ dependencies {
     implementation("io.opentelemetry:opentelemetry-exporter-logging:1.58.0") // console exporter
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
-    runtimeOnly("io.insert-koin:koin-core:4.2.0-beta2")
-    implementation("io.insert-koin:koin-ktor:4.2.0-beta2")
+    runtimeOnly("io.insert-koin:koin-core:4.2.0-beta3")
+    implementation("io.insert-koin:koin-ktor:4.2.0-beta3")
 
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.14")
     implementation("ch.qos.logback:logback-classic:1.5.24")
