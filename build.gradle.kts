@@ -85,7 +85,7 @@ dependencies {
     testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.58.0")
     testImplementation("net.javacrumbs.json-unit:json-unit:5.1.0")
     testImplementation("org.hamcrest:hamcrest:3.0")
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.21.0")
     // Coroutines test utilities
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     // SpotBugs FindSecBugs plugin for security-focused bug patterns
