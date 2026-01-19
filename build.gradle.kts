@@ -48,7 +48,7 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:4.2.0-beta2")
 
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.14")
-    implementation("ch.qos.logback:logback-classic:1.5.24")
+    implementation("ch.qos.logback:logback-classic:1.5.25")
 
     // Actor4k for actor system
     implementation("io.github.smyrgeorge:actor4k:1.4.6")
