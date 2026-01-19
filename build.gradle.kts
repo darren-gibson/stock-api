@@ -63,8 +63,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.2")
     testImplementation("io.cucumber:cucumber-java:7.33.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.33.0")
     testImplementation("org.junit.platform:junit-platform-suite:6.0.1")
