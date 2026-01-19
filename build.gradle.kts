@@ -37,10 +37,10 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     // OpenTelemetry integration
-    implementation("io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:2.23.0-alpha")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:2.24.0-alpha")
     implementation("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.58.0")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.58.0")
-    implementation("io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.23.0-alpha")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.24.0-alpha")
     implementation("io.opentelemetry:opentelemetry-exporter-logging:1.58.0") // console exporter
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
